@@ -1,23 +1,20 @@
+import { Link } from "react-router-dom";
+import { useQueries } from "@tanstack/react-query";
 import { AppShell } from "../components/layout/AppShell";
 import { ReadinessCard } from "../components/dashboard/ReadinessCard";
-import { WorkspaceEmptyState } from "../components/dashboard/WorkspaceEmptyState";
-import { WorkspacePrinciples } from "../components/dashboard/WorkspacePrinciples";
 import { useAuth } from "../features/auth/AuthProvider";
 import { useOrganization } from "../features/organizations/OrganizationProvider";
-const guidance: Record<string, string> = { admin: "You can manage organization members in Settings.", recruiter: "Your job workflow will be available soon.", hiring_manager: "Candidate review tools will be available later.", interviewer: "Interview feedback tools will be available later." };
+import { useJobs } from "../features/jobs/queries";
+import { useCandidates } from "../features/candidates/queries";
+import { listJobApplications } from "../features/applications/api";
+const statusLabel = (value: string) => value.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 export function OverviewPage() {
-  const { user } = useAuth(); const { organization } = useOrganization(); const role = organization?.role ?? "interviewer";
-  return (
-    <AppShell title="Overview">
-      <section aria-labelledby="workspace-heading" className="max-w-3xl">
-        <p className="text-sm font-semibold text-[var(--color-teal)]">Hiring Compass</p>
-        <h1 id="workspace-heading" className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">Welcome back, {user?.display_name}</h1>
-        <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--color-muted)] sm:text-lg">
-          Everything for {organization?.organization.name} is in one place. Your hiring workspace is ready when you are.
-        </p>
-      </section>
-      <p className="mt-6 rounded-xl bg-[var(--color-amber)]/60 px-4 py-3 text-sm text-[var(--color-ink)]">{guidance[role]}</p>
-      <div className="mt-8"><ReadinessCard /><WorkspaceEmptyState admin={role === "admin"} /><WorkspacePrinciples /></div>
-    </AppShell>
-  );
+  const { user } = useAuth(); const { organization } = useOrganization(); const org = organization?.organization.id ?? ""; const jobs = useJobs(org, 1); const candidates = useCandidates(org, 1); const jobItems = jobs.data?.items ?? [];
+  const apps = useQueries({ queries: jobItems.map((job) => ({ queryKey: ["applications", org, "job", job.id], queryFn: () => listJobApplications(org, job.id), enabled: Boolean(org) })) }); const applications = apps.flatMap((query) => query.data?.items ?? []); const activeJobs = jobItems.filter((job) => job.status === "approved"); const attention = jobItems.filter((job) => ["draft", "pending_approval"].includes(job.status)); const firstName = user?.display_name?.split(" ")[0] ?? "there";
+  return <AppShell title="Overview"><section className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-7 shadow-[var(--shadow-soft)] sm:p-10"><p className="text-sm font-semibold text-[var(--color-teal)]">Hiring Compass</p><h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">Welcome back, {firstName}</h1><p className="mt-4 max-w-lg leading-7 text-[var(--color-muted)]">{organization?.organization.name ? `See what is moving in ${organization.organization.name} and what needs your attention today.` : "Your hiring workspace is ready when you are."}</p><div className="mt-7 flex flex-wrap gap-3"><Link to="/jobs/new" className="rounded-xl bg-[var(--color-navy)] px-4 py-2.5 text-sm font-semibold !text-white">Create job</Link><Link to="/candidates" className="rounded-xl border border-[var(--color-border)] px-4 py-2.5 text-sm font-semibold">View candidates</Link></div></section>
+    <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Hiring snapshot">{[["Active jobs", activeJobs.length, "/jobs"], ["Total candidates", candidates.data?.pagination.total ?? 0, "/candidates"], ["Active applications", applications.filter((a) => a.status !== "rejected").length, "/jobs"], ["Shortlisted", applications.filter((a) => a.status === "shortlisted").length, "/jobs"]].map(([label, value, href]) => <Link key={String(label)} to={String(href)} className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 shadow-[var(--shadow-card)] transition-transform hover:-translate-y-0.5"><p className="text-sm text-[var(--color-muted)]">{label}</p><p className="mt-2 text-3xl font-semibold">{value}</p></Link>)}</section>
+    {attention.length > 0 && <section className="mt-8 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6"><h2 className="text-lg font-semibold">Needs attention</h2><div className="mt-4 space-y-3">{attention.map((job) => <Link key={job.id} to={`/jobs/${job.id}`} className="flex items-center justify-between rounded-xl bg-[var(--color-amber)]/35 px-4 py-3 text-sm"><span><strong>{job.title}</strong><span className="ml-2 text-[var(--color-muted)]">{statusLabel(job.status)}</span></span><span className="font-semibold">Open →</span></Link>)}</div></section>}
+    <div className="mt-8 grid gap-8 lg:grid-cols-[1.3fr_1fr]"><section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6"><div className="flex items-center justify-between"><h2 className="text-lg font-semibold">Active jobs</h2><Link to="/jobs" className="text-sm font-semibold text-[var(--color-navy)]">View all jobs</Link></div>{activeJobs.length ? <div className="mt-4 divide-y divide-[var(--color-border)]">{activeJobs.slice(0, 5).map((job) => <Link key={job.id} to={`/jobs/${job.id}`} className="flex items-center justify-between gap-4 py-4"><span className="min-w-0"><strong className="block truncate">{job.title}</strong><span className="text-sm text-[var(--color-muted)]">{statusLabel(job.status)}</span></span><span className="text-sm text-[var(--color-muted)]">{applications.filter((a) => a.job_id === job.id).length} applications</span></Link>)}</div> : <p className="mt-4 text-sm text-[var(--color-muted)]">No approved jobs yet.</p>}</section><section className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6"><h2 className="text-lg font-semibold">Application pipeline</h2><div className="mt-4 grid grid-cols-2 gap-3">{(["new", "shortlisted", "on_hold", "rejected"] as const).map((status) => <div key={status} className="rounded-xl bg-[var(--color-canvas)] p-4"><p className="text-xs text-[var(--color-muted)]">{statusLabel(status)}</p><p className="mt-1 text-2xl font-semibold">{applications.filter((a) => a.status === status).length}</p></div>)}</div></section></div>
+    {!jobItems.length && !candidates.data?.pagination.total && <div className="mt-8"><ReadinessCard /></div>}
+  </AppShell>;
 }

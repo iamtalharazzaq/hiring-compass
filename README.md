@@ -21,6 +21,35 @@ Create Job → Approve JD → Add Candidate and Resume → Review Evidence
 
 AI assists with analysis, recommendations, and drafts. It does not automatically hire, reject, or send candidate communication without human approval.
 
+## Product at a glance
+
+Hiring Compass is a shared workspace for recruiting teams that want a clear trail from an approved role to a considered hiring decision. It keeps the work that matters together:
+
+- **Recruiters** shape job descriptions, manage requirements, organize candidates, and move applications through a simple pipeline.
+- **Hiring managers** review role and candidate context in one place before making a decision.
+- **Interviewers** are part of the same organization workspace, ready for the interview and feedback workflow planned next.
+- **Admins** manage organization access and roles while keeping each workspace isolated.
+
+The product is intentionally human-led. Every high-impact step is visible, reviewable, and attributable to a person.
+
+## Core product experience
+
+1. Create a role with the information the team actually needs.
+2. Define required and preferred requirements and submit the JD for approval.
+3. Build reusable candidate profiles and attach private resumes.
+4. Add candidates to approved roles and move them through New, Shortlisted, On hold, or Rejected.
+5. Keep the next decision obvious without hiding work behind automation.
+
+The current experience focuses on the reliable foundation: jobs, requirements, approvals, candidates, private resume storage, and applications. Interviews, evidence-based screening, recommendations, and candidate communication are deliberately staged for later phases.
+
+## Product promises
+
+- **Clarity:** the Overview workspace shows what is moving and what needs attention.
+- **Control:** people approve job descriptions and candidate outcomes; automation never silently commits a decision.
+- **Privacy:** resumes are private to the organization and delivered through short-lived access links.
+- **Consistency:** requirements and candidate profiles are reusable, searchable records rather than scattered notes.
+- **Traceability:** role changes, applications, and membership actions remain connected to the organization and its permissions.
+
 ## Key capabilities
 
 ### Current foundation
