@@ -1,48 +1,83 @@
 # Hiring Compass
 
-Hiring Compass is an AI-assisted recruitment platform for helping teams run a more focused hiring process.
+An AI-assisted recruitment workspace that helps hiring teams move from an approved job description to approved candidate communication, with human control over every high-impact decision.
 
-## Status
+React · TypeScript · FastAPI · PostgreSQL · Docker
 
-**Phase 1.5 — Authentication.** This repository has secure identity authentication with short-lived in-memory access tokens and rotating HTTP-only refresh cookies.
+## The problem
 
-## Repository structure
+Recruiters often coordinate job descriptions, resumes, interview feedback, approvals, and candidate communication across disconnected tools. This creates delays, inconsistent evaluation, weak visibility, and too much manual coordination.
+
+## The solution
+
+Hiring Compass provides one deliberate workflow:
 
 ```text
-.
-├── backend/                 # Reserved for the FastAPI application
-├── frontend/                # Reserved for the React application
-├── docs/
-│   ├── adr/                 # Architecture decision records
-│   ├── api/                 # API documentation
-│   └── architecture/        # Architecture documentation
-├── .env.example
-├── docker-compose.yml
-└── Makefile
+Create Job → Approve JD → Add Candidate and Resume → Review Evidence
+→ Shortlist or Hold → Run Interviews → Collect Feedback
+→ Generate Recommendation → Human Approves Decision
+→ Draft, Approve, and Send Candidate Email
 ```
 
-## Prerequisites
+AI assists with analysis, recommendations, and drafts. It does not automatically hire, reject, or send candidate communication without human approval.
 
-- Git
-- Docker and Docker Compose
-- Node.js current LTS (for later frontend phases)
-- Python 3.12+ (for later backend phases)
+## Key capabilities
 
-## Setup
+### Current foundation
+
+- Docker-based local environment with PostgreSQL, Redis, RabbitMQ, MinIO, and Mailpit
+- FastAPI with structured API responses, request IDs, and database readiness checks
+- PostgreSQL connectivity and Alembic migration infrastructure
+- Secure signup, login, refresh, logout, and current-user authentication
+- Argon2 password hashing, short-lived access tokens, and rotating HTTP-only refresh tokens
+- React application shell and responsive authentication experience
+
+### Planned recruitment workflow
+
+- Organization and team role management
+- Job and candidate management
+- Resume storage and extraction
+- Evidence-based screening
+- Interview scorecards and feedback
+- Approval workflow and audit timeline
+- JD, screening, interview, decision, and communication agents
+
+## Architecture
+
+```mermaid
+flowchart TB
+    UI["React + TypeScript Frontend"] --> API["FastAPI Modular Monolith"]
+    API --> DB[("PostgreSQL")]
+    API --> CACHE["Redis"]
+    API --> MQ["RabbitMQ"]
+    API --> STORAGE["MinIO"]
+    API --> MAIL["Mailpit"]
+    MQ --> WORKER["Background Worker"]
+    WORKER --> LLM["LLM Provider Adapter"]
+```
+
+This is one monorepo with `frontend/` and `backend/`, built as a modular monolith rather than microservices. The backend follows Hexagonal Architecture (Ports and Adapters). AI is added only after the manual recruitment workflow is stable, with external providers behind adapters.
+
+## Technology stack
+
+| Area | Technology |
+| --- | --- |
+| Frontend | React, TypeScript, Vite, Tailwind CSS |
+| Backend | FastAPI, Python, Pydantic |
+| Persistence | PostgreSQL, SQLAlchemy, Alembic |
+| Local async services | Redis, RabbitMQ, Celery (planned worker) |
+| Storage and email | MinIO, Mailpit |
+| Security | JWT, Argon2 |
+| AI (planned) | LangGraph, OpenAI/Ollama adapters |
+
+## Local setup
 
 ```bash
+git clone <repository-url>
+cd hiring-compass
 cp .env.example .env
 make up
-make ps
 ```
-
-Stop the local services with:
-
-```bash
-make down
-```
-
-## Run the API locally
 
 ```bash
 cd backend
@@ -51,37 +86,34 @@ uv run alembic upgrade head
 uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-The API provides liveness at [http://localhost:8000/health](http://localhost:8000/health), database readiness at [http://localhost:8000/health/ready](http://localhost:8000/health/ready), and Swagger documentation at [http://localhost:8000/docs](http://localhost:8000/docs). You can also run the API from the repository root with `make local`.
-
-## Local services
-
-| Service | Purpose | Access |
-| --- | --- | --- |
-| PostgreSQL | Primary relational database | `localhost:5432` |
-| Redis | Cache, rate limiting, and short-lived state | `localhost:6379` |
-| RabbitMQ | Background-task broker | [Management UI](http://localhost:15672) |
-| MinIO | Private S3-compatible resume storage | [Console](http://localhost:9001) |
-| Mailpit | Local SMTP sandbox | [Inbox](http://localhost:8025) |
-
-Use the RabbitMQ and MinIO credentials from your `.env` file to sign in.
-
-## Run the frontend locally
-
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-The frontend runs at [http://localhost:5173](http://localhost:5173). It includes authentication screens and the protected workspace preview; hiring workflows arrive in later phases.
+| Service | URL |
+| --- | --- |
+| Frontend | `http://localhost:5173` |
+| API docs | `http://localhost:8000/docs` |
+| API health | `http://localhost:8000/health` |
+| Database readiness | `http://localhost:8000/health/ready` |
+| RabbitMQ management | `http://localhost:15672` |
+| MinIO console | `http://localhost:9001` |
+| Mailpit inbox | `http://localhost:8025` |
 
-Authentication endpoints: `POST /api/v1/auth/signup`, `login`, `refresh`, and `logout`; `GET /api/v1/auth/me`. Access tokens are short-lived and retained only in browser memory. Refresh tokens are opaque, rotated, and sent only in HTTP-only cookies.
+## Project status
 
-## Roadmap
+Current milestone: Phase 1.5 complete — Authentication
+Next milestone: Phase 1.6 — Organization and RBAC
 
-- [x] Phase 1.1 — Repository Bootstrap
-- [x] Phase 1.2 — Backend Skeleton
-- [x] Phase 1.3 — Persistence Foundation
-- [x] Phase 1.4 — Frontend Foundation
-- [x] Phase 1.5 — Authentication
-- [ ] Phase 1.6 — Organization and RBAC
+See the [development roadmap](docs/DEVELOPMENT_ROADMAP.md) for implementation progress.
+
+## Product principles
+
+- Human approval for high-impact recruitment actions
+- Evidence before recommendation
+- Organization isolation and backend-enforced permissions
+- Explainable AI outputs with uncertainty
+- No duplicate candidate communication
+- AI supports decisions; people make decisions
