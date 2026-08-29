@@ -11,6 +11,7 @@ from app.modules.organizations.adapters.persistence.repositories import (
     SqlAlchemyOrganizationRepository,
 )
 from app.modules.organizations.application.services import OrganizationError, OrganizationService
+from app.modules.organizations.domain.entities import OrganizationMember
 from app.shared.database.engine import get_db_session
 
 
@@ -37,14 +38,16 @@ async def require_active_organization_member(
     organization_id: UUID,
     user: AuthenticatedUser = Depends(require_current_user),
     service: OrganizationService = Depends(get_organization_service),
-):
+) -> OrganizationMember:
     try:
         return await service.get_active_membership(organization_id, user)
     except OrganizationError as e:
         raise HTTPException(e.status) from None
 
 
-async def require_organization_admin(member=Depends(require_active_organization_member)):
+async def require_organization_admin(
+    member: OrganizationMember = Depends(require_active_organization_member),
+) -> OrganizationMember:
     if member.role != "admin":
         raise HTTPException(403)
     return member

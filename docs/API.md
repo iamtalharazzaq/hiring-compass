@@ -31,6 +31,12 @@ Errors use `error.code`, `error.message`, and `request_id`. Send a bearer token 
 | Members | `GET` | `/api/v1/organizations/{organization_id}/members` | List members as an admin |
 | Members | `POST` | `/api/v1/organizations/{organization_id}/members` | Add an existing active user as an admin |
 | Members | `PATCH` | `/api/v1/organizations/{organization_id}/members/{member_id}` | Change another member's role or active status as an admin |
+| Jobs | `POST` | `/api/v1/organizations/{organization_id}/jobs` | Create a draft job as an admin or recruiter |
+| Jobs | `GET` | `/api/v1/organizations/{organization_id}/jobs` | List jobs with page, page_size, status, and search filters |
+| Jobs | `GET` | `/api/v1/organizations/{organization_id}/jobs/{job_id}` | Read a job as an active member |
+| Jobs | `PATCH` | `/api/v1/organizations/{organization_id}/jobs/{job_id}` | Update a draft job as an admin or recruiter |
+| Jobs | `POST` | `/api/v1/organizations/{organization_id}/jobs/{job_id}/close` | Close a draft, pending-approval, or approved job |
+| Jobs | `POST` | `/api/v1/organizations/{organization_id}/jobs/{job_id}/archive` | Archive a closed job |
 
 ## Authorization
 
@@ -44,4 +50,4 @@ Roles are `admin`, `recruiter`, `hiring_manager`, and `interviewer`.
 
 ## Current product boundary
 
-The application currently provides identity, organization membership, role-based access control, settings, and an organization-aware empty dashboard. Jobs, candidates, interviews, approvals, activity, notifications, and AI workflows are not implemented yet.
+The application currently provides identity, organization membership, role-based access control, settings, an organization-aware dashboard, and job lifecycle APIs. The Job Workspace UI, job requirements, candidates, interviews, approvals, activity, notifications, and AI workflows are not implemented yet.

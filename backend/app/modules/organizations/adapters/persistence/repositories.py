@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from typing import cast
 from uuid import UUID
 
 from sqlalchemy import func, select
@@ -116,11 +117,14 @@ class SqlAlchemyOrganizationRepository:
     async def get_member_by_id(
         self, org_id: UUID, member_id: UUID
     ) -> OrganizationMemberModel | None:
-        return await self.session.scalar(
-            select(OrganizationMemberModel).where(
-                OrganizationMemberModel.organization_id == org_id,
-                OrganizationMemberModel.id == member_id,
-            )
+        return cast(
+            OrganizationMemberModel | None,
+            await self.session.scalar(
+                select(OrganizationMemberModel).where(
+                    OrganizationMemberModel.organization_id == org_id,
+                    OrganizationMemberModel.id == member_id,
+                )
+            ),
         )
 
     async def active_admin_count(self, org_id: UUID) -> int:

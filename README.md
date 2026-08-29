@@ -33,6 +33,7 @@ AI assists with analysis, recommendations, and drafts. It does not automatically
 - React application shell and responsive authentication experience
 - Organization onboarding with backend-enforced `admin`, `recruiter`, `hiring_manager`, and `interviewer` roles
 - Organization-aware dashboard shell, intentionally empty until hiring workflows are introduced
+- Tenant-safe job lifecycle APIs for draft, close, and archive operations; Job Workspace UI and job requirements are next
 
 For development seed data, first change the seed credentials in `.env`, then run:
 
@@ -115,8 +116,8 @@ npm run dev
 
 ## Project status
 
-Current milestone: Phase 1.7 complete — Dashboard Shell
-Next milestone: Phase 2.1 — Jobs Domain
+Current milestone: Phase 2.1 complete — Jobs Domain
+Next milestone: Phase 2.2 — Job Workspace UI
 
 See the [API reference](docs/API.md) and [development roadmap](docs/DEVELOPMENT_ROADMAP.md) for implementation progress.
 
