@@ -5,10 +5,14 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.auth.application.dto import AuthenticatedUser
+from app.modules.jobs.adapters.persistence.models import JobRequirementModel
 from app.modules.jobs.adapters.persistence.repositories import SqlAlchemyJobRepository
 from app.modules.jobs.api.schemas import (
     CreateJobRequest,
     ListJobsQuery,
+    ReorderRequirementsRequest,
+    RequirementRequest,
+    ReviewNoteRequest,
     UpdateJobRequest,
     to_job_input,
 )
@@ -56,6 +60,21 @@ def job_data(job: Job) -> dict[str, object]:
         "updated_at": job.updated_at.isoformat(),
         "closed_at": job.closed_at.isoformat() if job.closed_at else None,
         "archived_at": job.archived_at.isoformat() if job.archived_at else None,
+        "submitted_for_approval_at": job.submitted_for_approval_at.isoformat()
+        if job.submitted_for_approval_at
+        else None,
+        "approved_at": job.approved_at.isoformat() if job.approved_at else None,
+        "review_note": job.review_note,
+    }
+
+
+def requirement_data(item: JobRequirementModel) -> dict[str, object]:
+    return {
+        "id": str(item.id),
+        "requirement_type": item.requirement_type,
+        "category": item.category,
+        "content": item.content,
+        "rank": item.rank,
     }
 
 
@@ -160,6 +179,187 @@ async def archive_job(
     try:
         return success_response(
             request, {"job": job_data(await service.archive(organization_id, job_id))}
+        )
+    except JobError as error:
+        return failure(request, error)
+
+
+@router.get("/{job_id}/requirements")
+async def list_requirements(
+    request: Request,
+    organization_id: UUID,
+    job_id: UUID,
+    _: OrganizationMember = Depends(require_active_organization_member),
+    service: JobService = Depends(get_job_service),
+) -> JSONResponse:
+    try:
+        return success_response(
+            request,
+            {
+                "items": [
+                    requirement_data(item)
+                    for item in await service.requirements(organization_id, job_id)
+                ]
+            },
+        )
+    except JobError as error:
+        return failure(request, error)
+
+
+@router.post("/{job_id}/requirements", status_code=201)
+async def add_requirement(
+    request: Request,
+    organization_id: UUID,
+    job_id: UUID,
+    payload: RequirementRequest,
+    _: OrganizationMember = Depends(require_job_manager),
+    service: JobService = Depends(get_job_service),
+) -> JSONResponse:
+    try:
+        return success_response(
+            request,
+            {
+                "requirement": requirement_data(
+                    await service.add_requirement(
+                        organization_id,
+                        job_id,
+                        payload.requirement_type,
+                        payload.category,
+                        payload.content,
+                    )
+                )
+            },
+            201,
+        )
+    except JobError as error:
+        return failure(request, error)
+
+
+@router.patch("/{job_id}/requirements/{requirement_id}")
+async def update_requirement(
+    request: Request,
+    organization_id: UUID,
+    job_id: UUID,
+    requirement_id: UUID,
+    payload: RequirementRequest,
+    _: OrganizationMember = Depends(require_job_manager),
+    service: JobService = Depends(get_job_service),
+) -> JSONResponse:
+    try:
+        return success_response(
+            request,
+            {
+                "requirement": requirement_data(
+                    await service.update_requirement(
+                        organization_id,
+                        job_id,
+                        requirement_id,
+                        payload.requirement_type,
+                        payload.category,
+                        payload.content,
+                    )
+                )
+            },
+        )
+    except JobError as error:
+        return failure(request, error)
+
+
+@router.delete("/{job_id}/requirements/{requirement_id}")
+async def delete_requirement(
+    request: Request,
+    organization_id: UUID,
+    job_id: UUID,
+    requirement_id: UUID,
+    _: OrganizationMember = Depends(require_job_manager),
+    service: JobService = Depends(get_job_service),
+) -> JSONResponse:
+    try:
+        await service.delete_requirement(organization_id, job_id, requirement_id)
+        return success_response(request, {"deleted": True})
+    except JobError as error:
+        return failure(request, error)
+
+
+@router.put("/{job_id}/requirements/reorder")
+async def reorder_requirements(
+    request: Request,
+    organization_id: UUID,
+    job_id: UUID,
+    payload: ReorderRequirementsRequest,
+    _: OrganizationMember = Depends(require_job_manager),
+    service: JobService = Depends(get_job_service),
+) -> JSONResponse:
+    try:
+        return success_response(
+            request,
+            {
+                "items": [
+                    requirement_data(item)
+                    for item in await service.reorder_requirements(
+                        organization_id, job_id, payload.requirement_ids
+                    )
+                ]
+            },
+        )
+    except JobError as error:
+        return failure(request, error)
+
+
+@router.post("/{job_id}/submit-for-approval")
+async def submit_job(
+    request: Request,
+    organization_id: UUID,
+    job_id: UUID,
+    _: OrganizationMember = Depends(require_job_manager),
+    service: JobService = Depends(get_job_service),
+) -> JSONResponse:
+    try:
+        return success_response(
+            request, {"job": job_data(await service.submit(organization_id, job_id))}
+        )
+    except JobError as error:
+        return failure(request, error)
+
+
+@router.post("/{job_id}/approve")
+async def approve_job(
+    request: Request,
+    organization_id: UUID,
+    job_id: UUID,
+    user: AuthenticatedUser = Depends(require_current_user),
+    member: OrganizationMember = Depends(require_active_organization_member),
+    service: JobService = Depends(get_job_service),
+) -> JSONResponse:
+    if member.role not in {"admin", "hiring_manager"}:
+        raise HTTPException(403)
+    try:
+        return success_response(
+            request, {"job": job_data(await service.approve(organization_id, job_id, user))}
+        )
+    except JobError as error:
+        return failure(request, error)
+
+
+@router.post("/{job_id}/return-to-draft")
+async def return_job(
+    request: Request,
+    organization_id: UUID,
+    job_id: UUID,
+    payload: ReviewNoteRequest,
+    member: OrganizationMember = Depends(require_active_organization_member),
+    service: JobService = Depends(get_job_service),
+) -> JSONResponse:
+    if member.role not in {"admin", "hiring_manager"}:
+        raise HTTPException(403)
+    try:
+        return success_response(
+            request,
+            {
+                "job": job_data(
+                    await service.return_to_draft(organization_id, job_id, payload.review_note)
+                )
+            },
         )
     except JobError as error:
         return failure(request, error)

@@ -1,4 +1,8 @@
 export type JobStatus = "draft" | "pending_approval" | "approved" | "closed" | "archived";
-export type Job = { id: string; organization_id: string; title: string; description: string | null; location: string | null; employment_type: string | null; workplace_type: string | null; experience_min_years: number | null; experience_max_years: number | null; salary_min: string | null; salary_max: string | null; salary_currency: string | null; status: JobStatus; created_at: string; updated_at: string; closed_at: string | null; archived_at: string | null };
-export type JobInput = Omit<Job, "id" | "organization_id" | "status" | "created_at" | "updated_at" | "closed_at" | "archived_at">;
+export type Job = { id: string; organization_id: string; title: string; description: string | null; location: string | null; employment_type: string | null; workplace_type: string | null; experience_min_years: number | null; experience_max_years: number | null; salary_min: string | null; salary_max: string | null; salary_currency: string | null; status: JobStatus; created_at: string; updated_at: string; closed_at: string | null; archived_at: string | null; submitted_for_approval_at: string | null; approved_at: string | null; review_note: string | null };
+export type JobInput = Omit<Job, "id" | "organization_id" | "status" | "created_at" | "updated_at" | "closed_at" | "archived_at" | "submitted_for_approval_at" | "approved_at" | "review_note">;
+export type RequirementType = "required" | "preferred";
+export type RequirementCategory = "skill" | "experience" | "education" | "responsibility" | "certification" | "other";
+export type JobRequirement = { id: string; requirement_type: RequirementType; category: RequirementCategory; content: string; rank: number };
+export type RequirementInput = Omit<JobRequirement, "id" | "rank">;
 export type JobsResult = { items: Job[]; pagination: { page: number; page_size: number; total: number; total_pages: number } };

@@ -1,3 +1,32 @@
 import { ArrowRight, Compass } from "lucide-react";
 import { Link } from "react-router-dom";
-export function WorkspaceEmptyState({ admin }: { admin: boolean }) { return <section className="mt-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-10 text-center shadow-[var(--shadow-card)] sm:px-12"><span className="mx-auto grid size-12 place-items-center rounded-2xl bg-[var(--color-sage)] text-[var(--color-teal)]"><Compass aria-hidden="true" size={24} /></span><h2 className="mt-5 text-xl font-semibold">Your workspace is ready for its first role.</h2><p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[var(--color-muted)]">Jobs are ready for your team. Requirements and candidate workflows will follow as your workspace grows.</p><Link to="/jobs" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--color-navy)] px-4 py-2.5 text-sm font-semibold text-white">View jobs <ArrowRight aria-hidden="true" size={16} /></Link>{admin && <Link to="/settings" className="ml-4 inline-flex text-sm font-semibold text-[var(--color-navy)]">Manage team</Link>}</section>; }
+export function WorkspaceEmptyState({ admin }: { admin: boolean }) {
+  return (
+    <section className="mt-6 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-10 text-center shadow-[var(--shadow-card)] sm:px-12">
+      <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-[var(--color-sage)] text-[var(--color-teal)]">
+        <Compass aria-hidden="true" size={24} />
+      </span>
+      <h2 className="mt-5 text-xl font-semibold">
+        Your workspace is ready for its first role.
+      </h2>
+      <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[var(--color-muted)]">
+        Jobs are ready for your team. Requirements and candidate workflows will
+        follow as your workspace grows.
+      </p>
+      <Link
+        to="/jobs"
+        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--color-navy)] px-4 py-2.5 text-sm font-semibold text-white"
+      >
+        View jobs <ArrowRight aria-hidden="true" size={16} />
+      </Link>
+      {admin && (
+        <Link
+          to="/settings"
+          className="ml-4 inline-flex text-sm font-semibold text-[var(--color-navy)]"
+        >
+          Manage team
+        </Link>
+      )}
+    </section>
+  );
+}

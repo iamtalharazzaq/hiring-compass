@@ -26,3 +26,7 @@ class Job:
     updated_at: datetime
     closed_at: datetime | None
     archived_at: datetime | None
+    submitted_for_approval_at: datetime | None = None
+    approved_at: datetime | None = None
+    approved_by_user_id: UUID | None = None
+    review_note: str | None = None

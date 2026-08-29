@@ -24,8 +24,9 @@ Next: **2.1 Jobs Domain**.
 
 - [x] **2.1 Job foundations** — Tenant-safe job persistence, lifecycle APIs, filtering, and pagination.
 - [x] **2.2 Job Workspace UI** — Query-backed job creation, editing, lifecycle actions, and responsive recruiter workspace.
-- [ ] **2.3 Requirements and JD Approval** — Job requirements and approval workflow.
-- [ ] **2.2 Candidate foundations** — Candidate profiles and applications.
+- [x] **2.3 Requirements and JD Approval** — Required/preferred requirements and human JD review.
+- [x] **2.4 Candidate Domain** — Organization-scoped reusable candidate profiles.
+- [ ] **2.5 Resume Storage** — Private resume storage and intake.
 - [ ] **2.3 Resume intake** — Private storage and extraction pipeline.
 - [ ] **2.4 Evidence view** — Structured candidate evidence and review history.
 
@@ -80,4 +81,4 @@ Next: **2.1 Jobs Domain**.
 
 ## Next
 
-**Next: Phase 2.3 — Requirements and JD Approval**
+**Next: Phase 2.5 — Resume Storage**

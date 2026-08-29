@@ -23,7 +23,7 @@ type SidebarProps = {
 const navigation = [
   { label: "Overview", icon: LayoutDashboard, href: "/" },
   { label: "Jobs", icon: BriefcaseBusiness, href: "/jobs" },
-  { label: "Candidates", icon: UsersRound },
+  { label: "Candidates", icon: UsersRound, href: "/candidates" },
   { label: "Interviews", icon: CalendarDays },
   { label: "Approvals", icon: CheckSquare },
   { label: "Activity", icon: Activity },
@@ -31,7 +31,9 @@ const navigation = [
 ];
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const { pathname } = useLocation(); const { logout } = useAuth(); const { organization } = useOrganization();
+  const { pathname } = useLocation();
+  const { logout } = useAuth();
+  const { organization } = useOrganization();
   return (
     <>
       {isOpen && (
@@ -54,8 +56,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               <Compass aria-hidden="true" size={21} strokeWidth={2.25} />
             </span>
             <div>
-              <p className="font-semibold tracking-tight text-[var(--color-ink)]">Hiring Compass</p>
-              <p className="mt-0.5 text-xs text-[var(--color-muted)]">Recruitment workspace</p>
+              <p className="font-semibold tracking-tight text-[var(--color-ink)]">
+                Hiring Compass
+              </p>
+              <p className="mt-0.5 text-xs text-[var(--color-muted)]">
+                Recruitment workspace
+              </p>
             </div>
           </div>
           <button
@@ -70,15 +76,54 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         <nav aria-label="Workspace navigation">
           <ul className="space-y-1">
-            {navigation.map(({ label, icon: Icon, href }) => (
+            {navigation.filter(({ label }) => label !== "Candidates" || ["admin", "recruiter", "hiring_manager"].includes(organization?.role ?? "")).map(({ label, icon: Icon, href }) => (
               <li key={label}>
-                {href ? <Link to={href} onClick={onClose} aria-current={pathname === href ? "page" : undefined} className={cn("flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]", pathname === href ? "bg-[var(--color-navy)] text-white" : "text-[var(--color-muted)] hover:bg-[var(--color-canvas)]")}><Icon aria-hidden="true" size={18} strokeWidth={1.8} />{label}</Link> : <span aria-disabled="true" className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[var(--color-muted)]/65"><Icon aria-hidden="true" size={18} strokeWidth={1.8} />{label}<span className="ml-auto text-[10px] uppercase tracking-wide">Soon</span></span>}
+                {href ? (
+                  <Link
+                    to={href}
+                    onClick={onClose}
+                    aria-current={pathname === href ? "page" : undefined}
+                    className={cn(
+                      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]",
+                      pathname === href
+                        ? "bg-[var(--color-navy)] text-white"
+                        : "text-[var(--color-muted)] hover:bg-[var(--color-canvas)]",
+                    )}
+                  >
+                    <Icon aria-hidden="true" size={18} strokeWidth={1.8} />
+                    {label}
+                  </Link>
+                ) : (
+                  <span
+                    aria-disabled="true"
+                    className="flex cursor-not-allowed items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[var(--color-muted)]/65"
+                  >
+                    <Icon aria-hidden="true" size={18} strokeWidth={1.8} />
+                    {label}
+                    <span className="ml-auto text-[10px] uppercase tracking-wide">
+                      Soon
+                    </span>
+                  </span>
+                )}
               </li>
             ))}
           </ul>
         </nav>
 
-        <div className="mt-auto border-t border-[var(--color-border)] px-3 pt-4"><p className="truncate text-sm font-medium">{organization?.organization.name ?? "Your workspace"}</p><p className="mt-1 text-xs text-[var(--color-muted)]">A focused space for thoughtful hiring.</p><button onClick={() => void logout()} className="mt-4 text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-ink)]">Sign out</button></div>
+        <div className="mt-auto border-t border-[var(--color-border)] px-3 pt-4">
+          <p className="truncate text-sm font-medium">
+            {organization?.organization.name ?? "Your workspace"}
+          </p>
+          <p className="mt-1 text-xs text-[var(--color-muted)]">
+            A focused space for thoughtful hiring.
+          </p>
+          <button
+            onClick={() => void logout()}
+            className="mt-4 text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-ink)]"
+          >
+            Sign out
+          </button>
+        </div>
       </aside>
     </>
   );

@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.modules.auth.api.router import router as auth_router
+from app.modules.candidates.api.router import router as candidates_router
 from app.modules.jobs.api.router import router as jobs_router
 from app.modules.organizations.api.router import router as organizations_router
 from app.shared.database.engine import dispose_engine
@@ -42,12 +43,13 @@ def create_app() -> FastAPI:
         CORSMiddleware,
         allow_origins=[settings.frontend_origin],
         allow_credentials=True,
-        allow_methods=["GET", "POST", "PATCH"],
+        allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE"],
         allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
     )
     app.add_middleware(RequestIdMiddleware)
     register_exception_handlers(app)
     app.include_router(auth_router)
+    app.include_router(candidates_router)
     app.include_router(organizations_router)
     app.include_router(jobs_router)
 

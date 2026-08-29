@@ -6,7 +6,7 @@ def can_edit(status: JobStatus) -> bool:
 
 
 def can_close(status: JobStatus) -> bool:
-    return status in {JobStatus.DRAFT, JobStatus.PENDING_APPROVAL, JobStatus.APPROVED}
+    return status is JobStatus.APPROVED
 
 
 def can_archive(status: JobStatus) -> bool:

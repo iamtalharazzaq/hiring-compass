@@ -1,2 +1,30 @@
-import { Compass } from "lucide-react"; import { Link } from "react-router-dom"; import type { ReactNode } from "react";
-export function AuthLayout({ title, copy, children }: { title: string; copy: string; children: ReactNode }) { return <main className="grid min-h-screen place-items-center bg-[var(--color-canvas)] p-5"><section className="w-full max-w-md rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-7 shadow-[var(--shadow-soft)] sm:p-9"><Link to="/login" className="flex items-center gap-2 font-semibold"><span className="grid size-9 place-items-center rounded-xl bg-[var(--color-navy)] text-white"><Compass size={18} /></span>Hiring Compass</Link><h1 className="mt-9 text-3xl font-semibold">{title}</h1><p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">{copy}</p>{children}</section></main>; }
+import { Compass } from "lucide-react";
+import { Link } from "react-router-dom";
+import type { ReactNode } from "react";
+export function AuthLayout({
+  title,
+  copy,
+  children,
+}: {
+  title: string;
+  copy: string;
+  children: ReactNode;
+}) {
+  return (
+    <main className="grid min-h-screen place-items-center bg-[var(--color-canvas)] p-5">
+      <section className="w-full max-w-md rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-7 shadow-[var(--shadow-soft)] sm:p-9">
+        <Link to="/login" className="flex items-center gap-2 font-semibold">
+          <span className="grid size-9 place-items-center rounded-xl bg-[var(--color-navy)] text-white">
+            <Compass size={18} />
+          </span>
+          Hiring Compass
+        </Link>
+        <h1 className="mt-9 text-3xl font-semibold">{title}</h1>
+        <p className="mt-3 text-sm leading-6 text-[var(--color-muted)]">
+          {copy}
+        </p>
+        {children}
+      </section>
+    </main>
+  );
+}

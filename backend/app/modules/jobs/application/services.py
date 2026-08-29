@@ -1,7 +1,9 @@
+import builtins
 from math import ceil
 from uuid import UUID
 
 from app.modules.auth.application.dto import AuthenticatedUser
+from app.modules.jobs.adapters.persistence.models import JobRequirementModel
 from app.modules.jobs.adapters.persistence.repositories import SqlAlchemyJobRepository
 from app.modules.jobs.application.dto import JobInput
 from app.modules.jobs.domain.entities import Job
@@ -30,7 +32,7 @@ class JobService:
         page_size: int,
         status: JobStatus | None,
         search: str | None,
-    ) -> tuple[list[Job], int, int]:
+    ) -> tuple[builtins.list[Job], int, int]:
         items, total = await self.repository.list(
             organization_id, status, search, (page - 1) * page_size, page_size
         )
@@ -72,6 +74,113 @@ class JobService:
             raise JobError("NOT_FOUND", "Job was not found.", 404)
         await self.repository.session.commit()
         return archived
+
+    async def submit(self, organization_id: UUID, job_id: UUID) -> Job:
+        job = await self.get(organization_id, job_id)
+        requirements = await self.repository.requirements(organization_id, job_id)
+        if (
+            job.status is not JobStatus.DRAFT
+            or not job.title.strip()
+            or not job.description
+            or not job.description.strip()
+            or not any(r.requirement_type == "required" for r in requirements)
+        ):
+            raise JobError("INVALID_TRANSITION", "The draft is not ready for review.", 409)
+        item = await self.repository.transition_review(
+            organization_id, job_id, JobStatus.PENDING_APPROVAL
+        )
+        await self.repository.session.commit()
+        return item or job
+
+    async def approve(self, organization_id: UUID, job_id: UUID, user: AuthenticatedUser) -> Job:
+        job = await self.get(organization_id, job_id)
+        if job.status is not JobStatus.PENDING_APPROVAL:
+            raise JobError("INVALID_TRANSITION", "This job is not awaiting review.", 409)
+        item = await self.repository.transition_review(
+            organization_id, job_id, JobStatus.APPROVED, user.id
+        )
+        await self.repository.session.commit()
+        return item or job
+
+    async def return_to_draft(self, organization_id: UUID, job_id: UUID, note: str) -> Job:
+        job = await self.get(organization_id, job_id)
+        if job.status is not JobStatus.PENDING_APPROVAL:
+            raise JobError("INVALID_TRANSITION", "This job is not awaiting review.", 409)
+        item = await self.repository.transition_review(
+            organization_id, job_id, JobStatus.DRAFT, note=note
+        )
+        await self.repository.session.commit()
+        return item or job
+
+    async def requirements(
+        self, organization_id: UUID, job_id: UUID
+    ) -> builtins.list[JobRequirementModel]:
+        await self.get(organization_id, job_id)
+        return await self.repository.requirements(organization_id, job_id)
+
+    async def add_requirement(
+        self,
+        organization_id: UUID,
+        job_id: UUID,
+        requirement_type: str,
+        category: str,
+        content: str,
+    ) -> JobRequirementModel:
+        job = await self.get(organization_id, job_id)
+        self._ensure_draft(job)
+        item = await self.repository.add_requirement(
+            organization_id, job_id, requirement_type, category, content
+        )
+        if not item:
+            raise JobError("NOT_FOUND", "Job was not found.", 404)
+        await self.repository.session.commit()
+        return item
+
+    async def update_requirement(
+        self,
+        organization_id: UUID,
+        job_id: UUID,
+        requirement_id: UUID,
+        requirement_type: str,
+        category: str,
+        content: str,
+    ) -> JobRequirementModel:
+        self._ensure_draft(await self.get(organization_id, job_id))
+        item = await self.repository.update_requirement(
+            organization_id, job_id, requirement_id, requirement_type, category, content
+        )
+        if not item:
+            raise JobError("NOT_FOUND", "Requirement was not found.", 404)
+        await self.repository.session.commit()
+        return item
+
+    async def delete_requirement(
+        self, organization_id: UUID, job_id: UUID, requirement_id: UUID
+    ) -> None:
+        self._ensure_draft(await self.get(organization_id, job_id))
+        if not await self.repository.delete_requirement(organization_id, job_id, requirement_id):
+            raise JobError("NOT_FOUND", "Requirement was not found.", 404)
+        await self.repository.session.commit()
+
+    async def reorder_requirements(
+        self, organization_id: UUID, job_id: UUID, requirement_ids: builtins.list[UUID]
+    ) -> builtins.list[JobRequirementModel]:
+        self._ensure_draft(await self.get(organization_id, job_id))
+        if not await self.repository.reorder_requirements(organization_id, job_id, requirement_ids):
+            raise JobError(
+                "VALIDATION_ERROR",
+                "Requirement IDs must exactly match this job's requirements.",
+                422,
+            )
+        await self.repository.session.commit()
+        return await self.repository.requirements(organization_id, job_id)
+
+    @staticmethod
+    def _ensure_draft(job: Job) -> None:
+        if job.status is not JobStatus.DRAFT:
+            raise JobError(
+                "INVALID_TRANSITION", "Requirements can only be changed on draft jobs.", 409
+            )
 
     @staticmethod
     def _validate_update(job: Job, data: JobInput) -> None:

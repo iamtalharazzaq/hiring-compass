@@ -1,5 +1,6 @@
 from decimal import Decimal
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -72,3 +73,19 @@ class ListJobsQuery(BaseModel):
     page_size: int = Field(default=20, ge=1, le=100)
     status: JobStatus | None = None
     search: str | None = Field(default=None, max_length=160)
+
+
+class RequirementRequest(BaseModel):
+    requirement_type: str = Field(pattern="^(required|preferred)$")
+    category: str = Field(
+        pattern="^(skill|experience|education|responsibility|certification|other)$"
+    )
+    content: str = Field(min_length=3, max_length=500)
+
+
+class ReorderRequirementsRequest(BaseModel):
+    requirement_ids: list[UUID] = Field(min_length=1)
+
+
+class ReviewNoteRequest(BaseModel):
+    review_note: str = Field(min_length=3, max_length=1000)
