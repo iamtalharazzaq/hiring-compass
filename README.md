@@ -32,6 +32,7 @@ AI assists with analysis, recommendations, and drafts. It does not automatically
 - Argon2 password hashing, short-lived access tokens, and rotating HTTP-only refresh tokens
 - React application shell and responsive authentication experience
 - Organization onboarding with backend-enforced `admin`, `recruiter`, `hiring_manager`, and `interviewer` roles
+- Organization-aware dashboard shell, intentionally empty until hiring workflows are introduced
 
 For local demo data, first change the seed credentials in `.env`, then run:
 

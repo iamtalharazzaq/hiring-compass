@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
 
-import { WorkspacePreviewPage } from "../pages/WorkspacePreviewPage";
+import { OverviewPage } from "../pages/OverviewPage";
 import { LoginPage } from "../pages/LoginPage";
 import { SignupPage } from "../pages/SignupPage";
 import { useAuth } from "../features/auth/AuthProvider";
@@ -13,7 +13,7 @@ function Protected({ children }: { children: ReactNode }) { const { user, loadin
 function Setup() { const { user, loading } = useAuth(); const { organization, loading: orgLoading } = useOrganization(); if (loading || orgLoading) return <p>Loading workspace…</p>; return user ? organization ? <Navigate replace to="/" /> : <OrganizationSetupPage /> : <Navigate replace to="/login" />; }
 
 export const router = createBrowserRouter([
-  { path: "/", element: <Protected><WorkspacePreviewPage /></Protected> },
+  { path: "/", element: <Protected><OverviewPage /></Protected> },
   { path: "/login", element: <LoginPage /> },
   { path: "/signup", element: <SignupPage /> },
   { path: "/setup-organization", element: <Setup /> },

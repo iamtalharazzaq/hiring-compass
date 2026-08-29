@@ -16,7 +16,9 @@ Hiring Compass is implemented one sub-phase at a time so each foundation is usab
 - [x] **1.4 Frontend Foundation** — React shell, routing, design tokens, and responsive workspace preview.
 - [x] **1.5 Authentication** — Identity, JWT access tokens, rotating refresh cookies, and auth UI.
 - [x] **1.6 Organization and RBAC** — Organizations, memberships, roles, tenant isolation, and idempotent `make seed-up` plus protected `make seed-down` support.
-- [ ] **1.7 Dashboard Shell** — First workspace dashboard structure.
+- [x] **1.7 Dashboard Shell** — Organization-aware overview, empty states, navigation, and responsive shell.
+
+Next: **2.1 Jobs Domain**.
 
 ## Phase 2 — Jobs and candidates
 
