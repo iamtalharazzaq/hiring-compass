@@ -38,6 +38,7 @@ AI assists with analysis, recommendations, and drafts. It does not automatically
 - Required and preferred job requirements with human JD approval; AI JD analysis is not implemented yet
 - Organizations can maintain reusable candidate profiles
 - PDF resumes are stored privately in MinIO and served through short-lived signed URLs; extraction, screening, and job applications are not implemented yet
+- Approved jobs can now receive candidates through a manual application pipeline; screening, interviews, AI, and candidate communication are not implemented yet
 
 For development seed data, first change the seed credentials in `.env`, then run:
 
@@ -120,8 +121,8 @@ npm run dev
 
 ## Project status
 
-Current milestone: Phase 2.5 complete — Private Resume Storage
-Next milestone: Phase 2.6 — Applications and Candidate Pipeline
+Current milestone: Phase 2.6 complete — Applications and Candidate Pipeline
+Next milestone: Phase 3.1 — Interview Stages
 
 See the [API reference](docs/API.md) and [development roadmap](docs/DEVELOPMENT_ROADMAP.md) for implementation progress.
 

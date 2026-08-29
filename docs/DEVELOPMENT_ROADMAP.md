@@ -27,7 +27,7 @@ Next: **2.1 Jobs Domain**.
 - [x] **2.3 Requirements and JD Approval** — Required/preferred requirements and human JD review.
 - [x] **2.4 Candidate Domain** — Organization-scoped reusable candidate profiles.
 - [x] **2.5 Resume Storage** — Private PDF storage and short-lived signed downloads.
-- [ ] **2.6 Applications and Candidate Pipeline** — Connect candidates to approved jobs.
+- [x] **2.6 Applications and Candidate Pipeline** — Connect candidates to approved jobs.
 - [ ] **2.3 Resume intake** — Private storage and extraction pipeline.
 - [ ] **2.4 Evidence view** — Structured candidate evidence and review history.
 
@@ -82,4 +82,4 @@ Next: **2.1 Jobs Domain**.
 
 ## Next
 
-**Next: Phase 2.6 — Applications and Candidate Pipeline**
+**Next: Phase 3.1 — Interview Stages**

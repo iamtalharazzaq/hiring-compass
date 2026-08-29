@@ -1,0 +1,5 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { addApplication, changeApplicationStatus, listCandidateApplications, listJobApplications, type ApplicationStatus } from "./api";
+export const useJobApplications = (org: string, job: string) => useQuery({ queryKey: ["applications", org, "job", job], queryFn: () => listJobApplications(org, job), enabled: Boolean(org && job) });
+export const useCandidateApplications = (org: string, candidate: string) => useQuery({ queryKey: ["applications", org, "candidate", candidate], queryFn: () => listCandidateApplications(org, candidate), enabled: Boolean(org && candidate) });
+export function useApplicationMutation(org: string, job?: string) { const client = useQueryClient(); const refresh = () => client.invalidateQueries({ queryKey: ["applications", org] }); return { add: useMutation({ mutationFn: (candidate_id: string) => addApplication(org, job ?? "", candidate_id), onSuccess: refresh }), status: useMutation({ mutationFn: ({ id, status }: { id: string; status: ApplicationStatus }) => changeApplicationStatus(org, id, status), onSuccess: refresh }) }; }
