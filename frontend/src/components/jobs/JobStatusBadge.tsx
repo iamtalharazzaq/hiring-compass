@@ -1,0 +1,3 @@
+import type { JobStatus } from "../../features/jobs/types";
+const labels: Record<JobStatus, string> = { draft: "Draft", pending_approval: "Pending approval", approved: "Approved", closed: "Closed", archived: "Archived" };
+export function JobStatusBadge({ status }: { status: JobStatus }) { const tone = status === "closed" || status === "archived" ? "bg-[var(--color-canvas)] text-[var(--color-muted)]" : status === "draft" ? "bg-[var(--color-amber)]/65 text-[var(--color-ink)]" : "bg-[var(--color-sage)] text-[var(--color-teal)]"; return <span className={`inline-flex rounded-lg px-2.5 py-1 text-xs font-semibold ${tone}`}>{labels[status]}</span>; }

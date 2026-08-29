@@ -34,6 +34,7 @@ AI assists with analysis, recommendations, and drafts. It does not automatically
 - Organization onboarding with backend-enforced `admin`, `recruiter`, `hiring_manager`, and `interviewer` roles
 - Organization-aware dashboard shell, intentionally empty until hiring workflows are introduced
 - Tenant-safe job lifecycle APIs for draft, close, and archive operations; Job Workspace UI and job requirements are next
+- Recruiter Job Workspace for creating, viewing, editing, closing, and archiving jobs
 
 For development seed data, first change the seed credentials in `.env`, then run:
 
@@ -116,8 +117,8 @@ npm run dev
 
 ## Project status
 
-Current milestone: Phase 2.1 complete — Jobs Domain
-Next milestone: Phase 2.2 — Job Workspace UI
+Current milestone: Phase 2.2 complete — Job Workspace UI
+Next milestone: Phase 2.3 — Requirements and JD Approval
 
 See the [API reference](docs/API.md) and [development roadmap](docs/DEVELOPMENT_ROADMAP.md) for implementation progress.
 

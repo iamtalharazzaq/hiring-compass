@@ -22,7 +22,7 @@ type SidebarProps = {
 
 const navigation = [
   { label: "Overview", icon: LayoutDashboard, href: "/" },
-  { label: "Jobs", icon: BriefcaseBusiness },
+  { label: "Jobs", icon: BriefcaseBusiness, href: "/jobs" },
   { label: "Candidates", icon: UsersRound },
   { label: "Interviews", icon: CalendarDays },
   { label: "Approvals", icon: CheckSquare },

@@ -1,0 +1,7 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { archiveJob, closeJob, createJob, getJob, listJobs, updateJob } from "./api";
+import type { JobInput, JobStatus } from "./types";
+export const jobKeys = { list: (org: string, page: number, status?: JobStatus, search?: string) => ["jobs", org, page, status, search] as const, detail: (org: string, id: string) => ["jobs", org, id] as const };
+export const useJobs = (org: string, page: number, status?: JobStatus, search?: string) => useQuery({ queryKey: jobKeys.list(org, page, status, search), queryFn: () => listJobs(org, { page, status, search }), enabled: Boolean(org) });
+export const useJob = (org: string, id: string) => useQuery({ queryKey: jobKeys.detail(org, id), queryFn: () => getJob(org, id), enabled: Boolean(org && id) });
+export function useJobMutation(org: string) { const client = useQueryClient(); const refresh = () => client.invalidateQueries({ queryKey: ["jobs", org] }); return { create: useMutation({ mutationFn: (input: JobInput) => createJob(org, input), onSuccess: refresh }), update: useMutation({ mutationFn: ({ id, input }: { id: string; input: Partial<JobInput> }) => updateJob(org, id, input), onSuccess: refresh }), close: useMutation({ mutationFn: (id: string) => closeJob(org, id), onSuccess: refresh }), archive: useMutation({ mutationFn: (id: string) => archiveJob(org, id), onSuccess: refresh }) }; }

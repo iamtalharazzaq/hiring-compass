@@ -1,0 +1,7 @@
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { AppShell } from "../components/layout/AppShell";
+import { JobForm } from "../components/jobs/JobForm";
+import { useJob, useJobMutation } from "../features/jobs/queries";
+import type { JobInput } from "../features/jobs/types";
+import { useOrganization } from "../features/organizations/OrganizationProvider";
+export function EditJobPage() { const { jobId = "" } = useParams(); const { organization } = useOrganization(); const navigate = useNavigate(); const { data, isLoading } = useJob(organization?.organization.id ?? "", jobId); const { update } = useJobMutation(organization?.organization.id ?? ""); if (isLoading) return <AppShell title="Edit job"><p>Loading job…</p></AppShell>; if (!data || data.job.status !== "draft") return <Navigate to={`/jobs/${jobId}`} replace />; const submit = (input: JobInput) => update.mutate({ id: jobId, input }, { onSuccess: () => navigate(`/jobs/${jobId}`) }); return <AppShell title="Edit job"><p className="text-sm font-semibold text-[var(--color-teal)]">Jobs</p><h1 className="mt-2 text-3xl font-semibold">Edit job</h1><p className="mt-2 text-[var(--color-muted)]">Update the role while it is still in draft.</p><JobForm job={data.job} submit={submit} busy={update.isPending} error={update.error?.message} /></AppShell>; }
