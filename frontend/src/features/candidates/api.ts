@@ -1,7 +1,11 @@
 import { apiClient } from "../../lib/apiClient";
 import type { Candidate, CandidateInput, CandidatesResult } from "./types";
+export type Resume = { id: string; original_filename: string; content_type: string; size_bytes: number; is_current: boolean; created_at: string };
 const base = (org: string) => `/api/v1/organizations/${org}/candidates`;
 export const listCandidates = (org: string, page: number, search?: string) => apiClient<CandidatesResult>(`${base(org)}?page=${page}&page_size=20${search ? `&search=${encodeURIComponent(search)}` : ""}`);
 export const getCandidate = (org: string, id: string) => apiClient<{ candidate: Candidate }>(`${base(org)}/${id}`);
 export const createCandidate = (org: string, input: CandidateInput) => apiClient<{ candidate: Candidate }>(base(org), { method: "POST", body: JSON.stringify(input) });
 export const updateCandidate = (org: string, id: string, input: Partial<CandidateInput>) => apiClient<{ candidate: Candidate }>(`${base(org)}/${id}`, { method: "PATCH", body: JSON.stringify(input) });
+export const listResumes = (org: string, id: string) => apiClient<{ items: Resume[] }>(`${base(org)}/${id}/resumes`);
+export const uploadResume = (org: string, id: string, file: File) => { const body = new FormData(); body.append("file", file); return apiClient<{ resume: Resume }>(`${base(org)}/${id}/resumes`, { method: "POST", body, headers: {} }); };
+export const downloadResume = (org: string, candidateId: string, resumeId: string) => apiClient<{ download_url: string; expires_in_seconds: number }>(`${base(org)}/${candidateId}/resumes/${resumeId}/download`);

@@ -16,9 +16,7 @@ def register_exception_handlers(app: FastAPI) -> None:
         return error_response(request, "VALIDATION_ERROR", "The request is invalid.", 422)
 
     @app.exception_handler(StarletteHTTPException)
-    async def http_error(
-        request: Request, exception: StarletteHTTPException
-    ) -> JSONResponse:
+    async def http_error(request: Request, exception: StarletteHTTPException) -> JSONResponse:
         if exception.status_code == 404:
             return error_response(
                 request, "NOT_FOUND", "The requested resource was not found.", 404

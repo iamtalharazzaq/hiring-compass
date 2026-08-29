@@ -26,7 +26,8 @@ Next: **2.1 Jobs Domain**.
 - [x] **2.2 Job Workspace UI** — Query-backed job creation, editing, lifecycle actions, and responsive recruiter workspace.
 - [x] **2.3 Requirements and JD Approval** — Required/preferred requirements and human JD review.
 - [x] **2.4 Candidate Domain** — Organization-scoped reusable candidate profiles.
-- [ ] **2.5 Resume Storage** — Private resume storage and intake.
+- [x] **2.5 Resume Storage** — Private PDF storage and short-lived signed downloads.
+- [ ] **2.6 Applications and Candidate Pipeline** — Connect candidates to approved jobs.
 - [ ] **2.3 Resume intake** — Private storage and extraction pipeline.
 - [ ] **2.4 Evidence view** — Structured candidate evidence and review history.
 
@@ -81,4 +82,4 @@ Next: **2.1 Jobs Domain**.
 
 ## Next
 
-**Next: Phase 2.5 — Resume Storage**
+**Next: Phase 2.6 — Applications and Candidate Pipeline**

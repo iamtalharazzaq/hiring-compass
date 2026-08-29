@@ -36,7 +36,8 @@ AI assists with analysis, recommendations, and drafts. It does not automatically
 - Tenant-safe job lifecycle APIs with draft, human review, approval, close, and archive operations
 - Recruiter Job Workspace for creating, defining, reviewing, and managing jobs
 - Required and preferred job requirements with human JD approval; AI JD analysis is not implemented yet
-- Organizations can maintain reusable candidate profiles; resumes and job applications are not implemented yet
+- Organizations can maintain reusable candidate profiles
+- PDF resumes are stored privately in MinIO and served through short-lived signed URLs; extraction, screening, and job applications are not implemented yet
 
 For development seed data, first change the seed credentials in `.env`, then run:
 
@@ -119,8 +120,8 @@ npm run dev
 
 ## Project status
 
-Current milestone: Phase 2.4 complete — Candidate Domain and Workspace
-Next milestone: Phase 2.5 — Resume Storage
+Current milestone: Phase 2.5 complete — Private Resume Storage
+Next milestone: Phase 2.6 — Applications and Candidate Pipeline
 
 See the [API reference](docs/API.md) and [development roadmap](docs/DEVELOPMENT_ROADMAP.md) for implementation progress.
 

@@ -27,9 +27,7 @@ class RequestIdMiddleware(BaseHTTPMiddleware):
     def __init__(self, app: ASGIApp) -> None:
         super().__init__(app)
 
-    async def dispatch(
-        self, request: Request, call_next: RequestResponseEndpoint
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         request_id = _request_id(request.headers.get("X-Request-ID"))
         request.state.request_id = request_id
         token: Token[str | None] = request_id_context.set(request_id)

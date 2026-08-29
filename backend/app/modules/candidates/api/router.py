@@ -1,11 +1,13 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.auth.application.dto import AuthenticatedUser
+from app.modules.candidates.adapters.persistence.models import ResumeModel
 from app.modules.candidates.adapters.persistence.repositories import CandidateRepository
+from app.modules.candidates.adapters.storage.minio_resume_storage import MinioResumeStorage
 from app.modules.candidates.api.schemas import (
     CandidatePayload,
     CandidateQuery,
@@ -28,7 +30,7 @@ router = APIRouter(prefix="/api/v1/organizations/{organization_id}/candidates", 
 async def get_candidate_service(
     session: AsyncSession = Depends(get_db_session),
 ) -> CandidateService:
-    return CandidateService(CandidateRepository(session))
+    return CandidateService(CandidateRepository(session), MinioResumeStorage())
 
 
 def require_candidate_manager(
@@ -142,6 +144,94 @@ async def update_candidate(
                 "candidate": data(
                     await service.update(organization_id, candidate_id, candidate_input(payload))
                 )
+            },
+        )
+    except CandidateError as error:
+        return failure(request, error)
+
+
+def resume_data(item: ResumeModel) -> dict[str, object]:
+    return {
+        "id": str(item.id),
+        "original_filename": item.original_filename,
+        "content_type": item.content_type,
+        "size_bytes": item.size_bytes,
+        "is_current": item.is_current,
+        "created_at": item.created_at.isoformat(),
+    }
+
+
+@router.post("/{candidate_id}/resumes", status_code=201)
+async def upload_resume(
+    request: Request,
+    organization_id: UUID,
+    candidate_id: UUID,
+    file: UploadFile = File(...),
+    user: AuthenticatedUser = Depends(require_current_user),
+    _: OrganizationMember = Depends(require_candidate_manager),
+    service: CandidateService = Depends(get_candidate_service),
+) -> JSONResponse:
+    try:
+        content = await file.read(10 * 1024 * 1024 + 1)
+        return success_response(
+            request,
+            {
+                "resume": resume_data(
+                    await service.upload_resume(
+                        organization_id,
+                        candidate_id,
+                        user,
+                        file.filename or "resume.pdf",
+                        file.content_type,
+                        content,
+                    )
+                )
+            },
+            201,
+        )
+    except CandidateError as error:
+        return failure(request, error)
+
+
+@router.get("/{candidate_id}/resumes")
+async def list_resumes(
+    request: Request,
+    organization_id: UUID,
+    candidate_id: UUID,
+    _: OrganizationMember = Depends(require_candidate_viewer),
+    service: CandidateService = Depends(get_candidate_service),
+) -> JSONResponse:
+    try:
+        return success_response(
+            request,
+            {
+                "items": [
+                    resume_data(item)
+                    for item in await service.list_resumes(organization_id, candidate_id)
+                ]
+            },
+        )
+    except CandidateError as error:
+        return failure(request, error)
+
+
+@router.get("/{candidate_id}/resumes/{resume_id}/download")
+async def download_resume(
+    request: Request,
+    organization_id: UUID,
+    candidate_id: UUID,
+    resume_id: UUID,
+    _: OrganizationMember = Depends(require_candidate_viewer),
+    service: CandidateService = Depends(get_candidate_service),
+) -> JSONResponse:
+    try:
+        return success_response(
+            request,
+            {
+                "download_url": await service.download_resume(
+                    organization_id, candidate_id, resume_id
+                ),
+                "expires_in_seconds": 300,
             },
         )
     except CandidateError as error:

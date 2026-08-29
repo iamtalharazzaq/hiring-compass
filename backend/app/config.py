@@ -1,6 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -30,6 +31,19 @@ class Settings(BaseSettings):
     seed_admin_name: str = "Admin"
     seed_admin_email: str = "admin@hiring-compass.test"
     seed_admin_password: str = "change_this_before_running_seed"
+    minio_endpoint: str = "localhost:9000"
+    minio_access_key: str = "hiring_compass"
+    minio_secret_key: str = "change_me_locally"
+    minio_secure: bool = False
+    minio_resume_bucket: str = "hiring-compass-resumes"
+    resume_max_file_size_bytes: int = 10 * 1024 * 1024
+    resume_download_url_expire_seconds: int = 300
+
+    @model_validator(mode="after")
+    def secure_storage_in_production(self) -> "Settings":
+        if self.app_env not in {"development", "test"} and not self.minio_secure:
+            raise ValueError("MINIO_SECURE must be true outside development.")
+        return self
 
 
 @lru_cache

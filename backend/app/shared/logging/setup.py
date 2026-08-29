@@ -21,8 +21,7 @@ def configure_logging(level: str) -> None:
     logging.basicConfig(
         level=level.upper(),
         format=(
-            "%(asctime)s level=%(levelname)s logger=%(name)s "
-            "request_id=%(request_id)s %(message)s"
+            "%(asctime)s level=%(levelname)s logger=%(name)s request_id=%(request_id)s %(message)s"
         ),
     )
     _configured = True
