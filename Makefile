@@ -1,4 +1,4 @@
-.PHONY: up down restart logs ps clean local seed-up seed-down
+.PHONY: up down restart logs ps clean serve seed-up seed-down
 
 up:
 	docker compose up -d
@@ -16,7 +16,7 @@ logs:
 ps:
 	docker compose ps
 
-local:
+serve:
 	cd backend && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 clean:

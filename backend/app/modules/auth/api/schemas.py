@@ -5,12 +5,12 @@ from uuid import UUID
 from email_validator import EmailNotValidError, validate_email
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-LOCAL_EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.local$", re.IGNORECASE)
+SEED_EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.test$", re.IGNORECASE)
 
 
 def validate_request_email(value: str) -> str:
     normalized = value.strip().lower()
-    if LOCAL_EMAIL_PATTERN.fullmatch(normalized):
+    if SEED_EMAIL_PATTERN.fullmatch(normalized):
         return normalized
     try:
         return validate_email(

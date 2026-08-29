@@ -19,8 +19,8 @@ CONFIRM = "DELETE_SEED_DATA"
 
 def validate_settings() -> None:
     settings = get_settings()
-    if settings.app_env not in {"development", "local"}:
-        raise RuntimeError("Seed commands run only in local or development environments.")
+    if settings.app_env != "development":
+        raise RuntimeError("Seed commands run only in development environments.")
     password = settings.seed_admin_password
     if (
         password == "change_this_before_running_seed"

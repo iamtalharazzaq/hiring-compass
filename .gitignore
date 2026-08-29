@@ -28,7 +28,7 @@ dist/
 .DS_Store
 Thumbs.db
 
-# Local artifacts
+# Development artifacts
 *.log
 logs/
 uploads/

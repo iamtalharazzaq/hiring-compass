@@ -10,7 +10,7 @@ Hiring Compass is implemented one sub-phase at a time so each foundation is usab
 
 ## Phase 1 — Platform foundation
 
-- [x] **1.1 Repository Bootstrap** — Local infrastructure, environment template, and monorepo setup.
+- [x] **1.1 Repository Bootstrap** — Development infrastructure, environment template, and monorepo setup.
 - [x] **1.2 Backend Skeleton** — FastAPI foundation, request IDs, logging, and health endpoint.
 - [x] **1.3 Persistence Foundation** — Async PostgreSQL, SQLAlchemy, readiness, and Alembic.
 - [x] **1.4 Frontend Foundation** — React shell, routing, design tokens, and responsive workspace preview.
@@ -73,7 +73,7 @@ Next: **2.1 Jobs Domain**.
 
 - [ ] **9.1 Deployment foundation** — Production environment and release configuration.
 - [ ] **9.2 Data operations** — Backup, retention, and recovery process.
-- [ ] **9.3 Portfolio polish** — Product narrative, screenshots, and demo preparation.
+- [ ] **9.3 Portfolio polish** — Product narrative, screenshots, and product preparation.
 - [ ] **9.4 Release candidate** — Final review and launch checklist.
 
 ## Next
