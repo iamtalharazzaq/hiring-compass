@@ -4,7 +4,7 @@ Hiring Compass is an AI-assisted recruitment platform for helping teams run a mo
 
 ## Status
 
-**Phase 1.1 — Repository Bootstrap.** This repository is a modular monolith: a future React frontend and FastAPI backend will share PostgreSQL and the local supporting services defined here.
+**Phase 1.2 — Backend Skeleton.** This repository is a modular monolith: a future React frontend and FastAPI backend share PostgreSQL and the local supporting services defined here.
 
 ## Repository structure
 
@@ -42,7 +42,15 @@ Stop the local services with:
 make down
 ```
 
-There is no application process to run without Docker in Phase 1.1. `make local` explains this and points to the local dependency command; a native frontend/backend command will be added once those applications exist.
+## Run the API locally
+
+```bash
+cd backend
+uv sync
+uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+The API is available at [http://localhost:8000/health](http://localhost:8000/health), with Swagger documentation at [http://localhost:8000/docs](http://localhost:8000/docs). You can also run the API from the repository root with `make local`.
 
 ## Local services
 
@@ -56,9 +64,10 @@ There is no application process to run without Docker in Phase 1.1. `make local`
 
 Use the RabbitMQ and MinIO credentials from your `.env` file to sign in.
 
-FastAPI and React implementation begin in later sub-phases; this phase starts only the local dependencies.
+React implementation begins in a later sub-phase; this phase adds only the FastAPI foundation and local dependencies.
 
 ## Roadmap
 
 - [x] Phase 1.1 — Repository Bootstrap
-- [ ] Phase 1.2 — Backend Skeleton
+- [x] Phase 1.2 — Backend Skeleton
+- [ ] Phase 1.3 — Persistence Foundation

@@ -17,7 +17,7 @@ ps:
 	docker compose ps
 
 local:
-	@echo "No application is available to run locally in Phase 1.1; use 'make up' for local dependencies."
+	cd backend && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 clean:
 	# Removes only named volumes declared by this Compose project.
