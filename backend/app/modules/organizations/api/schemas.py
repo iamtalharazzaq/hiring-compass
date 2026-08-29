@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
+from app.modules.auth.api.schemas import validate_request_email
 from app.modules.organizations.domain.entities import ROLES
 
 
@@ -12,8 +13,13 @@ class UpdateOrganizationRequest(BaseModel):
 
 
 class AddMemberRequest(BaseModel):
-    email: EmailStr
+    email: str
     role: str
+
+    @field_validator("email")
+    @classmethod
+    def valid_email(cls, value: str) -> str:
+        return validate_request_email(value)
 
     @field_validator("role")
     @classmethod
