@@ -4,7 +4,7 @@ Hiring Compass is an AI-assisted recruitment platform for helping teams run a mo
 
 ## Status
 
-**Phase 1.4 — Frontend Foundation.** This repository is a modular monolith with a FastAPI backend, PostgreSQL connectivity, Alembic migration infrastructure, and a React workspace shell.
+**Phase 1.5 — Authentication.** This repository has secure identity authentication with short-lived in-memory access tokens and rotating HTTP-only refresh cookies.
 
 ## Repository structure
 
@@ -73,7 +73,9 @@ npm install
 npm run dev
 ```
 
-The frontend runs at [http://localhost:5173](http://localhost:5173). The current screen is a visual application-shell preview only; it does not yet include authentication, APIs, or hiring workflows.
+The frontend runs at [http://localhost:5173](http://localhost:5173). It includes authentication screens and the protected workspace preview; hiring workflows arrive in later phases.
+
+Authentication endpoints: `POST /api/v1/auth/signup`, `login`, `refresh`, and `logout`; `GET /api/v1/auth/me`. Access tokens are short-lived and retained only in browser memory. Refresh tokens are opaque, rotated, and sent only in HTTP-only cookies.
 
 ## Roadmap
 
@@ -81,4 +83,5 @@ The frontend runs at [http://localhost:5173](http://localhost:5173). The current
 - [x] Phase 1.2 — Backend Skeleton
 - [x] Phase 1.3 — Persistence Foundation
 - [x] Phase 1.4 — Frontend Foundation
-- [ ] Phase 1.5 — Authentication
+- [x] Phase 1.5 — Authentication
+- [ ] Phase 1.6 — Organization and RBAC
