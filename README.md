@@ -115,10 +115,10 @@ npm run dev
 
 ## Project status
 
-Current milestone: Phase 1.5 complete — Authentication
-Next milestone: Phase 1.6 — Organization and RBAC
+Current milestone: Phase 1.7 complete — Dashboard Shell
+Next milestone: Phase 2.1 — Jobs Domain
 
-See the [development roadmap](docs/DEVELOPMENT_ROADMAP.md) for implementation progress.
+See the [API reference](docs/API.md) and [development roadmap](docs/DEVELOPMENT_ROADMAP.md) for implementation progress.
 
 ## Product principles
 

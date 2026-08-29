@@ -78,4 +78,4 @@ Next: **2.1 Jobs Domain**.
 
 ## Next
 
-**Next: Phase 1.6 — Organization and RBAC**
+**Next: Phase 2.1 — Jobs Domain**
