@@ -4,7 +4,7 @@ Hiring Compass is an AI-assisted recruitment platform for helping teams run a mo
 
 ## Status
 
-**Phase 1.3 — Persistence Foundation.** This repository is a modular monolith with a FastAPI backend, PostgreSQL connectivity, Alembic migration infrastructure, and a future React frontend.
+**Phase 1.4 — Frontend Foundation.** This repository is a modular monolith with a FastAPI backend, PostgreSQL connectivity, Alembic migration infrastructure, and a React workspace shell.
 
 ## Repository structure
 
@@ -65,11 +65,20 @@ The API provides liveness at [http://localhost:8000/health](http://localhost:800
 
 Use the RabbitMQ and MinIO credentials from your `.env` file to sign in.
 
-React implementation begins in a later sub-phase; this phase adds only the FastAPI persistence foundation and local dependencies.
+## Run the frontend locally
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend runs at [http://localhost:5173](http://localhost:5173). The current screen is a visual application-shell preview only; it does not yet include authentication, APIs, or hiring workflows.
 
 ## Roadmap
 
 - [x] Phase 1.1 — Repository Bootstrap
 - [x] Phase 1.2 — Backend Skeleton
 - [x] Phase 1.3 — Persistence Foundation
-- [ ] Phase 1.4 — Frontend Foundation
+- [x] Phase 1.4 — Frontend Foundation
+- [ ] Phase 1.5 — Authentication
