@@ -13,6 +13,25 @@
   --color-border: #e5e1d8;
   --shadow-soft: 0 8px 24px rgb(29 41 57 / 6%);
   --shadow-card: 0 2px 10px rgb(29 41 57 / 4%);
+  --color-overlay: rgb(29 41 57 / 25%);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --color-canvas: #20242b;
+  --color-surface: #2a3038;
+  --color-ink: #f4f1eb;
+  --color-muted: #aeb7c3;
+  --color-navy: #536d91;
+  --color-teal: #8dc5b7;
+  --color-sage: #30453f;
+  --color-amber: #594d32;
+  --color-red: #ed9b9b;
+  --color-border: #414a55;
+  --shadow-soft: 0 10px 28px rgb(0 0 0 / 22%);
+  --shadow-card: 0 2px 12px rgb(0 0 0 / 18%);
+  --color-overlay: rgb(0 0 0 / 45%);
+  color-scheme: dark;
 }
 
 * {
@@ -21,6 +40,8 @@
 
 html {
   background: var(--color-canvas);
+  color: var(--color-ink);
+  transition: background-color 160ms ease, color 160ms ease;
 }
 
 body {
@@ -28,6 +49,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
+  background: var(--color-canvas);
 }
 
 button,
@@ -35,11 +57,27 @@ input,
 textarea,
 select {
   font: inherit;
+  color: var(--color-ink);
+}
+
+select {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+}
+
+select option {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
 }
 
 button {
   cursor: pointer;
 }
+
+.bg-white { background-color: var(--color-surface) !important; }
+.bg-red-50 { background-color: color-mix(in srgb, var(--color-red) 12%, var(--color-surface)) !important; }
+.text-red-700 { color: var(--color-red) !important; }
+.bg-\[var\(--color-navy\)\] { color: #fff !important; }
 
 :focus-visible {
   outline: 2px solid var(--color-navy);

@@ -10,7 +10,6 @@ type AppShellProps = {
 
 export function AppShell({ children, title = "Overview" }: AppShellProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <div className="min-h-screen bg-[var(--color-canvas)] text-[var(--color-ink)]">
       <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />

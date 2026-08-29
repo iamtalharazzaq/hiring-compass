@@ -3,7 +3,6 @@ import {
   CheckSquare,
   Compass,
   LayoutDashboard,
-  Settings,
   UsersRound,
   BriefcaseBusiness,
   CalendarDays,
@@ -12,7 +11,6 @@ import {
 import { Link, useLocation } from "react-router-dom";
 
 import { cn } from "../../lib/utils";
-import { useAuth } from "../../features/auth/AuthProvider";
 import { useOrganization } from "../../features/organizations/OrganizationProvider";
 
 type SidebarProps = {
@@ -27,12 +25,10 @@ const navigation = [
   { label: "Interviews", icon: CalendarDays },
   { label: "Approvals", icon: CheckSquare },
   { label: "Activity", icon: Activity },
-  { label: "Settings", icon: Settings, href: "/settings" },
 ];
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { pathname } = useLocation();
-  const { logout } = useAuth();
   const { organization } = useOrganization();
   return (
     <>
@@ -117,12 +113,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           <p className="mt-1 text-xs text-[var(--color-muted)]">
             A focused space for thoughtful hiring.
           </p>
-          <button
-            onClick={() => void logout()}
-            className="mt-4 text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-ink)]"
-          >
-            Sign out
-          </button>
         </div>
       </aside>
     </>
