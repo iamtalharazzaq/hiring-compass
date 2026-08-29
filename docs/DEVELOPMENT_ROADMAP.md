@@ -15,9 +15,8 @@ Hiring Compass is implemented one sub-phase at a time so each foundation is usab
 - [x] **1.3 Persistence Foundation** — Async PostgreSQL, SQLAlchemy, readiness, and Alembic.
 - [x] **1.4 Frontend Foundation** — React shell, routing, design tokens, and responsive workspace preview.
 - [x] **1.5 Authentication** — Identity, JWT access tokens, rotating refresh cookies, and auth UI.
-- [ ] **1.6 Organization and RBAC** — Organizations, memberships, roles, tenant isolation, and idempotent local `make seed` support.
-
-`make seed` is intentionally deferred: it must create an organization, admin user, and admin membership, and those tables do not exist until Phase 1.6.
+- [x] **1.6 Organization and RBAC** — Organizations, memberships, roles, tenant isolation, and idempotent `make seed-up` plus protected `make seed-down` support.
+- [ ] **1.7 Dashboard Shell** — First workspace dashboard structure.
 
 ## Phase 2 — Jobs and candidates
 

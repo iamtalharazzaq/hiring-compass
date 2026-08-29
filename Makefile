@@ -1,4 +1,4 @@
-.PHONY: up down restart logs ps clean local
+.PHONY: up down restart logs ps clean local seed-up seed-down
 
 up:
 	docker compose up -d
@@ -22,3 +22,10 @@ local:
 clean:
 	# Removes only named volumes declared by this Compose project.
 	docker compose down -v
+
+seed-up:
+	cd backend && uv run alembic upgrade head && uv run python -m app.cli.seed up
+
+seed-down:
+	test "$(CONFIRM)" = "DELETE_SEED_DATA" || (echo "Use: make seed-down CONFIRM=DELETE_SEED_DATA" && exit 1)
+	cd backend && uv run python -m app.cli.seed down --confirm "$(CONFIRM)"

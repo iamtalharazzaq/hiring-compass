@@ -23,6 +23,12 @@ def register_exception_handlers(app: FastAPI) -> None:
             return error_response(
                 request, "NOT_FOUND", "The requested resource was not found.", 404
             )
+        if exception.status_code == 401:
+            return error_response(request, "UNAUTHENTICATED", "Authentication is required.", 401)
+        if exception.status_code == 403:
+            return error_response(
+                request, "FORBIDDEN", "You do not have permission to do that.", 403
+            )
         return error_response(
             request,
             "HTTP_ERROR",

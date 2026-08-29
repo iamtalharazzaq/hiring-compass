@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     refresh_cookie_name: str = "hiring_compass_refresh"
     frontend_origin: str = "http://localhost:5173"
     cookie_secure: bool = False
+    seed_organization_name: str = "Hiring Compass Demo"
+    seed_organization_slug: str = "hiring-compass-demo"
+    seed_admin_name: str = "Demo Admin"
+    seed_admin_email: str = "admin@hiring-compass.local"
+    seed_admin_password: str = "change_this_before_running_seed"
 
 
 @lru_cache

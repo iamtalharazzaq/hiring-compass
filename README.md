@@ -31,6 +31,16 @@ AI assists with analysis, recommendations, and drafts. It does not automatically
 - Secure signup, login, refresh, logout, and current-user authentication
 - Argon2 password hashing, short-lived access tokens, and rotating HTTP-only refresh tokens
 - React application shell and responsive authentication experience
+- Organization onboarding with backend-enforced `admin`, `recruiter`, `hiring_manager`, and `interviewer` roles
+
+For local demo data, first change the seed credentials in `.env`, then run:
+
+```bash
+make seed-up
+make seed-down CONFIRM=DELETE_SEED_DATA
+```
+
+`seed-up` creates or reuses one configured demo user, organization, and admin membership. `seed-down` removes only those records and refuses removal if either one is shared with other memberships.
 
 ### Planned recruitment workflow
 

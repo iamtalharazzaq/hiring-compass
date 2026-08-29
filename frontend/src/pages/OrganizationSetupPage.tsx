@@ -1,0 +1,2 @@
+import { CreateOrganizationForm } from "../components/organizations/CreateOrganizationForm";
+export function OrganizationSetupPage() { return <main className="mx-auto flex min-h-screen max-w-lg items-center px-6"><section><p className="text-sm font-semibold text-[var(--color-teal)]">Hiring Compass</p><h1 className="mt-3 text-4xl font-semibold">Create your hiring workspace</h1><p className="mt-4 leading-7 text-[var(--color-muted)]">Give your team a shared home for the thoughtful hiring work ahead.</p><CreateOrganizationForm /></section></main>; }
