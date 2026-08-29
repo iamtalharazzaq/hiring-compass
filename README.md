@@ -4,7 +4,7 @@ Hiring Compass is an AI-assisted recruitment platform for helping teams run a mo
 
 ## Status
 
-**Phase 1.2 — Backend Skeleton.** This repository is a modular monolith: a future React frontend and FastAPI backend share PostgreSQL and the local supporting services defined here.
+**Phase 1.3 — Persistence Foundation.** This repository is a modular monolith with a FastAPI backend, PostgreSQL connectivity, Alembic migration infrastructure, and a future React frontend.
 
 ## Repository structure
 
@@ -47,10 +47,11 @@ make down
 ```bash
 cd backend
 uv sync
+uv run alembic upgrade head
 uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-The API is available at [http://localhost:8000/health](http://localhost:8000/health), with Swagger documentation at [http://localhost:8000/docs](http://localhost:8000/docs). You can also run the API from the repository root with `make local`.
+The API provides liveness at [http://localhost:8000/health](http://localhost:8000/health), database readiness at [http://localhost:8000/health/ready](http://localhost:8000/health/ready), and Swagger documentation at [http://localhost:8000/docs](http://localhost:8000/docs). You can also run the API from the repository root with `make local`.
 
 ## Local services
 
@@ -64,10 +65,11 @@ The API is available at [http://localhost:8000/health](http://localhost:8000/hea
 
 Use the RabbitMQ and MinIO credentials from your `.env` file to sign in.
 
-React implementation begins in a later sub-phase; this phase adds only the FastAPI foundation and local dependencies.
+React implementation begins in a later sub-phase; this phase adds only the FastAPI persistence foundation and local dependencies.
 
 ## Roadmap
 
 - [x] Phase 1.1 — Repository Bootstrap
 - [x] Phase 1.2 — Backend Skeleton
-- [ ] Phase 1.3 — Persistence Foundation
+- [x] Phase 1.3 — Persistence Foundation
+- [ ] Phase 1.4 — Frontend Foundation

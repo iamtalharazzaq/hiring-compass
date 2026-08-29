@@ -17,8 +17,9 @@ class Settings(BaseSettings):
     app_port: int = 8000
     api_v1_prefix: str = "/api/v1"
     log_level: str = "INFO"
+    database_url: str
 
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    return Settings()  # type: ignore[call-arg]
