@@ -176,4 +176,7 @@ html:has(.hc-site) { scroll-padding-top:112px; }
   .hc-prose { width:calc(100% - 40px); padding-block:78px; }
   .hc-story,.hc-workflow-table,.hc-pricing { grid-template-columns:1fr; }.hc-workflow-row { min-width:0; }.hc-candidate-flow ol { grid-template-columns:repeat(2,1fr); }
   .hc-global-reach { min-height:210px; }
+  .hc-hero-art { height:320px; margin-top:20px; }
+  .hc-float-card { width:132px; min-width:0; padding:11px 12px 12px 15px; scale:1; border-radius:14px; }.hc-float-card span { font-size:10px; }.hc-float-card strong { font-size:14px; }
+  .hc-float-card.profile { left:0; top:4%; }.hc-float-card.match { right:0; top:4%; }.hc-float-card.apply { left:0; bottom:3%; }.hc-float-card.role { right:0; bottom:3%; }
 }

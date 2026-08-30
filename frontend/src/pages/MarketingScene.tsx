@@ -41,10 +41,12 @@ function GlobalOrbit({ compact }: { compact: boolean }) {
     }
   });
   return <group ref={(node) => { group.current = node; }} scale={scale}>
-    <mesh><sphereGeometry args={[1.35, 28, 28]} /><meshStandardMaterial color="#6d0d99" emissive="#30014a" emissiveIntensity={.55} wireframe transparent opacity={.78} /></mesh>
-    <mesh rotation={[.35, .2, .65]}><torusGeometry args={[1.58, .035, 12, 72]} /><meshStandardMaterial color="#efadff" emissive="#ae1bdb" emissiveIntensity={.65} /></mesh>
-    <mesh rotation={[-.82, .36, -.3]}><torusGeometry args={[1.5, .025, 12, 72]} /><meshStandardMaterial color="#b93be5" emissive="#7b00b2" emissiveIntensity={.6} /></mesh>
-    {[[1.05, .68, .55], [-1.18, .15, .42], [.55, -1.12, .7], [-.38, .98, -.6]].map(([x, y, z], i) => <Float key={i} speed={1.15 + i * .18} floatIntensity={.38}><mesh position={[x, y, z]}><sphereGeometry args={[.105, 16, 16]} /><meshStandardMaterial color="#fff8f1" emissive="#d58af5" emissiveIntensity={1} /></mesh></Float>)}
+    <mesh><sphereGeometry args={[1.35, 48, 48]} /><meshStandardMaterial color="#4f0877" emissive="#1f0235" emissiveIntensity={.6} metalness={.42} roughness={.22} /></mesh>
+    <mesh scale={1.025}><sphereGeometry args={[1.35, 48, 48]} /><meshStandardMaterial color="#c642eb" emissive="#a100d4" emissiveIntensity={.22} transparent opacity={.13} roughness={.12} /></mesh>
+    <mesh rotation={[.35, .2, .65]}><torusGeometry args={[1.59, .028, 12, 88]} /><meshStandardMaterial color="#f0b4ff" emissive="#ae1bdb" emissiveIntensity={.75} /></mesh>
+    <mesh rotation={[-.82, .36, -.3]}><torusGeometry args={[1.5, .02, 12, 88]} /><meshStandardMaterial color="#b93be5" emissive="#7b00b2" emissiveIntensity={.75} /></mesh>
+    <mesh rotation={[0, .72, .05]}><torusGeometry args={[1.43, .016, 12, 88]} /><meshStandardMaterial color="#fff8f1" emissive="#d58af5" emissiveIntensity={.35} transparent opacity={.75} /></mesh>
+    {[[1.02, .62, .72], [-1.1, .12, .76], [.48, -1.1, .78], [-.36, .94, .82]].map(([x, y, z], i) => <Float key={i} speed={1.15 + i * .18} floatIntensity={.3}><mesh position={[x, y, z]}><sphereGeometry args={[.09, 20, 20]} /><meshStandardMaterial color="#fff8f1" emissive="#d58af5" emissiveIntensity={1} /></mesh></Float>)}
   </group>;
 }
 
