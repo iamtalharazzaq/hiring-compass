@@ -3,7 +3,6 @@ import {
   CheckSquare,
   Compass,
   LayoutDashboard,
-  UsersRound,
   BriefcaseBusiness,
   CalendarDays,
 } from "lucide-react";
@@ -20,8 +19,7 @@ type SidebarProps = {
 
 const navigation = [
   { label: "Overview", icon: LayoutDashboard, href: "/app" },
-  { label: "Jobs", icon: BriefcaseBusiness, href: "/jobs" },
-  { label: "Candidates", icon: UsersRound, href: "/candidates" },
+  { label: "Hiring", icon: BriefcaseBusiness, href: "/hiring" },
   { label: "Interviews", icon: CalendarDays, href: "/interviews" },
   { label: "Approvals", icon: CheckSquare, href: "/approvals" },
   { label: "Activity", icon: Activity },
@@ -65,7 +63,7 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
 
         <nav aria-label="Workspace navigation">
           <ul className="space-y-1">
-            {navigation.filter(({ label }) => label !== "Candidates" || ["admin", "recruiter", "hiring_manager"].includes(organization?.role ?? "")).map(({ label, icon: Icon, href }) => (
+            {navigation.map(({ label, icon: Icon, href }) => (
               <li key={label}>
                 {href ? (
                   <Link

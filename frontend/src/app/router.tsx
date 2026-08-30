@@ -8,11 +8,10 @@ import { useAuth } from "../features/auth/AuthProvider";
 import { useOrganization } from "../features/organizations/OrganizationProvider";
 import { OrganizationSetupPage } from "../pages/OrganizationSetupPage";
 import { OrganizationSettingsPage } from "../pages/OrganizationSettingsPage";
-import { JobsPage } from "../pages/JobsPage";
+import { HiringPage } from "../pages/HiringPage";
 import { CreateJobPage } from "../pages/CreateJobPage";
 import { EditJobPage } from "../pages/EditJobPage";
 import { JobDetailPage } from "../pages/JobDetailPage";
-import { CandidatesPage } from "../pages/CandidatesPage";
 import { CreateCandidatePage } from "../pages/CreateCandidatePage";
 import { CandidateDetailPage } from "../pages/CandidateDetailPage";
 import { EditCandidatePage } from "../pages/EditCandidatePage";
@@ -38,11 +37,12 @@ export const router = createBrowserRouter([
   { path: "/signup", element: <SignupPage /> },
   { path: "/setup-organization", element: <Setup /> },
   { path: "/settings", element: <Protected><OrganizationSettingsPage /></Protected> },
-  { path: "/jobs", element: <Protected><JobsPage /></Protected> },
+  { path: "/hiring", element: <Protected><HiringPage /></Protected> },
+  { path: "/jobs", element: <Navigate replace to="/hiring?tab=jobs" /> },
   { path: "/jobs/new", element: <Protected><CreateJobPage /></Protected> },
   { path: "/jobs/:jobId", element: <Protected><JobDetailPage /></Protected> },
   { path: "/jobs/:jobId/edit", element: <Protected><EditJobPage /></Protected> },
-  { path: "/candidates", element: <Protected><CandidatesPage /></Protected> },
+  { path: "/candidates", element: <Navigate replace to="/hiring?tab=candidates" /> },
   { path: "/candidates/new", element: <Protected><CreateCandidatePage /></Protected> },
   { path: "/candidates/:candidateId", element: <Protected><CandidateDetailPage /></Protected> },
   { path: "/candidates/:candidateId/edit", element: <Protected><EditCandidatePage /></Protected> },
