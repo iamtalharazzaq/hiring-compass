@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   BriefcaseBusiness,
   CalendarDays,
+  Settings2,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -23,6 +24,7 @@ const navigation = [
   { label: "Interviews", icon: CalendarDays, href: "/interviews" },
   { label: "Approvals", icon: CheckSquare, href: "/approvals" },
   { label: "Activity", icon: Activity },
+  { label: "Settings", icon: Settings2, href: "/settings" },
 ];
 
 export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
@@ -74,9 +76,9 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
                     className={cn(
                       "flex items-center rounded-xl py-2.5 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]",
                       isOpen ? "gap-3 px-3" : "justify-center px-2",
-                      pathname === href
-                        ? "bg-[var(--color-navy)] text-white"
-                        : "text-[var(--color-muted)] hover:bg-[var(--color-canvas)]",
+                      pathname === href || (href === "/settings" && pathname.startsWith("/settings"))
+                        ? "bg-[var(--color-navy)] text-white shadow-[0_0_18px_color-mix(in_srgb,var(--color-navy)_24%,transparent)]"
+                        : "text-[var(--color-muted)] hover:bg-[var(--color-elevated)]",
                     )}
                   >
                     <Icon aria-hidden="true" size={18} strokeWidth={1.8} />

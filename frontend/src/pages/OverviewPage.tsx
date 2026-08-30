@@ -20,7 +20,7 @@ export function OverviewPage() {
   const metrics = [
     { label: "Open roles", value: activeJobs.length, detail: "Approved and live", icon: BriefcaseBusiness, tone: "bg-[var(--color-sage)] text-[var(--color-navy)]" },
     { label: "Candidates", value: candidates.data?.pagination.total ?? 0, detail: "In your workspace", icon: UsersRound, tone: "bg-[var(--color-sage)] text-[var(--color-teal)]" },
-    { label: "Applications", value: applications.filter((application) => application.status !== "rejected").length, detail: "Currently in motion", icon: ClipboardCheck, tone: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300" },
+    { label: "Applications", value: applications.filter((application) => application.status !== "rejected").length, detail: "Currently in motion", icon: ClipboardCheck, tone: "bg-[color-mix(in_srgb,var(--color-amber)_18%,transparent)] text-[var(--color-amber)]" },
     { label: "Shortlisted", value: pipeline.find(({ status }) => status === "shortlisted")?.count ?? 0, detail: "Ready for review", icon: ChevronRight, tone: "bg-[var(--color-sage)] text-[var(--color-teal)]" },
   ];
   return <AppShell title="Overview">
