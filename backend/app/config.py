@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import AliasChoices, Field, model_validator
+from pydantic import AliasChoices, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -45,6 +45,13 @@ class Settings(BaseSettings):
     minio_resume_bucket: str = "hiring-compass-resumes"
     resume_max_file_size_bytes: int = 10 * 1024 * 1024
     resume_download_url_expire_seconds: int = 300
+
+    @field_validator("database_url")
+    @classmethod
+    def normalize_database_url(cls, value: str) -> str:
+        if value.startswith("postgresql://"):
+            return f"postgresql+asyncpg://{value.removeprefix('postgresql://')}"
+        return value
 
     @model_validator(mode="after")
     def secure_storage_in_production(self) -> "Settings":
