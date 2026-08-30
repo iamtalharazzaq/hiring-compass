@@ -1,0 +1,87 @@
+# ruff: noqa: E501, E701, E702, E703, I001
+from datetime import UTC, datetime
+from uuid import UUID
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.modules.activity.application.service import record
+from app.modules.applications.adapters.persistence.models import ApplicationModel
+from app.modules.auth.application.dto import AuthenticatedUser
+from app.modules.candidates.adapters.persistence.models import CandidateModel
+from app.modules.communications.adapters.persistence.models import CandidateCommunicationModel
+from app.modules.communications.api.schemas import CommunicationRequest, ReviewRequest
+from app.modules.decisions.adapters.persistence.models import HiringDecisionModel
+from app.modules.jobs.adapters.persistence.models import JobModel
+from app.modules.organizations.api.dependencies import require_active_organization_member, require_current_user
+from app.modules.organizations.domain.entities import OrganizationMember
+from app.shared.database.engine import get_db_session
+from app.shared.errors.responses import error_response, success_response
+router = APIRouter(prefix="/api/v1/organizations/{organization_id}", tags=["candidate-communications"])
+def manager(member: OrganizationMember = Depends(require_active_organization_member)) -> OrganizationMember:
+    if member.role not in {"admin", "recruiter"}: raise HTTPException(403)
+    return member
+def reviewer(member: OrganizationMember = Depends(require_active_organization_member)) -> OrganizationMember:
+    if member.role not in {"admin", "hiring_manager"}: raise HTTPException(403)
+    return member
+def data(item: CandidateCommunicationModel) -> dict[str, object]:
+    return {"id": str(item.id), "organization_id": str(item.organization_id), "application_id": str(item.application_id), "candidate_id": str(item.candidate_id), "job_id": str(item.job_id), "communication_type": item.communication_type, "status": item.status, "recipient_email": item.recipient_email, "subject": item.subject, "body": item.body, "created_by": str(item.created_by), "reviewed_by": str(item.reviewed_by) if item.reviewed_by else None, "review_notes": item.review_notes, "submitted_at": item.submitted_at.isoformat() if item.submitted_at else None, "reviewed_at": item.reviewed_at.isoformat() if item.reviewed_at else None, "ready_at": item.ready_at.isoformat() if item.ready_at else None, "created_at": item.created_at.isoformat(), "updated_at": item.updated_at.isoformat()}
+async def context(session: AsyncSession, org: UUID, app_id: UUID) -> tuple[ApplicationModel, CandidateModel, JobModel] | None:
+    app = await session.scalar(select(ApplicationModel).where(ApplicationModel.id == app_id, ApplicationModel.organization_id == org))
+    if not app: return None
+    candidate = await session.scalar(select(CandidateModel).where(CandidateModel.id == app.candidate_id, CandidateModel.organization_id == org)); job = await session.scalar(select(JobModel).where(JobModel.id == app.job_id, JobModel.organization_id == org))
+    return (app, candidate, job) if candidate and job else None
+@router.get("/applications/{application_id}/communications")
+async def list_communications(request: Request, organization_id: UUID, application_id: UUID, _: OrganizationMember = Depends(require_active_organization_member), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    if not await context(session, organization_id, application_id): return error_response(request, "NOT_FOUND", "Application was not found.", 404)
+    values = list((await session.scalars(select(CandidateCommunicationModel).where(CandidateCommunicationModel.organization_id == organization_id, CandidateCommunicationModel.application_id == application_id).order_by(CandidateCommunicationModel.created_at.desc()))).all()); return success_response(request, {"items": [data(x) for x in values]})
+@router.post("/applications/{application_id}/communications", status_code=201)
+async def create(request: Request, organization_id: UUID, application_id: UUID, payload: CommunicationRequest, user: AuthenticatedUser = Depends(require_current_user), _: OrganizationMember = Depends(manager), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    found = await context(session, organization_id, application_id)
+    if not found: return error_response(request, "NOT_FOUND", "Application was not found.", 404)
+    app, candidate, job = found
+    if not candidate.email: return error_response(request, "VALIDATION_ERROR", "The candidate does not have a valid email address.", 422)
+    if payload.communication_type == "offer":
+        decision = await session.scalar(select(HiringDecisionModel).where(HiringDecisionModel.organization_id == organization_id, HiringDecisionModel.application_id == app.id, HiringDecisionModel.proposed_outcome == "proceed_to_offer", HiringDecisionModel.status == "approved"))
+        if not decision: return error_response(request, "COMMUNICATION_NOT_READY", "An approved proceed-to-offer decision is required.", 422)
+    now = datetime.now(UTC); item = CandidateCommunicationModel(organization_id=organization_id, application_id=app.id, candidate_id=candidate.id, job_id=job.id, communication_type=payload.communication_type, recipient_email=candidate.email, subject=payload.subject.strip(), body=payload.body.strip(), created_by=user.id, created_at=now, updated_at=now); session.add(item); await session.flush(); await record(session, organization_id, "communication_created", "candidate_communication", item.id, user.id, candidate_id=candidate.id, job_id=job.id, application_id=app.id, metadata={"communication_type": item.communication_type, "communication_id": str(item.id), "status": item.status}); await session.commit(); return success_response(request, {"communication": data(item)}, 201)
+@router.get("/candidate-communications/{communication_id}")
+async def get(request: Request, organization_id: UUID, communication_id: UUID, _: OrganizationMember = Depends(require_active_organization_member), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    item = await session.scalar(select(CandidateCommunicationModel).where(CandidateCommunicationModel.id == communication_id, CandidateCommunicationModel.organization_id == organization_id)); return success_response(request, {"communication": data(item)}) if item else error_response(request, "NOT_FOUND", "Communication was not found.", 404)
+@router.patch("/candidate-communications/{communication_id}")
+async def update(request: Request, organization_id: UUID, communication_id: UUID, payload: CommunicationRequest, user: AuthenticatedUser = Depends(require_current_user), _: OrganizationMember = Depends(manager), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    item = await session.scalar(select(CandidateCommunicationModel).where(CandidateCommunicationModel.id == communication_id, CandidateCommunicationModel.organization_id == organization_id, CandidateCommunicationModel.created_by == user.id));
+    if not item: return error_response(request, "NOT_FOUND", "Communication was not found.", 404)
+    if item.status not in {"draft", "returned"}: return error_response(request, "INVALID_STATE", "Only draft or returned communications can be edited.", 409)
+    if payload.communication_type == "offer" and not await session.scalar(select(HiringDecisionModel.id).where(HiringDecisionModel.organization_id == organization_id, HiringDecisionModel.application_id == item.application_id, HiringDecisionModel.proposed_outcome == "proceed_to_offer", HiringDecisionModel.status == "approved")): return error_response(request, "COMMUNICATION_NOT_READY", "An approved proceed-to-offer decision is required.", 422)
+    item.communication_type, item.subject, item.body, item.updated_at = payload.communication_type, payload.subject.strip(), payload.body.strip(), datetime.now(UTC); await session.commit(); return success_response(request, {"communication": data(item)})
+@router.post("/candidate-communications/{communication_id}/submit")
+async def submit(request: Request, organization_id: UUID, communication_id: UUID, user: AuthenticatedUser = Depends(require_current_user), _: OrganizationMember = Depends(manager), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    item = await session.scalar(select(CandidateCommunicationModel).where(CandidateCommunicationModel.id == communication_id, CandidateCommunicationModel.organization_id == organization_id, CandidateCommunicationModel.created_by == user.id));
+    if not item: return error_response(request, "NOT_FOUND", "Communication was not found.", 404)
+    if item.status not in {"draft", "returned"}: return error_response(request, "INVALID_STATE", "Communication cannot be submitted in its current state.", 409)
+    now = datetime.now(UTC); item.status, item.submitted_at, item.updated_at = "pending_approval", now, now; await record(session, organization_id, "communication_submitted", "candidate_communication", item.id, user.id, application_id=item.application_id, candidate_id=item.candidate_id, job_id=item.job_id, metadata={"communication_type": item.communication_type, "communication_id": str(item.id), "status": item.status}); await session.commit(); return success_response(request, {"communication": data(item)})
+@router.post("/candidate-communications/{communication_id}/approve")
+async def approve(request: Request, organization_id: UUID, communication_id: UUID, payload: ReviewRequest, user: AuthenticatedUser = Depends(require_current_user), _: OrganizationMember = Depends(reviewer), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    item = await session.scalar(select(CandidateCommunicationModel).where(CandidateCommunicationModel.id == communication_id, CandidateCommunicationModel.organization_id == organization_id));
+    if not item: return error_response(request, "NOT_FOUND", "Communication was not found.", 404)
+    if item.created_by == user.id: return error_response(request, "FORBIDDEN", "The communication creator cannot approve it.", 403)
+    if item.status != "pending_approval": return error_response(request, "INVALID_STATE", "Only pending communications can be approved.", 409)
+    now = datetime.now(UTC); item.status, item.reviewed_by, item.reviewed_at, item.ready_at, item.review_notes, item.updated_at = "ready_to_send", user.id, now, now, payload.review_notes, now; await record(session, organization_id, "communication_approved", "candidate_communication", item.id, user.id, application_id=item.application_id, candidate_id=item.candidate_id, job_id=item.job_id, metadata={"communication_type": item.communication_type, "communication_id": str(item.id), "status": item.status}); await record(session, organization_id, "communication_marked_ready", "candidate_communication", item.id, user.id, application_id=item.application_id, candidate_id=item.candidate_id, job_id=item.job_id, metadata={"communication_type": item.communication_type, "communication_id": str(item.id), "status": item.status}); await session.commit(); return success_response(request, {"communication": data(item)})
+@router.post("/candidate-communications/{communication_id}/return")
+async def return_for_changes(request: Request, organization_id: UUID, communication_id: UUID, payload: ReviewRequest, user: AuthenticatedUser = Depends(require_current_user), _: OrganizationMember = Depends(reviewer), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    if not payload.review_notes or not payload.review_notes.strip(): return error_response(request, "VALIDATION_ERROR", "Review notes are required when returning a communication.", 422)
+    item = await session.scalar(select(CandidateCommunicationModel).where(CandidateCommunicationModel.id == communication_id, CandidateCommunicationModel.organization_id == organization_id));
+    if not item: return error_response(request, "NOT_FOUND", "Communication was not found.", 404)
+    if item.created_by == user.id: return error_response(request, "FORBIDDEN", "The communication creator cannot return it.", 403)
+    if item.status != "pending_approval": return error_response(request, "INVALID_STATE", "Only pending communications can be returned.", 409)
+    now = datetime.now(UTC); item.status, item.reviewed_by, item.reviewed_at, item.review_notes, item.updated_at = "returned", user.id, now, payload.review_notes.strip(), now; await record(session, organization_id, "communication_returned", "candidate_communication", item.id, user.id, application_id=item.application_id, candidate_id=item.candidate_id, job_id=item.job_id, metadata={"communication_type": item.communication_type, "communication_id": str(item.id), "status": item.status}); await session.commit(); return success_response(request, {"communication": data(item)})
+@router.post("/candidate-communications/{communication_id}/cancel")
+async def cancel(request: Request, organization_id: UUID, communication_id: UUID, user: AuthenticatedUser = Depends(require_current_user), _: OrganizationMember = Depends(manager), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    item = await session.scalar(select(CandidateCommunicationModel).where(CandidateCommunicationModel.id == communication_id, CandidateCommunicationModel.organization_id == organization_id, CandidateCommunicationModel.created_by == user.id));
+    if not item: return error_response(request, "NOT_FOUND", "Communication was not found.", 404)
+    if item.status in {"approved", "ready_to_send", "cancelled"}: return error_response(request, "INVALID_STATE", "This communication cannot be cancelled.", 409)
+    now = datetime.now(UTC); item.status, item.updated_at = "cancelled", now; await record(session, organization_id, "communication_cancelled", "candidate_communication", item.id, user.id, application_id=item.application_id, candidate_id=item.candidate_id, job_id=item.job_id, metadata={"communication_type": item.communication_type, "communication_id": str(item.id), "status": item.status}); await session.commit(); return success_response(request, {"communication": data(item)})
+@router.get("/approvals/candidate-communications")
+async def inbox(request: Request, organization_id: UUID, _: OrganizationMember = Depends(reviewer), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    values = list((await session.scalars(select(CandidateCommunicationModel).where(CandidateCommunicationModel.organization_id == organization_id, CandidateCommunicationModel.status == "pending_approval").order_by(CandidateCommunicationModel.submitted_at.desc()))).all()); return success_response(request, {"items": [data(x) for x in values]})

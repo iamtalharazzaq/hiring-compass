@@ -40,6 +40,20 @@ Errors use `error.code`, `error.message`, and `request_id`. Send a bearer token 
 
 ## Authorization
 
+### Candidate communications
+
+| Area | Method | Path | Purpose |
+| --- | --- | --- | --- |
+| Communications | `GET` | `/api/v1/organizations/{organization_id}/applications/{application_id}/communications` | List private communication history |
+| Communications | `POST` | `/api/v1/organizations/{organization_id}/applications/{application_id}/communications` | Create a recruiter draft |
+| Communications | `GET` | `/api/v1/organizations/{organization_id}/candidate-communications/{communication_id}` | Read a communication |
+| Communications | `PATCH` | `/api/v1/organizations/{organization_id}/candidate-communications/{communication_id}` | Edit a draft or returned communication |
+| Communications | `POST` | `/api/v1/organizations/{organization_id}/candidate-communications/{communication_id}/submit` | Submit for approval |
+| Communications | `POST` | `/api/v1/organizations/{organization_id}/candidate-communications/{communication_id}/approve` | Approve and mark ready to send |
+| Communications | `POST` | `/api/v1/organizations/{organization_id}/candidate-communications/{communication_id}/return` | Return with required review notes |
+| Communications | `POST` | `/api/v1/organizations/{organization_id}/candidate-communications/{communication_id}/cancel` | Cancel a draft |
+| Communications | `GET` | `/api/v1/organizations/{organization_id}/approvals/candidate-communications` | List pending communication approvals |
+
 Roles are `admin`, `recruiter`, `hiring_manager`, and `interviewer`.
 
 - Active members can view their organization.

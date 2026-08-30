@@ -10,6 +10,7 @@ from app.modules.applications.api.router import router as applications_router
 from app.modules.auth.api.router import router as auth_router
 from app.modules.candidates.api.router import router as candidates_router
 from app.modules.decisions.api.router import router as decisions_router
+from app.modules.communications.api.router import router as communications_router
 from app.modules.interviews.api.router import router as interviews_router
 from app.modules.jobs.api.router import router as jobs_router
 from app.modules.organizations.api.router import router as organizations_router
@@ -71,6 +72,7 @@ def create_app() -> FastAPI:
     app.include_router(applications_router)
     app.include_router(activity_router)
     app.include_router(decisions_router)
+    app.include_router(communications_router)
     app.include_router(interviews_router)
 
     @app.get("/health")

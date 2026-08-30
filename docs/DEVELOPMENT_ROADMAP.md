@@ -37,7 +37,7 @@ Next: **Phase 3.3 — Candidate Timeline and Activity History**.
 - [x] **3.2 Interviewer Assignment and Structured Feedback** — Assign interviewers and capture structured feedback.
 - [x] **3.3 Candidate Timeline and Activity History** — Traceable recruiter activity across candidates and applications.
 - [x] **3.4 Hiring Decision and Approval Workflow** — Human approval boundary for final hiring outcomes.
-- [ ] **3.5 Candidate Communication Workspace** — Prepare approved candidate communications for human review.
+- [x] **3.5 Candidate Communication Workspace** — Prepare approved candidate communications for human review.
 
 ## Phase 4 — Approvals and communication
 
@@ -83,4 +83,4 @@ Next: **Phase 3.3 — Candidate Timeline and Activity History**.
 
 ## Next
 
-**Next: Phase 3.5 — Candidate Communication Workspace**
+**Next: Phase 3.6 — Safe Manual Email Sending**

@@ -11,6 +11,7 @@ import app.modules.applications.adapters.persistence.models  # noqa: F401
 import app.modules.activity.adapters.persistence.models  # noqa: F401
 import app.modules.candidates.adapters.persistence.models  # noqa: F401
 import app.modules.decisions.adapters.persistence.models  # noqa: F401
+import app.modules.communications.adapters.persistence.models  # noqa: F401
 import app.modules.interviews.adapters.persistence.models  # noqa: F401
 import app.modules.jobs.adapters.persistence.models  # noqa: F401
 import app.modules.organizations.adapters.persistence.models  # noqa: F401
