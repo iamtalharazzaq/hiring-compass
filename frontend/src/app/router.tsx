@@ -20,6 +20,7 @@ import { MarketingPage } from "../pages/MarketingPage";
 import { AuthPage } from "../pages/AuthPage";
 import { InterviewsPage } from "../pages/InterviewsPage";
 import { InterviewDetailPage } from "../pages/InterviewDetailPage";
+import { ApprovalsPage } from "../pages/ApprovalsPage";
 
 function Protected({ children }: { children: ReactNode }) { const { user, loading } = useAuth(); const { organization, loading: orgLoading } = useOrganization(); if (loading || orgLoading) return <p>Loading workspace…</p>; return user ? organization ? children : <Navigate replace to="/setup-organization" /> : <Navigate replace to="/login" />; }
 function Setup() { const { user, loading } = useAuth(); const { organization, loading: orgLoading } = useOrganization(); if (loading || orgLoading) return <p>Loading workspace…</p>; return user ? organization ? <Navigate replace to="/app" /> : <OrganizationSetupPage /> : <Navigate replace to="/login" />; }
@@ -47,5 +48,6 @@ export const router = createBrowserRouter([
   { path: "/candidates/:candidateId/edit", element: <Protected><EditCandidatePage /></Protected> },
   { path: "/interviews", element: <Protected><InterviewsPage /></Protected> },
   { path: "/interviews/:interviewId", element: <Protected><InterviewDetailPage /></Protected> },
+  { path: "/approvals", element: <Protected><ApprovalsPage /></Protected> },
   { path: "*", element: <Navigate replace to="/" /> },
 ]);

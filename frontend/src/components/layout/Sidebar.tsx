@@ -23,7 +23,7 @@ const navigation = [
   { label: "Jobs", icon: BriefcaseBusiness, href: "/jobs" },
   { label: "Candidates", icon: UsersRound, href: "/candidates" },
   { label: "Interviews", icon: CalendarDays, href: "/interviews" },
-  { label: "Approvals", icon: CheckSquare },
+  { label: "Approvals", icon: CheckSquare, href: "/approvals" },
   { label: "Activity", icon: Activity },
 ];
 
