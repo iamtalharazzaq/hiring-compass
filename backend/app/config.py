@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import model_validator
+from pydantic import AliasChoices, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,12 +19,19 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
     log_level: str = "INFO"
     database_url: str
-    jwt_secret_key: str = "replace_with_a_long_random_value_for_local_development"
+    jwt_secret_key: str = Field(
+        default="replace_with_a_long_random_value_for_local_development",
+        validation_alias=AliasChoices("JWT_SECRET", "JWT_SECRET_KEY"),
+    )
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 15
     refresh_token_expire_days: int = 7
     refresh_cookie_name: str = "hiring_compass_refresh"
-    frontend_origin: str = "http://localhost:5173"
+    frontend_origin: str = Field(
+        default="http://localhost:5173",
+        validation_alias=AliasChoices("FRONTEND_URL", "FRONTEND_ORIGIN"),
+    )
+    cors_origins: str = ""
     cookie_secure: bool = False
     seed_organization_name: str = "Hiring Compass"
     seed_organization_slug: str = "hiring-compass"

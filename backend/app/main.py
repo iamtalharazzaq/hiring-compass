@@ -43,6 +43,7 @@ def create_app() -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
+            *[origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()],
             settings.frontend_origin,
             "http://localhost:5173",
             "http://localhost:5174",
@@ -67,15 +68,8 @@ def create_app() -> FastAPI:
     app.include_router(applications_router)
 
     @app.get("/health")
-    async def health(request: Request) -> object:
-        return success_response(
-            request,
-            {
-                "status": "ok",
-                "service": "hiring-compass-api",
-                "environment": settings.app_env,
-            },
-        )
+    async def health() -> dict[str, str]:
+        return {"status": "ok"}
 
     @app.get("/health/ready")
     async def readiness(request: Request) -> object:
