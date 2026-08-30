@@ -11,6 +11,10 @@ from app.modules.auth.application.dto import AuthenticatedUser
 from app.modules.candidates.adapters.persistence.models import CandidateModel
 from app.modules.communications.adapters.persistence.models import CandidateCommunicationModel
 from app.modules.communications.api.schemas import CommunicationRequest, ReviewRequest
+from app.modules.communications.adapters.persistence.delivery_models import EmailDeliveryModel
+from app.modules.communications.adapters.email.smtp import SmtpEmailSender
+from app.config import get_settings
+from pydantic import BaseModel
 from app.modules.decisions.adapters.persistence.models import HiringDecisionModel
 from app.modules.jobs.adapters.persistence.models import JobModel
 from app.modules.organizations.api.dependencies import require_active_organization_member, require_current_user
@@ -18,6 +22,8 @@ from app.modules.organizations.domain.entities import OrganizationMember
 from app.shared.database.engine import get_db_session
 from app.shared.errors.responses import error_response, success_response
 router = APIRouter(prefix="/api/v1/organizations/{organization_id}", tags=["candidate-communications"])
+class SendRequest(BaseModel): confirmation: bool
+def delivery_data(item: EmailDeliveryModel) -> dict[str, object]: return {"id": str(item.id), "communication_id": str(item.communication_id), "recipient_email": item.recipient_email, "subject_snapshot": item.subject_snapshot, "status": item.status, "attempt_count": item.attempt_count, "last_error_code": item.last_error_code, "last_error_message": "Delivery failed. Retry after checking email configuration." if item.status == "failed" else None, "sent_at": item.sent_at.isoformat() if item.sent_at else None, "failed_at": item.failed_at.isoformat() if item.failed_at else None, "created_at": item.created_at.isoformat(), "updated_at": item.updated_at.isoformat()}
 def manager(member: OrganizationMember = Depends(require_active_organization_member)) -> OrganizationMember:
     if member.role not in {"admin", "recruiter"}: raise HTTPException(403)
     return member
@@ -85,3 +91,32 @@ async def cancel(request: Request, organization_id: UUID, communication_id: UUID
 @router.get("/approvals/candidate-communications")
 async def inbox(request: Request, organization_id: UUID, _: OrganizationMember = Depends(reviewer), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
     values = list((await session.scalars(select(CandidateCommunicationModel).where(CandidateCommunicationModel.organization_id == organization_id, CandidateCommunicationModel.status == "pending_approval").order_by(CandidateCommunicationModel.submitted_at.desc()))).all()); return success_response(request, {"items": [data(x) for x in values]})
+@router.get("/candidate-communications/{communication_id}/deliveries")
+async def deliveries(request: Request, organization_id: UUID, communication_id: UUID, _: OrganizationMember = Depends(require_active_organization_member), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    values = list((await session.scalars(select(EmailDeliveryModel).where(EmailDeliveryModel.organization_id == organization_id, EmailDeliveryModel.communication_id == communication_id).order_by(EmailDeliveryModel.created_at.desc()))).all()); return success_response(request, {"items": [delivery_data(x) for x in values]})
+async def send_delivery(session: AsyncSession, item: CandidateCommunicationModel, user: AuthenticatedUser) -> EmailDeliveryModel:
+    now = datetime.now(UTC); delivery = EmailDeliveryModel(organization_id=item.organization_id, communication_id=item.id, recipient_email=item.recipient_email, subject_snapshot=item.subject, body_snapshot=item.body, status="sending", attempt_count=1, created_by=user.id, created_at=now, updated_at=now); session.add(delivery); await session.flush()
+    try:
+        SmtpEmailSender(get_settings()).send(item.recipient_email, item.subject, item.body); delivery.status, delivery.sent_at, item.status = "sent", now, "sent"; item.updated_at = now
+    except Exception as error:
+        delivery.status, delivery.failed_at, delivery.last_error_code, delivery.last_error_message = "failed", now, "SMTP_SEND_FAILED", "Delivery failed. Retry after checking email configuration."; delivery.updated_at = now
+    await session.commit(); return delivery
+@router.post("/candidate-communications/{communication_id}/send")
+async def send(request: Request, organization_id: UUID, communication_id: UUID, payload: SendRequest, user: AuthenticatedUser = Depends(require_current_user), _: OrganizationMember = Depends(manager), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    if not payload.confirmation: return error_response(request, "CONFIRMATION_REQUIRED", "Explicit confirmation is required before sending.", 422)
+    item = await session.scalar(select(CandidateCommunicationModel).where(CandidateCommunicationModel.id == communication_id, CandidateCommunicationModel.organization_id == organization_id).with_for_update())
+    if not item: return error_response(request, "NOT_FOUND", "Communication was not found.", 404)
+    if item.status == "sent": return error_response(request, "DUPLICATE_SEND", "This communication has already been sent.", 409)
+    if item.status != "ready_to_send": return error_response(request, "INVALID_STATE", "Only approved communications ready to send can be sent.", 409)
+    delivery = await send_delivery(session, item, user)
+    if delivery.status == "failed": return error_response(request, "SMTP_SEND_FAILED", "The message could not be sent. Review the delivery details and try again.", 502)
+    await record(session, organization_id, "communication_sent", "candidate_communication", item.id, user.id, application_id=item.application_id, candidate_id=item.candidate_id, job_id=item.job_id, metadata={"communication_id": str(item.id), "delivery_id": str(delivery.id), "communication_type": item.communication_type, "delivery_status": delivery.status}); await session.commit(); return success_response(request, {"communication": data(item), "delivery": delivery_data(delivery)})
+@router.post("/email-deliveries/{delivery_id}/retry")
+async def retry(request: Request, organization_id: UUID, delivery_id: UUID, payload: SendRequest, user: AuthenticatedUser = Depends(require_current_user), _: OrganizationMember = Depends(manager), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:
+    if not payload.confirmation: return error_response(request, "CONFIRMATION_REQUIRED", "Explicit confirmation is required before sending.", 422)
+    old = await session.scalar(select(EmailDeliveryModel).where(EmailDeliveryModel.id == delivery_id, EmailDeliveryModel.organization_id == organization_id));
+    if not old: return error_response(request, "NOT_FOUND", "Delivery was not found.", 404)
+    if old.status != "failed": return error_response(request, "INVALID_STATE", "Only failed deliveries can be retried.", 409)
+    item = await session.scalar(select(CandidateCommunicationModel).where(CandidateCommunicationModel.id == old.communication_id, CandidateCommunicationModel.organization_id == organization_id));
+    if not item or item.status == "sent": return error_response(request, "INVALID_STATE", "This communication is no longer retryable.", 409)
+    delivery = await send_delivery(session, item, user); await record(session, organization_id, "communication_send_retried", "candidate_communication", item.id, user.id, application_id=item.application_id, candidate_id=item.candidate_id, job_id=item.job_id, metadata={"communication_id": str(item.id), "delivery_id": str(delivery.id), "communication_type": item.communication_type, "delivery_status": delivery.status}); await session.commit(); return success_response(request, {"delivery": delivery_data(delivery)})

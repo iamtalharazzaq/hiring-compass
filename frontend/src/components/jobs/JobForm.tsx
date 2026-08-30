@@ -75,7 +75,7 @@ export function JobForm({
         {fields[0].label}
         <input
           {...register("title")}
-          className="mt-2 w-full rounded-xl border border-[var(--color-border)] bg-white px-4 py-3"
+          className="hc-form-control"
         />
       </label>
       <p className="text-sm text-[var(--color-red)]">{errors.title?.message}</p>
@@ -84,7 +84,7 @@ export function JobForm({
         <textarea
           {...register("description")}
           rows={5}
-          className="mt-2 w-full rounded-xl border border-[var(--color-border)] bg-white px-4 py-3"
+          className="hc-form-control"
         />
       </label>
       <div className="grid gap-5 sm:grid-cols-2">
@@ -94,7 +94,7 @@ export function JobForm({
             <input
               type={type}
               {...register(key)}
-              className="mt-2 w-full rounded-xl border border-[var(--color-border)] bg-white px-4 py-3"
+              className="hc-form-control"
             />
           </label>
         ))}
@@ -104,7 +104,7 @@ export function JobForm({
           Employment type
           <Select
             {...register("employment_type")}
-            className="mt-2 w-full rounded-xl border bg-white px-4 py-3"
+            className="hc-form-control"
           >
             <option value="">Select</option>
             <option value="full_time">Full time</option>
@@ -118,7 +118,7 @@ export function JobForm({
           Workplace type
           <Select
             {...register("workplace_type")}
-            className="mt-2 w-full rounded-xl border bg-white px-4 py-3"
+            className="hc-form-control"
           >
             <option value="">Select</option>
             <option value="remote">Remote</option>

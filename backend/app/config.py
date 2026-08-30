@@ -45,6 +45,14 @@ class Settings(BaseSettings):
     minio_resume_bucket: str = "hiring-compass-resumes"
     resume_max_file_size_bytes: int = 10 * 1024 * 1024
     resume_download_url_expire_seconds: int = 300
+    email_provider: str = "smtp"
+    smtp_host: str = "mailpit"
+    smtp_port: int = 1025
+    smtp_username: str = ""
+    smtp_password: str = ""
+    smtp_use_tls: bool = False
+    smtp_from_email: str = "no-reply@hiringcompass.local"
+    smtp_from_name: str = "Hiring Compass"
 
     @field_validator("database_url")
     @classmethod

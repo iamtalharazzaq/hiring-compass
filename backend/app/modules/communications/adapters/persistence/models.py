@@ -6,7 +6,7 @@ from app.shared.database.base import Base
 
 class CandidateCommunicationModel(Base):
     __tablename__ = "candidate_communications"
-    __table_args__ = (CheckConstraint("communication_type IN ('interview_follow_up','next_steps','offer','rejection','hold')"), CheckConstraint("status IN ('draft','pending_approval','returned','approved','ready_to_send','cancelled')"), Index("ix_candidate_communications_org_application", "organization_id", "application_id"))
+    __table_args__ = (CheckConstraint("communication_type IN ('interview_follow_up','next_steps','offer','rejection','hold')"), CheckConstraint("status IN ('draft','pending_approval','returned','approved','ready_to_send','sent','cancelled')"), Index("ix_candidate_communications_org_application", "organization_id", "application_id"))
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     organization_id: Mapped[UUID] = mapped_column(ForeignKey("organizations.id"), nullable=False)
     application_id: Mapped[UUID] = mapped_column(ForeignKey("applications.id"), nullable=False)

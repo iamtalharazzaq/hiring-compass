@@ -38,6 +38,7 @@ Next: **Phase 3.3 — Candidate Timeline and Activity History**.
 - [x] **3.3 Candidate Timeline and Activity History** — Traceable recruiter activity across candidates and applications.
 - [x] **3.4 Hiring Decision and Approval Workflow** — Human approval boundary for final hiring outcomes.
 - [x] **3.5 Candidate Communication Workspace** — Prepare approved candidate communications for human review.
+- [x] **3.6 Safe Manual Email Sending** — Send approved communications through a controlled SMTP adapter with delivery tracking.
 
 ## Phase 4 — Approvals and communication
 
@@ -83,4 +84,4 @@ Next: **Phase 3.3 — Candidate Timeline and Activity History**.
 
 ## Next
 
-**Next: Phase 3.6 — Safe Manual Email Sending**
+**Next: Phase 3.7 — Complete Manual Workflow Polish**
