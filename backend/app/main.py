@@ -8,6 +8,7 @@ from app.config import get_settings
 from app.modules.applications.api.router import router as applications_router
 from app.modules.auth.api.router import router as auth_router
 from app.modules.candidates.api.router import router as candidates_router
+from app.modules.interviews.api.router import router as interviews_router
 from app.modules.jobs.api.router import router as jobs_router
 from app.modules.organizations.api.router import router as organizations_router
 from app.shared.database.engine import dispose_engine
@@ -66,6 +67,7 @@ def create_app() -> FastAPI:
     app.include_router(organizations_router)
     app.include_router(jobs_router)
     app.include_router(applications_router)
+    app.include_router(interviews_router)
 
     @app.get("/health")
     async def health() -> dict[str, str]:

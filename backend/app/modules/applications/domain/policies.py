@@ -1,3 +1,4 @@
+# ruff: noqa: E501
 from .enums import ApplicationStatus
 
 TRANSITIONS = {
@@ -6,7 +7,8 @@ TRANSITIONS = {
         ApplicationStatus.ON_HOLD,
         ApplicationStatus.REJECTED,
     },
-    ApplicationStatus.SHORTLISTED: {ApplicationStatus.ON_HOLD, ApplicationStatus.REJECTED},
+    ApplicationStatus.SHORTLISTED: {ApplicationStatus.INTERVIEWING, ApplicationStatus.ON_HOLD, ApplicationStatus.REJECTED},
+    ApplicationStatus.INTERVIEWING: {ApplicationStatus.ON_HOLD, ApplicationStatus.REJECTED},
     ApplicationStatus.ON_HOLD: {
         ApplicationStatus.NEW,
         ApplicationStatus.SHORTLISTED,

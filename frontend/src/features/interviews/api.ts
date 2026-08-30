@@ -1,0 +1,11 @@
+import { apiClient } from "../../lib/apiClient";
+export type Stage = { id: string; name: string; description: string | null; position: number; duration_minutes: number | null; is_active: boolean };
+export type Interview = { id: string; application_id: string; interview_stage_id: string; scheduled_at: string; duration_minutes: number; location_or_meeting_details: string | null; status: "scheduled" | "cancelled"; cancelled_reason: string | null };
+const base = (org: string) => `/api/v1/organizations/${org}`;
+export const stages = (org: string, job: string) => apiClient<{ items: Stage[] }>(`${base(org)}/jobs/${job}/interview-stages`);
+export const addStage = (org: string, job: string, body: { name: string; description?: string | null; duration_minutes?: number }) => apiClient<{ stage: Stage }>(`${base(org)}/jobs/${job}/interview-stages`, { method: "POST", body: JSON.stringify(body) });
+export const reorderStages = (org: string, job: string, stage_ids: string[]) => apiClient<{ items: Stage[] }>(`${base(org)}/jobs/${job}/interview-stages/reorder`, { method: "POST", body: JSON.stringify({ stage_ids }) });
+export const deactivateStage = (org: string, id: string) => apiClient<{ stage: Stage }>(`${base(org)}/interview-stages/${id}/deactivate`, { method: "POST" });
+export const applicationInterviews = (org: string, application: string) => apiClient<{ items: Interview[] }>(`${base(org)}/applications/${application}/interviews`);
+export const scheduleInterview = (org: string, application: string, body: { interview_stage_id: string; scheduled_at: string; duration_minutes?: number; location_or_meeting_details?: string }) => apiClient<{ interview: Interview }>(`${base(org)}/applications/${application}/interviews`, { method: "POST", body: JSON.stringify(body) });
+export const allInterviews = (org: string) => apiClient<{ items: Interview[] }>(`${base(org)}/interviews`);
