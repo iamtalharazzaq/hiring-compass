@@ -13,7 +13,7 @@ export function CreateOrganizationForm() {
     setSaving(true);
     try {
       await create(name);
-      navigate("/");
+      navigate("/app");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not create workspace.");
     } finally {
