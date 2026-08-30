@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { Select } from "../ui/Select";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { Stage } from "../../features/interviews/api";
@@ -221,7 +222,7 @@ export function ScheduleInterviewForm({
         <label className="text-sm font-medium" htmlFor="interview-stage">
           Interview stage
         </label>
-        <select
+        <Select
           required
           id="interview-stage"
           value={stage}
@@ -236,14 +237,14 @@ export function ScheduleInterviewForm({
                 {item.name}
               </option>
             ))}
-        </select>
+        </Select>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <DatePicker value={date} onChange={setDate} />
         <div className="grid grid-cols-2 gap-2">
           <label className="text-sm font-medium">
             Start time
-            <select
+            <Select
               required
               value={start}
               onChange={(event) => setStart(event.target.value)}
@@ -255,11 +256,11 @@ export function ScheduleInterviewForm({
                   {displayTime(time)}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label className="text-sm font-medium">
             End time
-            <select
+            <Select
               required
               value={end}
               onChange={(event) => setEnd(event.target.value)}
@@ -275,7 +276,7 @@ export function ScheduleInterviewForm({
                   {displayTime(time)}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         </div>
       </div>

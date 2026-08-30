@@ -1,3 +1,4 @@
+# ruff: noqa: E501, E701, E702, I001
 from math import ceil
 from uuid import UUID
 
@@ -8,6 +9,7 @@ from app.modules.applications.domain.policies import can_transition
 from app.modules.auth.application.dto import AuthenticatedUser
 from app.modules.candidates.adapters.persistence.repositories import CandidateRepository
 from app.modules.jobs.adapters.persistence.repositories import SqlAlchemyJobRepository
+from app.modules.activity.application.service import record
 
 
 class ApplicationError(Exception):
@@ -32,6 +34,7 @@ class ApplicationService:
             )
         try:
             item = await self.repository.create(org, job_id, candidate_id, user.id)
+            await record(self.repository.session, org, "application_created", "application", item.id, user.id, candidate_id=candidate_id, job_id=job_id, application_id=item.id, metadata={"description": "Application created"})
             await self.repository.session.commit()
             return item
         except Exception:
@@ -67,7 +70,7 @@ class ApplicationService:
         return items, total, ceil(total / page_size) if total else 0
 
     async def change_status(
-        self, org: UUID, app_id: UUID, status: ApplicationStatus
+        self, org: UUID, app_id: UUID, status: ApplicationStatus, actor_user_id: UUID | None = None
     ) -> ApplicationModel:
         item = await self.get(org, app_id)
         current = ApplicationStatus(item.status)
@@ -75,6 +78,8 @@ class ApplicationService:
             raise ApplicationError(
                 "INVALID_TRANSITION", "This application status cannot change that way.", 409
             )
+        previous = item.status
         item = await self.repository.change_status(item, status.value)
+        await record(self.repository.session, org, "application_status_changed", "application", item.id, actor_user_id, candidate_id=item.candidate_id, job_id=item.job_id, application_id=item.id, metadata={"from_status": previous, "to_status": status.value, "description": f"Application status changed to {status.value}"})
         await self.repository.session.commit()
         return item

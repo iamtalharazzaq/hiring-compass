@@ -60,15 +60,14 @@ select {
   color: var(--color-ink);
 }
 
-select {
-  background-color: var(--color-surface);
-  color: var(--color-ink);
-}
-
-select option {
-  background-color: var(--color-surface);
-  color: var(--color-ink);
-}
+.hc-select { position: relative; display: block; }
+.hc-select::after { content: ""; position: absolute; right: .8rem; top: 50%; width: .45rem; height: .45rem; border-right: 1.5px solid var(--color-muted); border-bottom: 1.5px solid var(--color-muted); transform: translateY(-65%) rotate(45deg); pointer-events: none; }
+.hc-select-control { appearance: none; width: 100%; min-height: 44px; padding: .65rem 2.25rem .65rem .85rem; border: 1px solid var(--color-border); border-radius: .75rem; background: var(--color-surface); color: var(--color-ink); transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease; }
+select:not(.hc-select-control) { appearance: none; min-height: 44px; padding: .65rem 2.25rem .65rem .85rem; border: 1px solid var(--color-border); border-radius: .75rem; background-color: var(--color-surface); background-image: linear-gradient(45deg, transparent 50%, var(--color-muted) 50%), linear-gradient(135deg, var(--color-muted) 50%, transparent 50%); background-position: calc(100% - 1rem) 50%, calc(100% - .7rem) 50%; background-size: .3rem .3rem, .3rem .3rem; background-repeat: no-repeat; color: var(--color-ink); }
+.hc-select-control:hover { border-color: color-mix(in srgb, var(--color-navy) 45%, var(--color-border)); }
+.hc-select-control:focus-visible { border-color: var(--color-navy); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-navy) 18%, transparent); outline: none; }
+.hc-select-control:disabled { cursor: not-allowed; opacity: .55; }
+select option { background: var(--color-surface); color: var(--color-ink); }
 
 button {
   cursor: pointer;

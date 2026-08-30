@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Select } from "../ui/Select";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
 import { jobSchema } from "../../features/jobs/schemas";
@@ -101,7 +102,7 @@ export function JobForm({
       <div className="grid gap-5 sm:grid-cols-2">
         <label className="text-sm font-medium">
           Employment type
-          <select
+          <Select
             {...register("employment_type")}
             className="mt-2 w-full rounded-xl border bg-white px-4 py-3"
           >
@@ -111,11 +112,11 @@ export function JobForm({
             <option value="contract">Contract</option>
             <option value="temporary">Temporary</option>
             <option value="internship">Internship</option>
-          </select>
+          </Select>
         </label>
         <label className="text-sm font-medium">
           Workplace type
-          <select
+          <Select
             {...register("workplace_type")}
             className="mt-2 w-full rounded-xl border bg-white px-4 py-3"
           >
@@ -123,7 +124,7 @@ export function JobForm({
             <option value="remote">Remote</option>
             <option value="hybrid">Hybrid</option>
             <option value="onsite">Onsite</option>
-          </select>
+          </Select>
         </label>
       </div>
       {error && <p className="text-sm text-[var(--color-red)]">{error}</p>}

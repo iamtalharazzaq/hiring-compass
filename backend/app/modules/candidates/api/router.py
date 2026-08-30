@@ -134,6 +134,7 @@ async def update_candidate(
     organization_id: UUID,
     candidate_id: UUID,
     payload: CandidatePayload,
+    user: AuthenticatedUser = Depends(require_current_user),
     _: OrganizationMember = Depends(require_candidate_manager),
     service: CandidateService = Depends(get_candidate_service),
 ) -> JSONResponse:
@@ -142,7 +143,9 @@ async def update_candidate(
             request,
             {
                 "candidate": data(
-                    await service.update(organization_id, candidate_id, candidate_input(payload))
+                    await service.update(
+                        organization_id, candidate_id, candidate_input(payload), user.id
+                    )
                 )
             },
         )

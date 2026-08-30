@@ -170,6 +170,7 @@ async def change(
     organization_id: UUID,
     application_id: UUID,
     payload: ApplicationStatusRequest,
+    user: AuthenticatedUser = Depends(require_current_user),
     _: OrganizationMember = Depends(manager),
     service: ApplicationService = Depends(service),
 ) -> JSONResponse:
@@ -178,7 +179,9 @@ async def change(
             request,
             {
                 "application": data(
-                    await service.change_status(organization_id, application_id, payload.status)
+                    await service.change_status(
+                        organization_id, application_id, payload.status, user.id
+                    )
                 )
             },
         )

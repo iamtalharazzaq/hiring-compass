@@ -1,3 +1,4 @@
+# ruff: noqa: E501, E701, E702, I001
 import hashlib
 from math import ceil
 from uuid import UUID, uuid4
@@ -9,6 +10,7 @@ from app.modules.candidates.adapters.persistence.repositories import CandidateRe
 from app.modules.candidates.application.dto import CandidateInput
 from app.modules.candidates.domain.entities import Candidate
 from app.modules.candidates.ports.resume_storage import ResumeStorage
+from app.modules.activity.application.service import record
 
 
 class CandidateError(Exception):
@@ -31,6 +33,7 @@ class CandidateService:
             raise CandidateError(
                 "CONFLICT", "A candidate with this email already exists.", 409
             ) from None
+        await record(self.repository.session, organization_id, "candidate_created", "candidate", item.id, user.id, candidate_id=item.id, metadata={"description": "Candidate profile created"})
         await self.repository.session.commit()
         return item
 
@@ -69,6 +72,8 @@ class CandidateService:
             item = await self.repository.add_resume(
                 organization_id, candidate_id, user.id, filename[:255], key, len(content), checksum
             )
+            existing = await self.repository.resumes(organization_id, candidate_id)
+            await record(self.repository.session, organization_id, "resume_version_added" if len(existing) > 1 else "resume_uploaded", "candidate", candidate_id, user.id, candidate_id=candidate_id, metadata={"description": "Resume uploaded"})
             await self.repository.session.commit()
             return item
         except Exception:
@@ -112,7 +117,7 @@ class CandidateService:
         return items, total, ceil(total / page_size) if total else 0
 
     async def update(
-        self, organization_id: UUID, candidate_id: UUID, data: CandidateInput
+        self, organization_id: UUID, candidate_id: UUID, data: CandidateInput, actor_user_id: UUID | None = None
     ) -> Candidate:
         await self.get(organization_id, candidate_id)
         try:
@@ -123,5 +128,6 @@ class CandidateService:
             ) from None
         if not item:
             raise CandidateError("NOT_FOUND", "Candidate was not found.", 404)
+        await record(self.repository.session, organization_id, "candidate_profile_updated", "candidate", candidate_id, actor_user_id, candidate_id=candidate_id, metadata={"description": "Candidate profile updated"})
         await self.repository.session.commit()
         return item

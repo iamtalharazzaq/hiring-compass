@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Select } from "../ui/Select";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -197,17 +198,17 @@ function RequirementForm({
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="text-sm font-medium">
           Requirement type
-          <select
+          <Select
             {...register("requirement_type")}
             className="mt-1 w-full rounded-lg border bg-white p-2"
           >
             <option value="required">Required</option>
             <option value="preferred">Preferred</option>
-          </select>
+          </Select>
         </label>
         <label className="text-sm font-medium">
           Category
-          <select
+          <Select
             {...register("category")}
             className="mt-1 w-full rounded-lg border bg-white p-2"
           >
@@ -223,7 +224,7 @@ function RequirementForm({
                 {categoryLabel(value)}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
       <label className="mt-3 block text-sm font-medium">

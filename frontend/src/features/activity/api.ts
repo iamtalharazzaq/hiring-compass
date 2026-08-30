@@ -1,0 +1,4 @@
+import { apiClient } from "../../lib/apiClient";
+export type ActivityEvent = { id: string; event_type: string; label: string; description: string; actor: { id: string; display_name: string } | null; candidate_id: string | null; job_id: string | null; application_id: string | null; interview_id: string | null; metadata: Record<string, unknown>; created_at: string };
+export const candidateTimeline = (org: string, id: string, page = 1) => apiClient<{ items: ActivityEvent[]; pagination: { page: number; total_pages: number } }>(`/api/v1/organizations/${org}/candidates/${id}/timeline?page=${page}&page_size=20`);
+export const applicationTimeline = (org: string, id: string, page = 1) => apiClient<{ items: ActivityEvent[]; pagination: { page: number; total_pages: number } }>(`/api/v1/organizations/${org}/applications/${id}/timeline?page=${page}&page_size=20`);

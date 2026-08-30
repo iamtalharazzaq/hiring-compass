@@ -5,6 +5,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.modules.activity.application.service import record
 from app.modules.applications.adapters.persistence.models import ApplicationModel
 from app.modules.interviews.adapters.persistence.models import InterviewModel, InterviewStageModel
 from app.modules.jobs.adapters.persistence.models import JobModel
@@ -25,7 +26,7 @@ class InterviewService:
     async def add_stage(self, org: UUID, job_id: UUID, name: str, description: str | None, duration: int | None) -> InterviewStageModel:
         await self.job(org, job_id); stages = await self.stages(org, job_id)
         if any(s.is_active and s.name.lower() == name.lower() for s in stages): raise InterviewError("CONFLICT", "An active stage with that name already exists.", 409)
-        now = datetime.now(UTC); item = InterviewStageModel(organization_id=org, job_id=job_id, name=name, description=description, duration_minutes=duration, position=len(stages)+1, is_active=True, created_at=now, updated_at=now); self.session.add(item); await self.session.commit(); return item
+        now = datetime.now(UTC); item = InterviewStageModel(organization_id=org, job_id=job_id, name=name, description=description, duration_minutes=duration, position=len(stages)+1, is_active=True, created_at=now, updated_at=now); self.session.add(item); await self.session.flush(); await record(self.session, org, "interview_stage_created", "interview_stage", item.id, None, job_id=job_id, metadata={"description": "Interview stage created", "stage_name": name}); await self.session.commit(); return item
     async def stage(self, org: UUID, stage_id: UUID) -> InterviewStageModel:
         item = await self.session.scalar(select(InterviewStageModel).where(InterviewStageModel.id == stage_id, InterviewStageModel.organization_id == org))
         if not item: raise InterviewError("NOT_FOUND", "Interview stage was not found.", 404)
@@ -52,7 +53,7 @@ class InterviewService:
         if stage.job_id != app.job_id or not stage.is_active: raise InterviewError("VALIDATION_ERROR", "Select an active stage for this application's job.", 422)
         if app.status == "shortlisted": app.status, app.status_changed_at = "interviewing", datetime.now(UTC)
         elif app.status != "interviewing": raise InterviewError("INVALID_TRANSITION", "Only shortlisted applications can receive their first interview.", 409)
-        now = datetime.now(UTC); item = InterviewModel(organization_id=org, application_id=app.id, interview_stage_id=stage.id, scheduled_at=scheduled_at, duration_minutes=duration or stage.duration_minutes or 30, location_or_meeting_details=details, status="scheduled", created_by=user_id, created_at=now, updated_at=now); self.session.add(item); app.updated_at = now; await self.session.commit(); return item
+        now = datetime.now(UTC); item = InterviewModel(organization_id=org, application_id=app.id, interview_stage_id=stage.id, scheduled_at=scheduled_at, duration_minutes=duration or stage.duration_minutes or 30, location_or_meeting_details=details, status="scheduled", created_by=user_id, created_at=now, updated_at=now); self.session.add(item); await self.session.flush(); await record(self.session, org, "interview_scheduled", "interview", item.id, user_id, application_id=app.id, job_id=app.job_id, interview_id=item.id, metadata={"description": f"{stage.name} interview scheduled", "stage_name": stage.name}); app.updated_at = now; await self.session.commit(); return item
     async def interview(self, org: UUID, interview_id: UUID) -> InterviewModel:
         item = await self.session.scalar(select(InterviewModel).where(InterviewModel.id == interview_id, InterviewModel.organization_id == org))
         if not item: raise InterviewError("NOT_FOUND", "Interview was not found.", 404)
@@ -62,11 +63,11 @@ class InterviewService:
         if item.status == "cancelled": raise InterviewError("INVALID_STATE", "Cancelled interviews cannot be edited.", 409)
         for key, value in values.items():
             if value is not None: setattr(item, key, value)
-        item.updated_at = datetime.now(UTC); await self.session.commit(); return item
+        item.updated_at = datetime.now(UTC); await record(self.session, org, "interview_updated", "interview", item.id, None, application_id=item.application_id, interview_id=item.id, metadata={"description": "Interview details updated"}); await self.session.commit(); return item
     async def cancel(self, org: UUID, interview_id: UUID, reason: str | None) -> InterviewModel:
         item = await self.interview(org, interview_id)
         if item.status == "cancelled": raise InterviewError("INVALID_STATE", "Interview is already cancelled.", 409)
-        item.status, item.cancelled_reason, item.updated_at = "cancelled", reason, datetime.now(UTC); await self.session.commit(); return item
+        item.status, item.cancelled_reason, item.updated_at = "cancelled", reason, datetime.now(UTC); await record(self.session, org, "interview_cancelled", "interview", item.id, None, application_id=item.application_id, interview_id=item.id, metadata={"description": "Interview cancelled"}); await self.session.commit(); return item
     async def application_interviews(self, org: UUID, app_id: UUID) -> list[InterviewModel]:
         await self.session.scalar(select(ApplicationModel.id).where(ApplicationModel.id == app_id, ApplicationModel.organization_id == org)) or (_ for _ in ()).throw(InterviewError("NOT_FOUND", "Application was not found.", 404))
         return list((await self.session.scalars(select(InterviewModel).where(InterviewModel.organization_id == org, InterviewModel.application_id == app_id).order_by(InterviewModel.scheduled_at))).all())

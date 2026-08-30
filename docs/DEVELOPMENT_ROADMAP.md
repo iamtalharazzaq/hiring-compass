@@ -35,7 +35,8 @@ Next: **Phase 3.3 — Candidate Timeline and Activity History**.
 
 - [x] **3.1 Interview Stages and Manual Scheduling** — Job stages, manual scheduling, and interviewing applications.
 - [x] **3.2 Interviewer Assignment and Structured Feedback** — Assign interviewers and capture structured feedback.
-- [ ] **3.3 Candidate Timeline and Activity History** — Traceable recruiter activity across candidates and applications.
+- [x] **3.3 Candidate Timeline and Activity History** — Traceable recruiter activity across candidates and applications.
+- [ ] **3.4 Hiring Decision and Approval Workflow** — Human approval boundary for final hiring outcomes.
 - [ ] **3.4 Recommendations** — Evidence-backed decision recommendations.
 
 ## Phase 4 — Approvals and communication
@@ -82,4 +83,4 @@ Next: **Phase 3.3 — Candidate Timeline and Activity History**.
 
 ## Next
 
-**Next: Phase 3.3 — Candidate Timeline and Activity History**
+**Next: Phase 3.4 — Hiring Decision and Approval Workflow**
