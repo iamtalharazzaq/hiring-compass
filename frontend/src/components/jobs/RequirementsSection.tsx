@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Select } from "../ui/Select";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
+import { ArrowDown, ArrowUp, GripVertical, Pencil, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRequirements, useJobMutation } from "../../features/jobs/queries";
@@ -39,6 +40,7 @@ export function RequirementsSection({
   const mutations = useJobMutation(organizationId);
   const [editing, setEditing] = useState<JobRequirement | null | undefined>();
   const [items, setItems] = useState<JobRequirement[]>([]);
+  const [dragging, setDragging] = useState(false);
   useEffect(() => setItems(data?.items ?? []), [data]);
   const saveOrder = (next: JobRequirement[]) => {
     setItems(next);
@@ -64,7 +66,7 @@ export function RequirementsSection({
             Define what this role needs before it moves to review.
           </p>
         </div>
-        {editable && (
+        {editable && items.length > 0 && (
           <button
             onClick={() => setEditing(null)}
             className="hc-primary-action rounded-full px-4 py-2 text-sm"
@@ -110,7 +112,7 @@ export function RequirementsSection({
       {!isLoading && !error && !items.length && editing === undefined && <div className="mt-5 rounded-xl border border-dashed border-[var(--color-border)] px-5 py-8 text-center"><h3 className="font-semibold">No requirements added yet</h3><p className="mt-2 text-sm text-[var(--color-muted)]">Requirements help define the role and give your team a consistent way to evaluate candidates.</p>{editable && <button onClick={() => setEditing(null)} className="hc-primary-action mt-4 rounded-full px-4 py-2 text-sm">Add your first requirement</button>}</div>}
       <div className="mt-5 space-y-5">
         {(["required", "preferred"] as const).map((type) => (
-          <div key={type}>
+          items.some((item) => item.requirement_type === type) ? <div key={type}>
             <h3 className="text-sm font-semibold text-[var(--color-teal)]">
               {type === "required" ? "Required" : "Preferred"}
             </h3>
@@ -120,8 +122,15 @@ export function RequirementsSection({
                     key={item.id}
                     value={item}
                     drag={editable ? "y" : false}
+                    onClick={() => editable && !dragging && setEditing(item)}
+                    onDragStart={() => setDragging(true)}
+                    onDragEnd={() => setDragging(false)}
+                    role={editable ? "button" : undefined}
+                    tabIndex={editable ? 0 : undefined}
+                    onKeyDown={(event) => { if (editable && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); setEditing(item); } }}
                     className="flex items-center gap-3 rounded-xl border bg-white p-3"
                   >
+                    {editable && <GripVertical size={18} aria-hidden="true" className="shrink-0 text-[var(--color-muted)]" />}
                     <div className="min-w-0 flex-1">
                       <span className="text-xs font-semibold text-[var(--color-muted)]">
                         {categoryLabel(item.category)}
@@ -129,28 +138,32 @@ export function RequirementsSection({
                       <p className="mt-1 text-sm">{item.content}</p>
                     </div>
                     {editable && (
-                      <div className="flex shrink-0 gap-1">
+                      <div className="requirement-actions flex shrink-0 gap-1">
                         <button
                           aria-label="Move requirement up"
                           onClick={() => move(item, -1)}
                           className="rounded-lg px-2 py-1 text-sm"
                         >
-                          ↑
+                          <ArrowUp size={14} aria-hidden="true" />
                         </button>
                         <button
                           aria-label="Move requirement down"
                           onClick={() => move(item, 1)}
                           className="rounded-lg px-2 py-1 text-sm"
                         >
-                          ↓
+                          <ArrowDown size={14} aria-hidden="true" />
                         </button>
                         <button
+                          aria-label={`Edit ${item.content}`}
+                          title="Edit requirement"
                           onClick={() => setEditing(item)}
                           className="rounded-lg px-2 py-1 text-sm"
                         >
-                          Edit
+                          <Pencil size={18} aria-hidden="true" />
                         </button>
                         <button
+                          aria-label={`Delete ${item.content}`}
+                          title="Delete requirement"
                           onClick={() =>
                             mutations.deleteRequirement.mutate({
                               jobId,
@@ -159,14 +172,14 @@ export function RequirementsSection({
                           }
                           className="rounded-lg px-2 py-1 text-sm text-[var(--color-red)]"
                         >
-                          Delete
+                          <Trash2 size={14} aria-hidden="true" />
                         </button>
                       </div>
                     )}
                   </Reorder.Item>
                 ))}
             </Reorder.Group>
-          </div>
+          </div> : null
         ))}
       </div>
     </section>
@@ -192,10 +205,14 @@ function RequirementForm({
     formState: { errors },
   } = useForm<Form>({ resolver: zodResolver(schema), defaultValues: initial });
   return (
-    <form
-      onSubmit={handleSubmit(onSave)}
-      className="mt-5 rounded-xl bg-[var(--color-canvas)] p-4"
-    >
+    <>
+      <div className="fixed inset-0 z-40 bg-black/35 backdrop-blur-[1px]" aria-hidden="true" />
+      <form
+        aria-label={initial ? "Edit requirement" : "Add requirement"}
+        onSubmit={handleSubmit(onSave)}
+        className="fixed inset-0 z-50 m-auto grid h-fit max-h-[90vh] w-[min(36rem,calc(100vw-2rem))] gap-4 overflow-y-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-2xl"
+      >
+      <div><h2 className="text-lg font-semibold">{initial ? "Edit requirement" : "Add requirement"}</h2><p className="mt-1 text-sm text-[var(--color-muted)]">Define a clear requirement for this role.</p></div>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="text-sm font-medium">
           Requirement type
@@ -254,6 +271,7 @@ function RequirementForm({
           {busy ? "Saving…" : "Save requirement"}
         </button>
       </div>
-    </form>
+      </form>
+    </>
   );
 }

@@ -39,7 +39,7 @@
   --color-border: #263852;
   --shadow-soft: 0 10px 28px rgb(0 0 0 / 22%);
   --shadow-card: 0 2px 12px rgb(0 0 0 / 18%);
-  --color-overlay: rgb(0 0 0 / 45%);
+  --color-overlay: rgb(0 0 0 / 72%);
   --color-tab-track: #242b38;
   --color-tab-border: #384457;
   --color-tab-active: #4f8cff;
@@ -84,6 +84,249 @@ body {
 .hc-portal-main article.rounded-xl:hover {
   border-color: color-mix(in srgb, var(--color-navy) 35%, var(--color-border));
   box-shadow: var(--shadow-card);
+}
+
+/* Authenticated portal controls use one consistent pill shape. */
+.hc-portal-main button,
+.hc-portal-main a.hc-primary-action {
+  border-radius: 9999px !important;
+}
+.hc-primary-action {
+  border-radius: 9999px !important;
+}
+.hc-portal-main a[href="/jobs/new"]::before,
+.hc-portal-main a[href="/candidates/new"]::before,
+.hc-portal-main button.hc-primary-action.rounded-full::before {
+  width: 1.35rem;
+  height: 1.35rem;
+  font-size: 1.1rem;
+}
+
+/* Job Details already shows the canonical status badge beside its title. */
+.hc-portal-main > p[class*="bg-[var(--color-sage)]"] {
+  display: none;
+}
+
+.hc-portal-main section button.hc-primary-action.rounded-full::before {
+  content: "+";
+  display: inline-block;
+  margin-right: .4rem;
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+/* Keep scheduled interview details integrated with the candidate card. */
+.hc-portal-main article > div[class*="bg-[var(--color-surface)]"] {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
+  padding: .75rem 0 0;
+}
+
+.hc-portal-main input:not([type="checkbox"]):not([type="radio"]),
+.hc-portal-main form button {
+  border-radius: 9999px !important;
+  padding: .65rem 1.1rem;
+  white-space: nowrap;
+}
+.hc-portal-main form { min-width: 0; }
+.hc-portal-main form input { min-width: 0; }
+.hc-portal-main form:has(input[placeholder*="Search"]) {
+  position: relative;
+}
+.hc-portal-main form:has(input[placeholder*="Search"])::before {
+  content: "";
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 0;
+  border-radius: 50%;
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  z-index: 1;
+  transform: translateY(-52%);
+  color: var(--color-muted);
+  pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%239CAAC0' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.hc-portal-main form:has(input[placeholder*="Search"]) input {
+  padding-left: 2.35rem !important;
+  min-height: 2.75rem;
+  border-color: transparent;
+  background: var(--color-canvas);
+  box-shadow: none;
+}
+.hc-primary-action,
+a.hc-primary-action,
+button.hc-primary-action {
+  border-radius: 9999px !important;
+}
+.lucide-pencil { width: 1.2rem; height: 1.2rem; }
+.hc-portal-main button > svg,
+.hc-portal-main a > svg { width: 1rem; height: 1rem; flex: 0 0 auto; }
+.hc-portal-main .requirement-actions { display: flex; }
+.hc-portal-main .requirement-actions button:nth-child(-n+2) { display: none; }
+.hc-portal-main .requirement-actions button { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; border: 1px solid var(--color-border); border-radius: 9999px; padding: 0; }
+.hc-portal-main .requirement-actions button:last-child { display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px; padding: .5rem; }
+.hc-portal-main [role="button"] { cursor: pointer; }
+.hc-portal-main header [class*="items-end"] { align-items: center !important; }
+.hc-portal-main header .hc-primary-action:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+  filter: saturate(.7);
+}
+.hc-portal-main header .max-w-56 {
+  display: none;
+}
+.hc-portal-main a[href*="/jobs/"][href$="/edit"] {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  overflow: hidden;
+  font-size: 0;
+  text-align: center;
+}
+.hc-portal-main a[href*="/jobs/"][href$="/edit"]::before {
+  content: "";
+  width: 1.15rem;
+  height: 1.15rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.hc-portal-main a[href*="/jobs/"][href$="/edit"] {
+  width: auto;
+  height: 2.75rem;
+  padding: .65rem 1.15rem;
+  font-size: .875rem;
+  display: inline-flex;
+}
+.hc-portal-main a[href*="/jobs/"][href$="/edit"]::before { display: none; }
+.hc-portal-main form:has(input[placeholder*="Search"]) input:focus {
+  border-color: var(--color-navy);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-navy) 18%, transparent);
+}
+.hc-portal-main a.hc-primary-action,
+.hc-portal-main button.hc-primary-action {
+  min-height: 2.75rem;
+  padding-inline: 1.15rem;
+  font-weight: 700;
+}
+.hc-portal-main form:has(input[placeholder*="Search"]) > button {
+  display: none;
+}
+.hc-portal-main button.px-2.text-sm.font-semibold.text-\[var\(--color-muted\)\] {
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  overflow: hidden;
+  font-size: 0;
+}
+.hc-portal-main button.px-2.text-sm.font-semibold.text-\[var\(--color-muted\)\]::before {
+  content: "×";
+  font-size: 1.35rem;
+  line-height: 1;
+}
+.hc-portal-main button[class*="px-2"][class*="font-semibold"] { width: 2.25rem; height: 2.25rem; padding: 0; overflow: hidden; font-size: 0; border-radius: 9999px !important; }
+.hc-portal-main button[class*="px-2"][class*="font-semibold"]::before { content: "×"; font-size: 1.35rem; line-height: 1; }
+.hc-portal-main h3:has(+ div:empty) { display: none; }
+.hc-portal-main h3:has(+ div:empty) + div { display: none; }
+.hc-portal-main [class*="bg-white"] { background-color: var(--color-elevated) !important; }
+.hc-portal-main section:has(form input[placeholder*="Search"]) { position: relative; }
+.hc-portal-main section:has(form input[placeholder*="Search"]) > button[class*="px-2"][class*="font-semibold"] { position: absolute; right: 16.5rem; top: 1.1rem; z-index: 2; }
+.hc-portal-main section:has(form input[placeholder*="Search"]) > button[class*="px-2"] { position: absolute; right: 16.5rem; top: 1.1rem; z-index: 2; }
+.hc-portal-main section:has(form input[placeholder*="Search"]) button[class*="px-2"] { position: absolute; right: 16.5rem; top: 1.1rem; z-index: 2; }
+@media (max-width: 700px) {
+  .hc-portal-main section:has(form input[placeholder*="Search"]) > button[class*="px-2"][class*="font-semibold"] { right: 1rem; }
+}
+.hc-portal-main button[aria-label="Edit scorecard instructions"] {
+  display: flex;
+  margin: 0;
+  position: relative;
+  width: auto;
+  background: var(--color-surface);
+}
+.hc-portal-main div.fixed.inset-0.z-40 {
+  background: var(--color-overlay) !important;
+  backdrop-filter: none !important;
+}
+.fixed.inset-0.z-40 {
+  background: var(--color-overlay) !important;
+  backdrop-filter: none !important;
+}
+.hc-portal-main section form.mt-5 { margin-top: .75rem; }
+
+.hc-portal-main > section.rounded-2xl {
+  box-shadow: 0 10px 30px rgb(4 10 24 / 18%);
+}
+.hc-portal-main > header + section.rounded-2xl {
+  margin-top: 2rem;
+}
+.hc-portal-main > header h1 {
+  letter-spacing: -.025em;
+}
+.hc-portal-main > section.rounded-2xl:last-of-type {
+  border-left: 3px solid var(--color-border);
+}
+.hc-portal-main > section.rounded-2xl > h2 {
+  letter-spacing: -.01em;
+}
+.hc-portal-main form[aria-label="Edit interview details"] {
+  box-shadow: 0 0 0 100vmax rgb(4 10 24 / 68%), 0 24px 60px rgb(4 10 24 / 35%);
+}
+.hc-portal-main form[aria-label="Edit interview scorecard"] {
+  box-shadow: 0 0 0 100vmax rgb(4 10 24 / 68%), 0 24px 60px rgb(4 10 24 / 35%);
+}
+.hc-portal-main form[aria-label="Edit requirement"],
+.hc-portal-main form[aria-label="Add requirement"] {
+  box-shadow: 0 24px 60px rgb(4 10 24 / 35%);
+}
+.hc-portal-main > section.rounded-2xl p.flex.items-center.justify-between {
+  border: 1px solid var(--color-border);
+  border-radius: .75rem;
+  background: var(--color-elevated);
+  padding: .75rem 1rem;
+}
+.hc-portal-main > section.rounded-2xl p.flex.items-center.justify-between + p.flex.items-center.justify-between {
+  margin-top: .5rem;
+}
+
+.hc-portal-main a[href="/jobs/new"]::before,
+.hc-portal-main a[href="/candidates/new"]::before {
+  content: "+";
+  display: inline-grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-right: .45rem;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 92%);
+  color: var(--color-navy);
+  font-size: .95rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hc-portal-main button.hc-primary-action.rounded-full::before {
+  content: "+";
+  display: inline-grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-right: .45rem;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 92%);
+  color: var(--color-navy);
+  font-size: .95rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hc-portal-main form > div:last-child {
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
 }
 
 .hc-account-popover::after {

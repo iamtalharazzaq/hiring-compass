@@ -37,7 +37,7 @@ export function JobActionDialog({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 grid place-items-center bg-[var(--color-ink)]/25 p-5 backdrop-blur-sm"
+          className="fixed inset-0 z-50 grid place-items-center bg-[var(--color-overlay)] p-5"
           onMouseDown={onClose}
         >
           <motion.section

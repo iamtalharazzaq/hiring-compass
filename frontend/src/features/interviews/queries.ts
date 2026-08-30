@@ -7,6 +7,7 @@ import {
   reorderStages,
   scheduleInterview,
   stages,
+  updateStage,
 } from "./api";
 import { assignments, feedback, myFeedback, scorecard } from "./api";
 export const useStages = (org: string, job: string) =>
@@ -42,6 +43,10 @@ export function useInterviewActions(org: string, job: string) {
     addStage: useMutation({
       mutationFn: (body: Parameters<typeof addStage>[2]) =>
         addStage(org, job, body),
+      onSuccess: refresh,
+    }),
+    updateStage: useMutation({
+      mutationFn: ({ id, body }: { id: string; body: Parameters<typeof updateStage>[2] }) => updateStage(org, id, body),
       onSuccess: refresh,
     }),
     reorder: useMutation({

@@ -1,9 +1,10 @@
 import { AppShell } from "../components/layout/AppShell";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUpcomingInterviews } from "../features/interviews/queries";
 import { useOrganization } from "../features/organizations/OrganizationProvider";
 
 export function InterviewsPage() {
+  const navigate = useNavigate();
   const { organization } = useOrganization();
   const { data, isLoading, error } = useUpcomingInterviews(
     organization?.organization.id ?? "",
@@ -24,7 +25,11 @@ export function InterviewsPage() {
           {data.items.map((item) => (
             <article
               key={item.id}
-              className="rounded-2xl border bg-[var(--color-surface)] p-5"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/interviews/${item.id}`)}
+              onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); navigate(`/interviews/${item.id}`); } }}
+              className="cursor-pointer rounded-2xl border bg-[var(--color-surface)] p-5 transition hover:border-[var(--color-navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"
             >
               <p className="font-semibold">Interview</p>
               <p className="mt-1 text-sm text-[var(--color-muted)]">
@@ -34,12 +39,6 @@ export function InterviewsPage() {
               <p className="mt-1 text-sm">
                 {item.location_or_meeting_details || "No meeting details"}
               </p>
-              <Link
-                className="mt-3 inline-block text-sm font-medium text-[var(--color-navy)] underline"
-                to={`/interviews/${item.id}`}
-              >
-                Open interview
-              </Link>
             </article>
           ))}
         </div>
