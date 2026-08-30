@@ -56,3 +56,63 @@ class InterviewUpdateRequest(BaseModel):
 
 class CancelRequest(BaseModel):
     cancelled_reason: str | None = None
+
+
+class AssignmentRequest(BaseModel):
+    user_id: UUID
+
+
+class ScorecardRequest(BaseModel):
+    title: str = Field(min_length=1, max_length=160)
+    instructions: str | None = None
+
+    @field_validator("title")
+    @classmethod
+    def nonblank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Scorecard title cannot be empty.")
+        return value.strip()
+
+
+class CriterionRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=160)
+    description: str | None = None
+    is_required: bool = True
+
+    @field_validator("name")
+    @classmethod
+    def nonblank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Criterion name cannot be empty.")
+        return value.strip()
+
+
+class CriterionReorderRequest(BaseModel):
+    criterion_ids: list[UUID] = Field(min_length=1)
+
+
+class FeedbackItemRequest(BaseModel):
+    criterion_id: UUID
+    rating: int | None = Field(None, ge=1, le=5)
+    notes: str | None = None
+
+
+class FeedbackRequest(BaseModel):
+    overall_rating: int | None = Field(None, ge=1, le=5)
+    recommendation: str | None = None
+    summary: str = ""
+    items: list[FeedbackItemRequest] = []
+
+    @field_validator("recommendation")
+    @classmethod
+    def recommendation_value(cls, value: str | None) -> str | None:
+        if value and value not in {"strong_yes", "yes", "mixed", "no", "strong_no"}:
+            raise ValueError("Invalid recommendation.")
+        return value
+
+    @field_validator("items")
+    @classmethod
+    def unique_criteria(cls, value: list[FeedbackItemRequest]) -> list[FeedbackItemRequest]:
+        if len({item.criterion_id for item in value}) != len(value):
+            raise ValueError("Each criterion can only be rated once.")
+        return value

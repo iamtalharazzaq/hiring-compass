@@ -8,6 +8,7 @@ import {
   scheduleInterview,
   stages,
 } from "./api";
+import { assignments, feedback, myFeedback, scorecard } from "./api";
 export const useStages = (org: string, job: string) =>
   useQuery({
     queryKey: ["stages", org, job],
@@ -26,6 +27,10 @@ export const useUpcomingInterviews = (org: string) =>
     queryFn: () => allInterviews(org),
     enabled: !!org,
   });
+export const useAssignments = (org: string, interview: string) => useQuery({ queryKey: ["assignments", org, interview], queryFn: () => assignments(org, interview), enabled: !!org && !!interview });
+export const useFeedback = (org: string, interview: string) => useQuery({ queryKey: ["feedback", org, interview], queryFn: () => feedback(org, interview), enabled: !!org && !!interview });
+export const useMyFeedback = (org: string, interview: string) => useQuery({ queryKey: ["my-feedback", org, interview], queryFn: () => myFeedback(org, interview), enabled: !!org && !!interview });
+export const useScorecard = (org: string, stage: string, interview?: string) => useQuery({ queryKey: ["scorecard", org, stage, interview], queryFn: () => scorecard(org, stage, interview), enabled: !!org && !!stage });
 export function useInterviewActions(org: string, job: string) {
   const client = useQueryClient();
   const refresh = () => {

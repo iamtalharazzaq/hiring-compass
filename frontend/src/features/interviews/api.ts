@@ -1,6 +1,8 @@
 import { apiClient } from "../../lib/apiClient";
 export type Stage = { id: string; name: string; description: string | null; position: number; duration_minutes: number | null; is_active: boolean };
 export type Interview = { id: string; application_id: string; interview_stage_id: string; scheduled_at: string; duration_minutes: number; location_or_meeting_details: string | null; status: "scheduled" | "cancelled"; cancelled_reason: string | null };
+export type Criterion = { id: string; name: string; description: string | null; position: number; is_required: boolean; is_active: boolean };
+export type Scorecard = { id: string; interview_stage_id: string; title: string; instructions: string | null; criteria: Criterion[] };
 const base = (org: string) => `/api/v1/organizations/${org}`;
 export const stages = (org: string, job: string) => apiClient<{ items: Stage[] }>(`${base(org)}/jobs/${job}/interview-stages`);
 export const addStage = (org: string, job: string, body: { name: string; description?: string | null; duration_minutes?: number }) => apiClient<{ stage: Stage }>(`${base(org)}/jobs/${job}/interview-stages`, { method: "POST", body: JSON.stringify(body) });
@@ -9,3 +11,16 @@ export const deactivateStage = (org: string, id: string) => apiClient<{ stage: S
 export const applicationInterviews = (org: string, application: string) => apiClient<{ items: Interview[] }>(`${base(org)}/applications/${application}/interviews`);
 export const scheduleInterview = (org: string, application: string, body: { interview_stage_id: string; scheduled_at: string; duration_minutes?: number; location_or_meeting_details?: string }) => apiClient<{ interview: Interview }>(`${base(org)}/applications/${application}/interviews`, { method: "POST", body: JSON.stringify(body) });
 export const allInterviews = (org: string) => apiClient<{ items: Interview[] }>(`${base(org)}/interviews`);
+export const myFeedback = (org: string, interview: string) => apiClient<{ feedback: Feedback | null }>(`${base(org)}/interviews/${interview}/my-feedback`);
+export type Feedback = { id: string; status: "draft" | "submitted"; overall_rating: number | null; recommendation: string | null; summary: string; items: { criterion_id: string; rating: number | null; notes: string | null }[] };
+export const saveFeedback = (org: string, interview: string, body: Omit<Feedback, "id" | "status">) => apiClient<{ feedback: Feedback }>(`${base(org)}/interviews/${interview}/feedback`, { method: "POST", body: JSON.stringify(body) });
+export const updateFeedback = (org: string, id: string, body: Omit<Feedback, "id" | "status">) => apiClient<{ feedback: Feedback }>(`${base(org)}/interview-feedback/${id}`, { method: "PATCH", body: JSON.stringify(body) });
+export const submitFeedback = (org: string, id: string) => apiClient<{ feedback: Feedback }>(`${base(org)}/interview-feedback/${id}/submit`, { method: "POST" });
+export const assignments = (org: string, interview: string) => apiClient<{ items: { id: string; user_id: string }[] }>(`${base(org)}/interviews/${interview}/assignments`);
+export const feedback = (org: string, interview: string) => apiClient<{ items: Feedback[] }>(`${base(org)}/interviews/${interview}/feedback`);
+export const assignInterviewer = (org: string, interview: string, user_id: string) => apiClient(`${base(org)}/interviews/${interview}/assignments`, { method: "POST", body: JSON.stringify({ user_id }) });
+export const removeAssignment = (org: string, id: string) => apiClient(`${base(org)}/interview-assignments/${id}`, { method: "DELETE" });
+export const scorecard = (org: string, stage: string, interview?: string) => apiClient<{ scorecard: Scorecard | null }>(`${base(org)}/interview-stages/${stage}/scorecard${interview ? `?interview_id=${interview}` : ""}`);
+export const saveScorecard = (org: string, stage: string, body: { title: string; instructions: string | null }) => apiClient<{ scorecard: Scorecard }>(`${base(org)}/interview-stages/${stage}/scorecard`, { method: "PUT", body: JSON.stringify(body) });
+export const addCriterion = (org: string, scorecardId: string, body: { name: string; description?: string | null; is_required: boolean }) => apiClient(`${base(org)}/scorecards/${scorecardId}/criteria`, { method: "POST", body: JSON.stringify(body) });
+export const deactivateCriterion = (org: string, criterionId: string) => apiClient(`${base(org)}/scorecard-criteria/${criterionId}/deactivate`, { method: "POST" });

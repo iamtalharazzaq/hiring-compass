@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from app.modules.auth.application.dto import AuthenticatedUser
 from app.modules.organizations.api.dependencies import (
     get_organization_service,
+    require_active_organization_member,
     require_current_user,
     require_organization_admin,
 )
@@ -115,7 +116,7 @@ async def update(
 async def members(
     request: Request,
     organization_id: UUID,
-    _: OrganizationMember = Depends(require_organization_admin),
+    _: OrganizationMember = Depends(require_active_organization_member),
     service: OrganizationService = Depends(get_organization_service),
 ) -> JSONResponse:
     return success_response(

@@ -18,7 +18,7 @@ Hiring Compass is implemented one sub-phase at a time so each foundation is usab
 - [x] **1.6 Organization and RBAC** — Organizations, memberships, roles, tenant isolation, and idempotent `make seed-up` plus protected `make seed-down` support.
 - [x] **1.7 Dashboard Shell** — Organization-aware overview, empty states, navigation, and responsive shell.
 
-Next: **Phase 3.2 — Interviewer Assignment and Structured Feedback**.
+Next: **Phase 3.3 — Candidate Timeline and Activity History**.
 
 ## Phase 2 — Jobs and candidates
 
@@ -34,8 +34,8 @@ Next: **Phase 3.2 — Interviewer Assignment and Structured Feedback**.
 ## Phase 3 — Hiring workflow
 
 - [x] **3.1 Interview Stages and Manual Scheduling** — Job stages, manual scheduling, and interviewing applications.
-- [ ] **3.2 Interviewer Assignment and Structured Feedback** — Assign interviewers and capture structured feedback.
-- [ ] **3.3 Scorecards** — Structured interview feedback and calibration.
+- [x] **3.2 Interviewer Assignment and Structured Feedback** — Assign interviewers and capture structured feedback.
+- [ ] **3.3 Candidate Timeline and Activity History** — Traceable recruiter activity across candidates and applications.
 - [ ] **3.4 Recommendations** — Evidence-backed decision recommendations.
 
 ## Phase 4 — Approvals and communication
@@ -82,4 +82,4 @@ Next: **Phase 3.2 — Interviewer Assignment and Structured Feedback**.
 
 ## Next
 
-**Next: Phase 3.2 — Interviewer Assignment and Structured Feedback**
+**Next: Phase 3.3 — Candidate Timeline and Activity History**
