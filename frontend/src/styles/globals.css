@@ -74,6 +74,9 @@ button {
   cursor: pointer;
 }
 
+.auth-input { display:block; width:100%; margin-top:.35rem; padding:.75rem; border:1px solid var(--color-border); border-radius:.75rem; background:var(--color-surface); color:var(--color-ink); outline:none; }
+.auth-input:focus { border-color:var(--color-navy); box-shadow:0 0 0 3px color-mix(in srgb,var(--color-navy) 20%,transparent); }
+
 .bg-white { background-color: var(--color-surface) !important; }
 .bg-red-50 { background-color: color-mix(in srgb, var(--color-red) 12%, var(--color-surface)) !important; }
 .text-red-700 { color: var(--color-red) !important; }

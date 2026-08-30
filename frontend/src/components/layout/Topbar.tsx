@@ -1,4 +1,4 @@
-import { LogOut, Menu, Settings2, Moon, Sun } from "lucide-react";
+import { LogOut, Settings2, Moon, Sun } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -6,17 +6,14 @@ import { useOrganization } from "../../features/organizations/OrganizationProvid
 import { useAuth } from "../../features/auth/AuthProvider";
 import { useTheme } from "../../app/providers";
 
-type TopbarProps = {
-  onMenuToggle: () => void;
-  title: string;
-};
+type TopbarProps = { title: string; };
 
 const roleLabel = (role: string) =>
   role
     .split("_")
     .map((word) => word[0].toUpperCase() + word.slice(1))
     .join(" ");
-export function Topbar({ onMenuToggle, title }: TopbarProps) {
+export function Topbar({ title }: TopbarProps) {
   const { organization } = useOrganization();
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
@@ -49,14 +46,6 @@ export function Topbar({ onMenuToggle, title }: TopbarProps) {
   return (
     <header className="flex h-18 items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface)] px-5 sm:px-8 lg:px-10">
       <div className="flex items-center gap-3">
-        <button
-          aria-label="Open navigation"
-          className="rounded-lg p-2 text-[var(--color-muted)] hover:bg-[var(--color-canvas)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)] lg:hidden"
-          onClick={onMenuToggle}
-          type="button"
-        >
-          <Menu aria-hidden="true" size={20} />
-        </button>
         <div>
           <p className="text-sm font-semibold text-[var(--color-ink)]">
             {title}
@@ -81,7 +70,7 @@ export function Topbar({ onMenuToggle, title }: TopbarProps) {
             <p className="mt-3 truncate text-xs text-[var(--color-muted)]">{organization?.organization.name || "Your workspace"}</p>
             <p className="mt-1 text-xs font-medium text-[var(--color-muted)]">{organization ? roleLabel(organization.role) : "Member"}</p>
           </div>
-          <div className="px-1 py-1.5"><p className="px-2 pb-1 text-[10px] font-medium uppercase tracking-wide text-[var(--color-muted)]">Appearance</p><div className="flex gap-1 rounded-lg bg-[var(--color-canvas)] p-0.5" role="group" aria-label="Choose color theme">{(["light", "dark", "system"] as const).map((option) => <button key={option} type="button" aria-pressed={theme === option} onClick={() => setTheme(option)} className={`flex min-h-8 flex-1 items-center justify-center gap-1 rounded-md px-1.5 text-[11px] font-medium capitalize focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)] ${theme === option ? "bg-[var(--color-navy)] !text-white shadow-sm" : "text-[var(--color-muted)] hover:text-[var(--color-ink)]"}`}>{option === "light" ? <Sun size={12} aria-hidden="true" /> : option === "dark" ? <Moon size={12} aria-hidden="true" /> : null}{option}</button>)}</div></div>
+          <div className="px-1 py-1.5"><p className="px-2 pb-1 text-[10px] font-medium uppercase tracking-wide text-[var(--color-muted)]">Appearance</p><button type="button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="flex min-h-9 w-full items-center justify-center gap-2 rounded-lg bg-[var(--color-canvas)] px-3 text-xs font-medium text-[var(--color-ink)] hover:bg-[var(--color-border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]" aria-label={theme === "dark" ? "Use light theme" : "Use dark theme"}>{theme === "dark" ? <><Sun size={14} aria-hidden="true" />Light</> : <><Moon size={14} aria-hidden="true" />Dark</>}</button></div>
           <button role="menuitem" type="button" onClick={() => { setOpen(false); navigate("/settings"); }} className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-sm hover:bg-[var(--color-canvas)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"><Settings2 size={17} aria-hidden="true" />Settings</button>
           <div className="my-1 border-t border-[var(--color-border)]" />
           <button role="menuitem" type="button" onClick={() => void signOut()} className="flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-sm text-[var(--color-muted)] hover:bg-[var(--color-red)]/10 hover:text-[var(--color-red)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"><LogOut size={17} aria-hidden="true" />Sign out</button>

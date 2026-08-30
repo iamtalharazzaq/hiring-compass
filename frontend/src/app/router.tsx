@@ -17,6 +17,7 @@ import { CreateCandidatePage } from "../pages/CreateCandidatePage";
 import { CandidateDetailPage } from "../pages/CandidateDetailPage";
 import { EditCandidatePage } from "../pages/EditCandidatePage";
 import { MarketingPage } from "../pages/MarketingPage";
+import { AuthPage } from "../pages/AuthPage";
 
 function Protected({ children }: { children: ReactNode }) { const { user, loading } = useAuth(); const { organization, loading: orgLoading } = useOrganization(); if (loading || orgLoading) return <p>Loading workspace…</p>; return user ? organization ? children : <Navigate replace to="/setup-organization" /> : <Navigate replace to="/login" />; }
 function Setup() { const { user, loading } = useAuth(); const { organization, loading: orgLoading } = useOrganization(); if (loading || orgLoading) return <p>Loading workspace…</p>; return user ? organization ? <Navigate replace to="/app" /> : <OrganizationSetupPage /> : <Navigate replace to="/login" />; }
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
   { path: "/about", element: <Navigate replace to="/#about" /> },
   { path: "/contact", element: <Navigate replace to="/#contact" /> },
   { path: "/app", element: <Protected><OverviewPage /></Protected> },
+  { path: "/auth", element: <AuthPage /> },
   { path: "/login", element: <LoginPage /> },
   { path: "/signup", element: <SignupPage /> },
   { path: "/setup-organization", element: <Setup /> },

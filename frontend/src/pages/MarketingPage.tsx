@@ -67,10 +67,9 @@ function Nav() {
         ))}
       </nav>
       <div className="hc-nav-actions">
-        <Link to="/login">Log in</Link>
         <Link
           className="hc-button hc-button-small"
-          to={user ? "/app" : "/signup"}
+          to={user ? "/app" : "/auth?mode=signup"}
         >
           {workspace}
           <ArrowRight size={15} />
@@ -92,13 +91,10 @@ function Nav() {
                 {name}
               </a>
             ))}
-            <Link onClick={() => setOpen(false)} to="/login">
-              Log in
-            </Link>
             <Link
               className="hc-button"
               onClick={() => setOpen(false)}
-              to={user ? "/app" : "/signup"}
+              to={user ? "/app" : "/auth?mode=signup"}
             >
               {workspace}
               <ArrowRight size={15} />
