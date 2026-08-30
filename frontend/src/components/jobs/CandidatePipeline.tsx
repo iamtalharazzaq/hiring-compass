@@ -4,7 +4,7 @@ import type { ApplicationStatus } from "../../features/applications/api";
 import { useInterviewActions, useStages } from "../../features/interviews/queries";
 import { ScheduleInterviewForm } from "./ScheduleInterviewForm";
 
-const statuses: ApplicationStatus[] = ["new", "shortlisted", "interviewing", "on_hold", "rejected"];
+const statuses: ApplicationStatus[] = ["new", "shortlisted", "interviewing", "decision_pending", "offer_approved", "on_hold", "rejected"];
 
 export function CandidatePipeline({ organizationId, jobId, editable }: { organizationId: string; jobId: string; editable: boolean }) {
   const { data, isLoading } = useJobApplications(organizationId, jobId);

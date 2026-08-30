@@ -98,7 +98,7 @@ async def send_delivery(session: AsyncSession, item: CandidateCommunicationModel
     now = datetime.now(UTC); delivery = EmailDeliveryModel(organization_id=item.organization_id, communication_id=item.id, recipient_email=item.recipient_email, subject_snapshot=item.subject, body_snapshot=item.body, status="sending", attempt_count=1, created_by=user.id, created_at=now, updated_at=now); session.add(delivery); await session.flush()
     try:
         SmtpEmailSender(get_settings()).send(item.recipient_email, item.subject, item.body); delivery.status, delivery.sent_at, item.status = "sent", now, "sent"; item.updated_at = now
-    except Exception as error:
+    except Exception:
         delivery.status, delivery.failed_at, delivery.last_error_code, delivery.last_error_message = "failed", now, "SMTP_SEND_FAILED", "Delivery failed. Retry after checking email configuration."; delivery.updated_at = now
     await session.commit(); return delivery
 @router.post("/candidate-communications/{communication_id}/send")
