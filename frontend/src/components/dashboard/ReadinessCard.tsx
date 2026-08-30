@@ -26,7 +26,7 @@ export function ReadinessCard() {
             className="flex items-center gap-3 rounded-xl bg-[var(--color-canvas)] p-3"
           >
             <span
-              className={ready ? "text-[var(--color-teal)]" : "text-[#a67528]"}
+              className={ready ? "text-[var(--color-teal)]" : "text-[var(--color-amber)]"}
             >
               {ready ? (
                 <CheckCircle2 aria-hidden="true" size={20} />

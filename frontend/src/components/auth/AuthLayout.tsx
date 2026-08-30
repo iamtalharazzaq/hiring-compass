@@ -11,8 +11,8 @@ export function AuthLayout({
   const { theme, setTheme } = useTheme();
   return (
     <main className="relative grid min-h-screen place-items-center overflow-hidden bg-[var(--color-canvas)] px-5 py-8">
-      <div aria-hidden="true" className="absolute -left-28 top-12 size-80 rounded-full bg-violet-500/20 blur-3xl" />
-      <div aria-hidden="true" className="absolute -right-24 bottom-0 size-96 rounded-full bg-indigo-500/15 blur-3xl" />
+      <div aria-hidden="true" className="absolute -left-28 top-12 size-80 rounded-full bg-[var(--color-navy)]/20 blur-3xl" />
+      <div aria-hidden="true" className="absolute -right-24 bottom-0 size-96 rounded-full bg-[var(--color-teal)]/15 blur-3xl" />
       <section className="relative w-full max-w-md rounded-3xl border border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-surface)_92%,transparent)] p-6 shadow-[var(--shadow-soft)] backdrop-blur sm:p-9">
         <div className="flex items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 font-semibold">

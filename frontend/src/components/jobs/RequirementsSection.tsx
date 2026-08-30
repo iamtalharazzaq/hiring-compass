@@ -59,7 +59,7 @@ export function RequirementsSection({
     <section className="mt-8 rounded-2xl border bg-[var(--color-surface)] p-6 shadow-[var(--shadow-card)]">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold">Requirements</h2>
+          <h2 className="text-lg font-semibold">Requirements <span className="ml-2 rounded-full bg-[var(--color-sage)] px-2 py-1 text-xs text-[var(--color-teal)]">{items.length}</span></h2>
           <p className="mt-1 text-sm text-[var(--color-muted)]">
             Define what this role needs before it moves to review.
           </p>
@@ -67,7 +67,7 @@ export function RequirementsSection({
         {editable && (
           <button
             onClick={() => setEditing(null)}
-            className="rounded-xl border px-3 py-2 text-sm font-semibold"
+            className="hc-primary-action rounded-full px-4 py-2 text-sm"
           >
             Add requirement
           </button>
@@ -107,6 +107,7 @@ export function RequirementsSection({
           }}
         />
       )}
+      {!isLoading && !error && !items.length && editing === undefined && <div className="mt-5 rounded-xl border border-dashed border-[var(--color-border)] px-5 py-8 text-center"><h3 className="font-semibold">No requirements added yet</h3><p className="mt-2 text-sm text-[var(--color-muted)]">Requirements help define the role and give your team a consistent way to evaluate candidates.</p>{editable && <button onClick={() => setEditing(null)} className="hc-primary-action mt-4 rounded-full px-4 py-2 text-sm">Add your first requirement</button>}</div>}
       <div className="mt-5 space-y-5">
         {(["required", "preferred"] as const).map((type) => (
           <div key={type}>

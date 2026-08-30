@@ -18,10 +18,10 @@ export function OverviewPage() {
   const applications = applicationQueries.flatMap((query) => query.data?.items ?? []); const activeJobs = jobItems.filter((job) => job.status === "approved"); const firstName = user?.display_name?.split(" ")[0] ?? "there";
   const pipeline = (["new", "shortlisted", "on_hold", "rejected"] as const).map((status) => ({ status, count: applications.filter((application) => application.status === status).length })); const maxPipeline = Math.max(1, ...pipeline.map(({ count }) => count));
   const metrics = [
-    { label: "Open roles", value: activeJobs.length, detail: "Approved and live", icon: BriefcaseBusiness, tone: "bg-violet-100 text-violet-700 dark:bg-violet-500/15 dark:text-violet-300" },
-    { label: "Candidates", value: candidates.data?.pagination.total ?? 0, detail: "In your workspace", icon: UsersRound, tone: "bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-300" },
+    { label: "Open roles", value: activeJobs.length, detail: "Approved and live", icon: BriefcaseBusiness, tone: "bg-[var(--color-sage)] text-[var(--color-navy)]" },
+    { label: "Candidates", value: candidates.data?.pagination.total ?? 0, detail: "In your workspace", icon: UsersRound, tone: "bg-[var(--color-sage)] text-[var(--color-teal)]" },
     { label: "Applications", value: applications.filter((application) => application.status !== "rejected").length, detail: "Currently in motion", icon: ClipboardCheck, tone: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300" },
-    { label: "Shortlisted", value: pipeline.find(({ status }) => status === "shortlisted")?.count ?? 0, detail: "Ready for review", icon: ChevronRight, tone: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300" },
+    { label: "Shortlisted", value: pipeline.find(({ status }) => status === "shortlisted")?.count ?? 0, detail: "Ready for review", icon: ChevronRight, tone: "bg-[var(--color-sage)] text-[var(--color-teal)]" },
   ];
   return <AppShell title="Overview">
     <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-sm font-semibold text-[var(--color-teal)]">Analytics overview</p><h1 className="mt-1 text-3xl font-semibold tracking-tight sm:text-4xl">Good to see you, {firstName}.</h1><p className="mt-2 text-sm text-[var(--color-muted)]">A clear view of the hiring work moving through {organization?.organization.name ?? "your workspace"}.</p></div><Link to="/jobs/new" className="inline-flex items-center justify-center rounded-xl bg-[var(--color-navy)] px-4 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow-card)]">Create job</Link></section>

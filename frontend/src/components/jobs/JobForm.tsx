@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import { Select } from "../ui/Select";
 import { useForm } from "react-hook-form";
 import type { z } from "zod";
@@ -36,7 +37,7 @@ export function JobForm({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<Form>({
     resolver: zodResolver(jobSchema),
     defaultValues: job
@@ -69,6 +70,8 @@ export function JobForm({
         data.salary_max === undefined ? null : String(data.salary_max),
       salary_currency: data.salary_currency || null,
     });
+  const navigate = useNavigate();
+  const leave = () => { if (!isDirty || window.confirm("You have unsaved changes. Leave without saving?")) navigate("/hiring?tab=jobs"); };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
       <label className="block text-sm font-medium">
@@ -128,12 +131,7 @@ export function JobForm({
         </label>
       </div>
       {error && <p className="text-sm text-[var(--color-red)]">{error}</p>}
-      <button
-        disabled={busy}
-        className="rounded-xl bg-[var(--color-navy)] px-5 py-3 text-sm font-semibold text-white"
-      >
-        {busy ? "Saving…" : "Save job"}
-      </button>
+      <div className="flex flex-wrap justify-end gap-3 border-t border-[var(--color-border)] pt-5"><button type="button" onClick={leave} className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-3 text-sm font-semibold">Cancel</button><button disabled={busy} className="hc-primary-action">{busy ? "Saving…" : "Save Job"}</button></div>
     </form>
   );
 }
