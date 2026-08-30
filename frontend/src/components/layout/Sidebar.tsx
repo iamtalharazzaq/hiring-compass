@@ -5,12 +5,17 @@ import {
   LayoutDashboard,
   BriefcaseBusiness,
   CalendarDays,
+  LogOut,
+  Moon,
+  Sun,
   Settings2,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
 import { cn } from "../../lib/utils";
-import { useOrganization } from "../../features/organizations/OrganizationProvider";
+import { useAuth } from "../../features/auth/AuthProvider";
+import { useTheme } from "../../app/providers";
+import { useNavigate } from "react-router-dom";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -24,13 +29,14 @@ const navigation = [
   { label: "Interviews", icon: CalendarDays, href: "/interviews" },
   { label: "Approvals", icon: CheckSquare, href: "/approvals" },
   { label: "Activity", icon: Activity },
-  { label: "Settings", icon: Settings2, href: "/settings" },
 ];
 
 export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
   const { pathname } = useLocation();
-  const { organization } = useOrganization();
-  const closeOnMobile = () => { if (window.innerWidth < 1024) onClose(); };
+  const { user, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
+  const closeOnNavigate = () => { if (isOpen) onToggle(); if (window.innerWidth < 1024) onClose(); };
   return (
     <>
       {isOpen && (
@@ -44,23 +50,23 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-40 flex -translate-x-full flex-col border-r border-[var(--color-border)] bg-[var(--color-surface)] py-5 shadow-[var(--shadow-soft)] transition-[transform,width,padding] duration-200",
-          isOpen ? "w-72 translate-x-0 px-4" : "w-20 translate-x-0 px-2",
+          isOpen ? "w-64 translate-x-0 px-4" : "w-20 translate-x-0 px-2",
         )}
       >
         <div className={`flex items-start px-3 pb-8 ${isOpen ? "justify-between" : "justify-center"}`}>
-          <div className="flex items-center gap-3">
-            <button type="button" onClick={onToggle} aria-label={isOpen ? "Collapse navigation" : "Expand navigation"} className="grid size-10 place-items-center rounded-xl bg-[var(--color-navy)] text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)] focus-visible:ring-offset-2">
+          <button type="button" onClick={onToggle} aria-label={isOpen ? "Collapse navigation" : "Expand navigation"} className={cn("flex items-center rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)] focus-visible:ring-offset-2", isOpen ? "gap-3" : "justify-center")}>
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[var(--color-navy)] text-white shadow-[var(--shadow-card)]">
               <Compass aria-hidden="true" size={21} strokeWidth={2.25} />
-            </button>
-            {isOpen && <div>
+            </span>
+            {isOpen && <span>
               <p className="font-semibold tracking-tight text-[var(--color-ink)]">
                 Hiring Compass
               </p>
               <p className="mt-0.5 text-xs text-[var(--color-muted)]">
                 Recruitment workspace
               </p>
-            </div>}
-          </div>
+            </span>}
+          </button>
         </div>
 
         <nav aria-label="Workspace navigation">
@@ -70,7 +76,7 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
                 {href ? (
                   <Link
                     to={href}
-                    onClick={closeOnMobile}
+                    onClick={closeOnNavigate}
                     aria-current={pathname === href ? "page" : undefined}
                     title={label}
                     className={cn(
@@ -102,14 +108,14 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
           </ul>
         </nav>
 
-        {isOpen && <div className="mt-auto border-t border-[var(--color-border)] px-3 pt-4">
-          <p className="truncate text-sm font-medium">
-            {organization?.organization.name ?? "Your workspace"}
-          </p>
-          <p className="mt-1 text-xs text-[var(--color-muted)]">
-            A focused space for thoughtful hiring.
-          </p>
-        </div>}
+        <div className="mt-auto border-t border-[var(--color-border)] px-2 pt-4">
+          {isOpen && <div className="mb-3 px-1"><p className="truncate text-sm font-semibold">{user?.display_name ?? "Account"}</p><p className="truncate text-xs text-[var(--color-muted)]">{user?.email ?? "Signed-in user"}</p></div>}
+          <div className={cn("flex items-center gap-2", isOpen ? "justify-end" : "flex-col")}>
+            <button type="button" onClick={() => navigate("/settings")} title="Settings" aria-label="Settings" className="grid size-9 place-items-center rounded-lg text-[var(--color-muted)] hover:bg-[var(--color-elevated)] hover:text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"><Settings2 size={16} aria-hidden="true" /></button>
+            <button type="button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} title={theme === "dark" ? "Use light theme" : "Use dark theme"} aria-label={theme === "dark" ? "Use light theme" : "Use dark theme"} className="grid size-9 place-items-center rounded-lg text-[var(--color-muted)] hover:bg-[var(--color-elevated)] hover:text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]">{theme === "dark" ? <Sun size={16} aria-hidden="true" /> : <Moon size={16} aria-hidden="true" />}</button>
+            <button type="button" onClick={() => { void logout().then(() => navigate("/login", { replace: true })); }} title="Sign out" aria-label="Sign out" className="grid size-10 shrink-0 place-items-center rounded-full bg-[var(--color-sage)] text-[var(--color-teal)] ring-2 ring-[var(--color-surface)] transition-colors hover:bg-[var(--color-red)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"><LogOut size={17} aria-hidden="true" /></button>
+          </div>
+        </div>
       </aside>
     </>
   );
