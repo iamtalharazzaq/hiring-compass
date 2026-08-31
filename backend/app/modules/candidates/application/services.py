@@ -109,10 +109,10 @@ class CandidateService:
         return item
 
     async def list(
-        self, organization_id: UUID, page: int, page_size: int, search: str | None
+        self, organization_id: UUID, page: int, page_size: int, search: str | None, location: str | None = None, current_title: str | None = None, min_years: int | None = None, max_years: int | None = None
     ) -> tuple[list[Candidate], int, int]:
         items, total = await self.repository.list(
-            organization_id, search, (page - 1) * page_size, page_size
+            organization_id, search, (page - 1) * page_size, page_size, location, current_title, min_years, max_years
         )
         return items, total, ceil(total / page_size) if total else 0
 

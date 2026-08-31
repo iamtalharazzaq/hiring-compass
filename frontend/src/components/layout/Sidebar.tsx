@@ -36,6 +36,7 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
+  const hiringActive = pathname === "/hiring" || pathname.startsWith("/hiring") || pathname.startsWith("/jobs") || pathname.startsWith("/candidates");
   const closeOnNavigate = () => { if (isOpen) onToggle(); if (window.innerWidth < 1024) onClose(); };
   return (
     <>
@@ -77,12 +78,12 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
                   <Link
                     to={href}
                     onClick={closeOnNavigate}
-                    aria-current={pathname === href ? "page" : undefined}
+                    aria-current={pathname === href || (href === "/hiring" && hiringActive) ? "page" : undefined}
                     title={label}
                     className={cn(
                       "flex items-center rounded-xl py-2.5 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]",
                       isOpen ? "gap-3 px-3" : "justify-center px-2",
-                      pathname === href || (href === "/settings" && pathname.startsWith("/settings"))
+                      pathname === href || (href === "/hiring" && hiringActive) || (href === "/settings" && pathname.startsWith("/settings"))
                         ? "bg-[var(--color-navy)] text-white shadow-[0_0_18px_color-mix(in_srgb,var(--color-navy)_24%,transparent)]"
                         : "text-[var(--color-muted)] hover:bg-[var(--color-elevated)]",
                     )}

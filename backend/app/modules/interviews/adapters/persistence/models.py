@@ -31,7 +31,7 @@ class InterviewStageModel(Base):
 class InterviewModel(Base):
     __tablename__ = "interviews"
     __table_args__ = (
-        CheckConstraint("status IN ('scheduled','cancelled')"), CheckConstraint("duration_minutes > 0"),
+        CheckConstraint("status IN ('scheduled','completed','cancelled')"), CheckConstraint("duration_minutes > 0"),
         Index("ix_interviews_organization_scheduled", "organization_id", "scheduled_at"),
         Index("ix_interviews_application_id", "application_id"),
     )

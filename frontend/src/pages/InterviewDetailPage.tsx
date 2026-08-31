@@ -9,6 +9,7 @@ import {
   addCriterion,
   allInterviews,
   assignInterviewer,
+  completeInterview,
   deactivateCriterion,
   removeAssignment,
   saveFeedback,
@@ -40,6 +41,10 @@ export function InterviewDetailPage() {
   const update = useMutation({
     mutationFn: (body: Parameters<typeof updateInterview>[2]) => updateInterview(org, interviewId, body),
     onSuccess: () => { setEditing(false); void interviews.refetch(); },
+  });
+  const complete = useMutation({
+    mutationFn: () => completeInterview(org, interviewId),
+    onSuccess: () => { void interviews.refetch(); },
   });
   const interviews = useQuery({
     queryKey: ["interviews", org, "upcoming"],
@@ -146,6 +151,7 @@ export function InterviewDetailPage() {
           {interview.location_or_meeting_details ||
             "No meeting or location details"}
         </p>
+        {recruiters && interview.status === "scheduled" && <button type="button" onClick={() => complete.mutate()} disabled={complete.isPending} className="mt-4 rounded-full bg-[var(--color-navy)] px-4 py-2 text-sm font-semibold text-white">{complete.isPending ? "Completing…" : "Mark completed"}</button>}
         {recruiters && !editing && <button type="button" aria-label="Edit interview" title="Edit interview" onClick={() => setEditing(true)} className="absolute right-0 top-0 inline-flex items-center rounded-xl border p-2 text-sm font-semibold"><Pencil size={16} aria-hidden="true" /></button>}
         {editing && <><div className="fixed inset-0 z-40 bg-black/35 backdrop-blur-[1px]" aria-hidden="true" /><form aria-label="Edit interview details" className="fixed inset-0 z-50 m-auto grid h-fit max-h-[90vh] w-[min(34rem,calc(100vw-2rem))] gap-3 overflow-y-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-2xl sm:grid-cols-2" onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const scheduled = String(form.get("scheduled_at") || ""); if (!scheduled) return; update.mutate({ scheduled_at: new Date(scheduled).toISOString(), duration_minutes: Number(form.get("duration_minutes")) || interview.duration_minutes, location_or_meeting_details: String(form.get("details") || "") }); }}>
           <div className="sm:col-span-2"><h2 className="text-lg font-semibold">Edit interview</h2><p className="mt-1 text-sm text-[var(--color-muted)]">Update the date, time, duration, or meeting details.</p></div>

@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import date, datetime
 from uuid import UUID, uuid4
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Index, String, Text
+from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Index, Numeric, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 from app.shared.database.base import Base
 
@@ -17,6 +17,11 @@ class CandidateCommunicationModel(Base):
     recipient_email: Mapped[str] = mapped_column(String(255), nullable=False)
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
     body: Mapped[str] = mapped_column(Text, nullable=False)
+    salary_amount: Mapped[float | None] = mapped_column(Numeric(14, 2))
+    salary_currency: Mapped[str | None] = mapped_column(String(3))
+    start_date: Mapped[date | None] = mapped_column(Date)
+    employment_details: Mapped[str | None] = mapped_column(Text)
+    expires_at: Mapped[date | None] = mapped_column(Date)
     created_by: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
     reviewed_by: Mapped[UUID | None] = mapped_column(ForeignKey("users.id"))
     review_notes: Mapped[str | None] = mapped_column(Text)

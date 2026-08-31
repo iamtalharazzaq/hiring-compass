@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CandidateForm } from "../candidates/CandidateForm";
+import { ResumeSection } from "../candidates/ResumeSection";
 import { useCandidates, useCandidateMutation } from "../../features/candidates/queries";
 import { useApplicationMutation, useJobApplications } from "../../features/applications/queries";
 import type { ApplicationStatus } from "../../features/applications/api";

@@ -96,7 +96,7 @@ async def list_candidates(
     service: CandidateService = Depends(get_candidate_service),
 ) -> JSONResponse:
     items, total, pages = await service.list(
-        organization_id, query.page, query.page_size, query.search
+        organization_id, query.page, query.page_size, query.search, query.location, query.current_title, query.min_years, query.max_years
     )
     return success_response(
         request,

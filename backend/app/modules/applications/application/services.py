@@ -73,6 +73,12 @@ class ApplicationService:
         self, org: UUID, app_id: UUID, status: ApplicationStatus, actor_user_id: UUID | None = None
     ) -> ApplicationModel:
         item = await self.get(org, app_id)
+        if status in {ApplicationStatus.DECISION_PENDING, ApplicationStatus.OFFER_APPROVED}:
+            raise ApplicationError(
+                "INVALID_TRANSITION",
+                "Use the hiring decision workflow to advance this application.",
+                409,
+            )
         current = ApplicationStatus(item.status)
         if not can_transition(current, status):
             raise ApplicationError(

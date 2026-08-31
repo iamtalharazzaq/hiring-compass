@@ -154,6 +154,17 @@ async def down(confirm: str) -> None:
     print("Seed data removed.\n\nMembership: removed\nOrganization: removed\nAdmin user: removed")
 
 
+async def run(command: str, confirm: str) -> None:
+    try:
+        if command == "up":
+            await up()
+        else:
+            await down(confirm)
+    finally:
+        # Keep disposal on the same event loop as the async session/pool.
+        await dispose_engine()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="command", required=True)
@@ -162,12 +173,10 @@ def main() -> None:
     down_parser.add_argument("--confirm", default="")
     args = parser.parse_args()
     try:
-        asyncio.run(up() if args.command == "up" else down(args.confirm))
+        asyncio.run(run(args.command, getattr(args, "confirm", "")))
     except RuntimeError as e:
         print(f"Seed failed: {e}", file=sys.stderr)
         raise SystemExit(1) from None
-    finally:
-        asyncio.run(dispose_engine())
 
 
 if __name__ == "__main__":

@@ -21,6 +21,10 @@ class CandidateQuery(BaseModel):
     page: int = Field(default=1, ge=1)
     page_size: int = Field(default=20, ge=1, le=100)
     search: str | None = Field(default=None, max_length=160)
+    location: str | None = Field(default=None, max_length=160)
+    current_title: str | None = Field(default=None, max_length=160)
+    min_years: int | None = Field(default=None, ge=0, le=60)
+    max_years: int | None = Field(default=None, ge=0, le=60)
 
 
 def candidate_input(payload: CandidatePayload) -> CandidateInput:

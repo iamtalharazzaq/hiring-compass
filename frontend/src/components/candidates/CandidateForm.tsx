@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { Select } from "../ui/Select";
 import type { Candidate, CandidateInput } from "../../features/candidates/types";
+import { ResumeSection } from "./ResumeSection";
 
 const countries = ["United States", "Canada", "United Kingdom", "Australia", "Germany", "France", "India", "Pakistan", "Other"];
 const schema = z.object({ first_name: z.string().trim().min(1).max(80), last_name: z.string().trim().min(1).max(80), email: z.string().email().or(z.literal("")), phone: z.string().max(30), current_title: z.string().max(160), years_of_experience: z.coerce.number().int().min(0).max(60).optional().or(z.literal("")), address: z.string().max(160), country: z.string(), summary: z.string().max(2000) });
@@ -18,6 +19,7 @@ export function CandidateForm({ candidate, busy, error, onSubmit, onCancel }: { 
   return <form onSubmit={handleSubmit((data) => onSubmit({ full_name: `${data.first_name} ${data.last_name}`.trim(), email: data.email || null, phone: data.phone || null, location: [data.address, data.country].filter(Boolean).join(", ") || null, current_title: data.current_title || null, years_of_experience: data.years_of_experience === "" || data.years_of_experience === undefined ? null : data.years_of_experience, summary: data.summary || null }))} className="mt-8 max-w-5xl space-y-5">
     <div className="grid gap-5 sm:grid-cols-2">{field("first_name", "First name")}{field("last_name", "Last name")}{field("email", "Email", "email")}{field("phone", "Phone")}{field("current_title", "Current title")}{field("years_of_experience", "Years of experience", "number")}{field("address", "Address")}<label className="block text-sm font-medium">Country<Select {...register("country")} className="hc-form-control"><option value="">Select country</option>{countries.map((country) => <option key={country} value={country}>{country}</option>)}</Select><span className="hc-form-help">Choose the candidate’s country.</span></label></div>
     <label className="block text-sm font-medium">Professional summary<textarea rows={5} {...register("summary")} className="hc-form-control" aria-invalid={Boolean(errors.summary)} />{errors.summary ? <span className="hc-form-error">{errors.summary.message}</span> : <span className="hc-form-help">Add context that will help your team assess this candidate.</span>}</label>
+    {candidate && <ResumeSection organizationId={candidate.organization_id} candidateId={candidate.id} editable />}
     {error && <p role="alert" className="text-sm text-[var(--color-red)]">{error}</p>}<div className="flex flex-wrap justify-end gap-3 border-t border-[var(--color-border)] pt-5"><button type="button" onClick={leave} className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-3 text-sm font-semibold">Cancel</button><button disabled={busy} className="hc-primary-action">{busy ? "Saving…" : "Save Candidate"}</button></div>
   </form>;
 }

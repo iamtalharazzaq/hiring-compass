@@ -2,7 +2,7 @@ import { apiClient } from "../../lib/apiClient";
 import type { Candidate, CandidateInput, CandidatesResult } from "./types";
 export type Resume = { id: string; original_filename: string; content_type: string; size_bytes: number; is_current: boolean; created_at: string };
 const base = (org: string) => `/api/v1/organizations/${org}/candidates`;
-export const listCandidates = (org: string, page: number, search?: string) => apiClient<CandidatesResult>(`${base(org)}?page=${page}&page_size=20${search ? `&search=${encodeURIComponent(search)}` : ""}`);
+export const listCandidates = (org: string, page: number, search?: string, filters?: { location?: string; current_title?: string; min_years?: number; max_years?: number }) => { const p = new URLSearchParams({ page: String(page), page_size: "20", ...(search ? { search } : {}), ...(filters?.location ? { location: filters.location } : {}), ...(filters?.current_title ? { current_title: filters.current_title } : {}), ...(filters?.min_years !== undefined ? { min_years: String(filters.min_years) } : {}), ...(filters?.max_years !== undefined ? { max_years: String(filters.max_years) } : {}) }); return apiClient<CandidatesResult>(`${base(org)}?${p}`); };
 export const getCandidate = (org: string, id: string) => apiClient<{ candidate: Candidate }>(`${base(org)}/${id}`);
 export const createCandidate = (org: string, input: CandidateInput) => apiClient<{ candidate: Candidate }>(base(org), { method: "POST", body: JSON.stringify(input) });
 export const updateCandidate = (org: string, id: string, input: Partial<CandidateInput>) => apiClient<{ candidate: Candidate }>(`${base(org)}/${id}`, { method: "PATCH", body: JSON.stringify(input) });

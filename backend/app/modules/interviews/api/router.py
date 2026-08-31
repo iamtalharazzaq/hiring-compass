@@ -30,7 +30,7 @@ from app.modules.organizations.adapters.persistence.models import (
     OrganizationMemberModel,
 )
 from sqlalchemy import select
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from app.modules.interviews.application.services import InterviewError, InterviewService
 from app.modules.organizations.api.dependencies import (
     require_active_organization_member,
@@ -119,6 +119,7 @@ def interview_data(item: InterviewModel) -> dict[str, object]:
         "interview_stage_id": str(item.interview_stage_id),
         "scheduled_at": item.scheduled_at.isoformat(),
         "duration_minutes": item.duration_minutes,
+        "end_at": (item.scheduled_at + timedelta(minutes=item.duration_minutes)).isoformat(),
         "location_or_meeting_details": item.location_or_meeting_details,
         "status": item.status,
         "cancelled_reason": item.cancelled_reason,
@@ -370,6 +371,7 @@ async def create(
                         payload.duration_minutes,
                         payload.location_or_meeting_details,
                         user.id,
+                        payload.end_at,
                     )
                 )
             },
@@ -425,6 +427,16 @@ async def cancel(
                 )
             },
         )
+    except InterviewError as error:
+        return fail(request, error)
+
+@router.post("/interviews/{interview_id}/complete")
+async def complete(
+    request: Request, organization_id: UUID, interview_id: UUID,
+    _: OrganizationMember = Depends(manage), svc: InterviewService = Depends(service)
+) -> JSONResponse:
+    try:
+        return success_response(request, {"interview": interview_data(await svc.complete(organization_id, interview_id))})
     except InterviewError as error:
         return fail(request, error)
 

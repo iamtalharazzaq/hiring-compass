@@ -49,7 +49,7 @@ class CandidateRepository:
         return self._candidate(model) if model else None
 
     async def list(
-        self, organization_id: UUID, search: str | None, offset: int, limit: int
+        self, organization_id: UUID, search: str | None, offset: int, limit: int, location: str | None = None, current_title: str | None = None, min_years: int | None = None, max_years: int | None = None
     ) -> tuple[builtins.list[Candidate], int]:
         conditions = [CandidateModel.organization_id == organization_id]
         if search:
@@ -58,7 +58,12 @@ class CandidateRepository:
                 CandidateModel.full_name.ilike(term)
                 | CandidateModel.email.ilike(term)
                 | CandidateModel.current_title.ilike(term)
+                | CandidateModel.location.ilike(term)
             )
+        if location: conditions.append(CandidateModel.location.ilike(f"%{location.strip()}%"))
+        if current_title: conditions.append(CandidateModel.current_title.ilike(f"%{current_title.strip()}%"))
+        if min_years is not None: conditions.append(CandidateModel.years_of_experience >= min_years)
+        if max_years is not None: conditions.append(CandidateModel.years_of_experience <= max_years)
         query = select(CandidateModel).where(*conditions)
         total = int(
             await self.session.scalar(select(func.count()).select_from(query.subquery())) or 0

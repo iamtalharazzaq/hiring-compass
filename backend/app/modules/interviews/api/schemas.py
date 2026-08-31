@@ -32,6 +32,7 @@ class InterviewRequest(BaseModel):
     scheduled_at: datetime
     duration_minutes: int | None = Field(None, gt=0)
     location_or_meeting_details: str | None = None
+    end_at: datetime | None = None
 
     @field_validator("scheduled_at")
     @classmethod
@@ -40,11 +41,19 @@ class InterviewRequest(BaseModel):
             raise ValueError("scheduled_at must include a timezone.")
         return value
 
+    @field_validator("end_at")
+    @classmethod
+    def end_timezone_aware(cls, value: datetime | None) -> datetime | None:
+        if value and (value.tzinfo is None or value.utcoffset() is None):
+            raise ValueError("end_at must include a timezone.")
+        return value
+
 
 class InterviewUpdateRequest(BaseModel):
     scheduled_at: datetime | None = None
     duration_minutes: int | None = Field(None, gt=0)
     location_or_meeting_details: str | None = None
+    end_at: datetime | None = None
 
     @field_validator("scheduled_at")
     @classmethod

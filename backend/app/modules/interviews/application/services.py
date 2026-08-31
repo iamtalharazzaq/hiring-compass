@@ -44,7 +44,7 @@ class InterviewService:
         if set(ids) != {s.id for s in stages} or len(ids) != len(stages): raise InterviewError("VALIDATION_ERROR", "Stage order must include every stage exactly once.", 422)
         for pos, stage_id in enumerate(ids, 1): (next(s for s in stages if s.id == stage_id)).position = pos
         await self.session.commit(); return await self.stages(org, job_id)
-    async def create_interview(self, org: UUID, app_id: UUID, stage_id: UUID, scheduled_at: datetime, duration: int | None, details: str | None, user_id: UUID) -> InterviewModel:
+    async def create_interview(self, org: UUID, app_id: UUID, stage_id: UUID, scheduled_at: datetime, duration: int | None, details: str | None, user_id: UUID, end_at: datetime | None = None) -> InterviewModel:
         app = await self.session.scalar(select(ApplicationModel).where(ApplicationModel.id == app_id, ApplicationModel.organization_id == org))
         if not app: raise InterviewError("NOT_FOUND", "Application was not found.", 404)
         job = await self.job(org, app.job_id)
@@ -53,7 +53,9 @@ class InterviewService:
         if stage.job_id != app.job_id or not stage.is_active: raise InterviewError("VALIDATION_ERROR", "Select an active stage for this application's job.", 422)
         if app.status == "shortlisted": app.status, app.status_changed_at = "interviewing", datetime.now(UTC)
         elif app.status != "interviewing": raise InterviewError("INVALID_TRANSITION", "Only shortlisted applications can receive their first interview.", 409)
-        now = datetime.now(UTC); item = InterviewModel(organization_id=org, application_id=app.id, interview_stage_id=stage.id, scheduled_at=scheduled_at, duration_minutes=duration or stage.duration_minutes or 30, location_or_meeting_details=details, status="scheduled", created_by=user_id, created_at=now, updated_at=now); self.session.add(item); await self.session.flush(); await record(self.session, org, "interview_scheduled", "interview", item.id, user_id, application_id=app.id, job_id=app.job_id, interview_id=item.id, metadata={"description": f"{stage.name} interview scheduled", "stage_name": stage.name}); app.updated_at = now; await self.session.commit(); return item
+        minutes = int((end_at - scheduled_at).total_seconds() / 60) if end_at else (duration or stage.duration_minutes or 30)
+        if minutes <= 0: raise InterviewError("VALIDATION_ERROR", "End time must be after start time.", 422)
+        now = datetime.now(UTC); item = InterviewModel(organization_id=org, application_id=app.id, interview_stage_id=stage.id, scheduled_at=scheduled_at, duration_minutes=minutes, location_or_meeting_details=details, status="scheduled", created_by=user_id, created_at=now, updated_at=now); self.session.add(item); await self.session.flush(); await record(self.session, org, "interview_scheduled", "interview", item.id, user_id, application_id=app.id, job_id=app.job_id, interview_id=item.id, metadata={"description": f"{stage.name} interview scheduled", "stage_name": stage.name}); app.updated_at = now; await self.session.commit(); return item
     async def interview(self, org: UUID, interview_id: UUID) -> InterviewModel:
         item = await self.session.scalar(select(InterviewModel).where(InterviewModel.id == interview_id, InterviewModel.organization_id == org))
         if not item: raise InterviewError("NOT_FOUND", "Interview was not found.", 404)
@@ -61,6 +63,12 @@ class InterviewService:
     async def update_interview(self, org: UUID, interview_id: UUID, **values: object) -> InterviewModel:
         item = await self.interview(org, interview_id)
         if item.status == "cancelled": raise InterviewError("INVALID_STATE", "Cancelled interviews cannot be edited.", 409)
+        end_at = values.pop("end_at", None)
+        if end_at is not None:
+            scheduled = values.get("scheduled_at", item.scheduled_at)
+            minutes = int((end_at - scheduled).total_seconds() / 60)
+            if minutes <= 0: raise InterviewError("VALIDATION_ERROR", "End time must be after start time.", 422)
+            values["duration_minutes"] = minutes
         for key, value in values.items():
             if value is not None: setattr(item, key, value)
         item.updated_at = datetime.now(UTC); await record(self.session, org, "interview_updated", "interview", item.id, None, application_id=item.application_id, interview_id=item.id, metadata={"description": "Interview details updated"}); await self.session.commit(); return item
@@ -68,6 +76,12 @@ class InterviewService:
         item = await self.interview(org, interview_id)
         if item.status == "cancelled": raise InterviewError("INVALID_STATE", "Interview is already cancelled.", 409)
         item.status, item.cancelled_reason, item.updated_at = "cancelled", reason, datetime.now(UTC); await record(self.session, org, "interview_cancelled", "interview", item.id, None, application_id=item.application_id, interview_id=item.id, metadata={"description": "Interview cancelled"}); await self.session.commit(); return item
+    async def complete(self, org: UUID, interview_id: UUID) -> InterviewModel:
+        item = await self.interview(org, interview_id)
+        if item.status != "scheduled": raise InterviewError("INVALID_STATE", "Only scheduled interviews can be completed.", 409)
+        item.status, item.updated_at = "completed", datetime.now(UTC)
+        await record(self.session, org, "interview_completed", "interview", item.id, None, application_id=item.application_id, interview_id=item.id, metadata={"description": "Interview completed"})
+        await self.session.commit(); return item
     async def application_interviews(self, org: UUID, app_id: UUID) -> list[InterviewModel]:
         await self.session.scalar(select(ApplicationModel.id).where(ApplicationModel.id == app_id, ApplicationModel.organization_id == org)) or (_ for _ in ()).throw(InterviewError("NOT_FOUND", "Application was not found.", 404))
         return list((await self.session.scalars(select(InterviewModel).where(InterviewModel.organization_id == org, InterviewModel.application_id == app_id).order_by(InterviewModel.scheduled_at))).all())

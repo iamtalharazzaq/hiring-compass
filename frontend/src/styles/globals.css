@@ -143,9 +143,9 @@ body {
   border-radius: 50%;
   position: absolute;
   left: 1rem;
-  top: 50%;
+  top: 1.375rem;
   z-index: 1;
-  transform: translateY(-52%);
+  transform: translateY(-50%);
   color: var(--color-muted);
   pointer-events: none;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%239CAAC0' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") center/contain no-repeat;
@@ -161,6 +161,13 @@ body {
 a.hc-primary-action,
 button.hc-primary-action {
   border-radius: 9999px !important;
+}
+.hc-portal-main article {
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.hc-portal-main article:hover {
+  border-color: color-mix(in srgb, var(--color-navy) 55%, var(--color-border));
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--color-ink) 12%, transparent);
 }
 .lucide-pencil { width: 1.2rem; height: 1.2rem; }
 .hc-portal-main button > svg,
@@ -234,9 +241,9 @@ button.hc-primary-action {
 .hc-portal-main h3:has(+ div:empty) + div { display: none; }
 .hc-portal-main [class*="bg-white"] { background-color: var(--color-elevated) !important; }
 .hc-portal-main section:has(form input[placeholder*="Search"]) { position: relative; }
-.hc-portal-main section:has(form input[placeholder*="Search"]) > button[class*="px-2"][class*="font-semibold"] { position: absolute; right: 16.5rem; top: 1.1rem; z-index: 2; }
-.hc-portal-main section:has(form input[placeholder*="Search"]) > button[class*="px-2"] { position: absolute; right: 16.5rem; top: 1.1rem; z-index: 2; }
-.hc-portal-main section:has(form input[placeholder*="Search"]) button[class*="px-2"] { position: absolute; right: 16.5rem; top: 1.1rem; z-index: 2; }
+.hc-portal-main section:has(form input[placeholder*="Search"]) > button[class*="px-2"][class*="font-semibold"] { position: absolute; right: 13rem; top: 1.1rem; z-index: 2; }
+.hc-portal-main section:has(form input[placeholder*="Search"]) > button[class*="px-2"] { position: absolute; right: 13rem; top: 1.1rem; z-index: 2; }
+.hc-portal-main section:has(form input[placeholder*="Search"]) button[class*="px-2"] { position: absolute; right: 13rem; top: 1.1rem; z-index: 2; }
 @media (max-width: 700px) {
   .hc-portal-main section:has(form input[placeholder*="Search"]) > button[class*="px-2"][class*="font-semibold"] { right: 1rem; }
 }
@@ -361,7 +368,7 @@ select {
 
 .hc-select { position: relative; display: block; }
 .hc-select::after { content: ""; position: absolute; right: .8rem; top: 50%; width: .45rem; height: .45rem; border-right: 1.5px solid var(--color-muted); border-bottom: 1.5px solid var(--color-muted); transform: translateY(-65%) rotate(45deg); pointer-events: none; }
-.hc-select-control { appearance: none; width: 100%; min-height: 44px; padding: .65rem 2.25rem .65rem .85rem; border: 1px solid var(--color-border); border-radius: .75rem; background: var(--color-surface); color: var(--color-ink); transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease; }
+.hc-select-control { appearance: none; width: 100%; min-height: 44px; padding: .65rem 2.25rem .65rem .85rem; border: 1px solid var(--color-border); border-radius: .75rem; background-color: var(--color-surface); background-image: linear-gradient(45deg, transparent 50%, var(--color-muted) 50%), linear-gradient(135deg, var(--color-muted) 50%, transparent 50%); background-position: calc(100% - 1rem) 50%, calc(100% - .7rem) 50%; background-size: .3rem .3rem, .3rem .3rem; background-repeat: no-repeat; color: var(--color-ink); transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease; }
 select:not(.hc-select-control) { appearance: none; min-height: 44px; padding: .65rem 2.25rem .65rem .85rem; border: 1px solid var(--color-border); border-radius: .75rem; background-color: var(--color-surface); background-image: linear-gradient(45deg, transparent 50%, var(--color-muted) 50%), linear-gradient(135deg, var(--color-muted) 50%, transparent 50%); background-position: calc(100% - 1rem) 50%, calc(100% - .7rem) 50%; background-size: .3rem .3rem, .3rem .3rem; background-repeat: no-repeat; color: var(--color-ink); }
 .hc-select-control:hover { border-color: color-mix(in srgb, var(--color-navy) 45%, var(--color-border)); }
 .hc-select-control:focus-visible { border-color: var(--color-navy); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-navy) 18%, transparent); outline: none; }

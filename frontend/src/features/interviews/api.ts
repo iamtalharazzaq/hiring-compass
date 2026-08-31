@@ -1,6 +1,6 @@
 import { apiClient } from "../../lib/apiClient";
 export type Stage = { id: string; name: string; description: string | null; position: number; duration_minutes: number | null; is_active: boolean };
-export type Interview = { id: string; application_id: string; interview_stage_id: string; scheduled_at: string; duration_minutes: number; location_or_meeting_details: string | null; status: "scheduled" | "cancelled"; cancelled_reason: string | null };
+export type Interview = { id: string; application_id: string; interview_stage_id: string; scheduled_at: string; end_at: string; duration_minutes: number; location_or_meeting_details: string | null; status: "scheduled" | "completed" | "cancelled"; cancelled_reason: string | null };
 export type Criterion = { id: string; name: string; description: string | null; position: number; is_required: boolean; is_active: boolean };
 export type Scorecard = { id: string; interview_stage_id: string; title: string; instructions: string | null; criteria: Criterion[] };
 const base = (org: string) => `/api/v1/organizations/${org}`;
@@ -10,10 +10,11 @@ export const updateStage = (org: string, id: string, body: { name?: string; desc
 export const reorderStages = (org: string, job: string, stage_ids: string[]) => apiClient<{ items: Stage[] }>(`${base(org)}/jobs/${job}/interview-stages/reorder`, { method: "POST", body: JSON.stringify({ stage_ids }) });
 export const deactivateStage = (org: string, id: string) => apiClient<{ stage: Stage }>(`${base(org)}/interview-stages/${id}/deactivate`, { method: "POST" });
 export const applicationInterviews = (org: string, application: string) => apiClient<{ items: Interview[] }>(`${base(org)}/applications/${application}/interviews`);
-export const scheduleInterview = (org: string, application: string, body: { interview_stage_id: string; scheduled_at: string; duration_minutes?: number; location_or_meeting_details?: string }) => apiClient<{ interview: Interview }>(`${base(org)}/applications/${application}/interviews`, { method: "POST", body: JSON.stringify(body) });
+export const scheduleInterview = (org: string, application: string, body: { interview_stage_id: string; scheduled_at: string; end_at?: string; duration_minutes?: number; location_or_meeting_details?: string }) => apiClient<{ interview: Interview }>(`${base(org)}/applications/${application}/interviews`, { method: "POST", body: JSON.stringify(body) });
 export const allInterviews = (org: string) => apiClient<{ items: Interview[] }>(`${base(org)}/interviews`);
-export const updateInterview = (org: string, interview: string, body: { scheduled_at?: string; duration_minutes?: number; location_or_meeting_details?: string | null }) => apiClient<{ interview: Interview }>(`${base(org)}/interviews/${interview}`, { method: "PATCH", body: JSON.stringify(body) });
+export const updateInterview = (org: string, interview: string, body: { scheduled_at?: string; end_at?: string; duration_minutes?: number; location_or_meeting_details?: string | null }) => apiClient<{ interview: Interview }>(`${base(org)}/interviews/${interview}`, { method: "PATCH", body: JSON.stringify(body) });
 export const cancelInterview = (org: string, interview: string) => apiClient<{ interview: Interview }>(`${base(org)}/interviews/${interview}/cancel`, { method: "POST", body: JSON.stringify({ cancelled_reason: "Cancelled by organizer" }) });
+export const completeInterview = (org: string, interview: string) => apiClient<{ interview: Interview }>(`${base(org)}/interviews/${interview}/complete`, { method: "POST" });
 export const myFeedback = (org: string, interview: string) => apiClient<{ feedback: Feedback | null }>(`${base(org)}/interviews/${interview}/my-feedback`);
 export type Feedback = { id: string; status: "draft" | "submitted"; overall_rating: number | null; recommendation: string | null; summary: string; items: { criterion_id: string; rating: number | null; notes: string | null }[] };
 export const saveFeedback = (org: string, interview: string, body: Omit<Feedback, "id" | "status">) => apiClient<{ feedback: Feedback }>(`${base(org)}/interviews/${interview}/feedback`, { method: "POST", body: JSON.stringify(body) });
