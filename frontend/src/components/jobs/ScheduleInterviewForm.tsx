@@ -1,21 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Select } from "../ui/Select";
-import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Clock3 } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { Stage } from "../../features/interviews/api";
 
 const pad = (value: number) => String(value).padStart(2, "0");
 const dateKey = (date: Date) =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-const timeOptions = Array.from(
-  { length: 48 },
-  (_, index) => `${pad(Math.floor(index / 2))}:${index % 2 ? "30" : "00"}`,
-);
-const displayTime = (time: string) =>
-  new Intl.DateTimeFormat(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(`2000-01-01T${time}`));
+const displayTime = (time: string) => new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit" }).format(new Date(`2000-01-01T${time}`));
+const timeParts = (time: string) => { const [hours = "00", minutes = "00"] = time.split(":"); const hour = Number(hours); return { hour: String(hour % 12 || 12), minute: minutes, period: hour >= 12 ? "PM" : "AM" }; };
+const timeValue = (hour: string, minute: string, period: string) => `${pad((Number(hour) % 12) + (period === "PM" ? 12 : 0))}:${minute}`;
 
 function DatePicker({
   value,
@@ -25,6 +19,7 @@ function DatePicker({
   onChange: (value: string) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [opensAbove, setOpensAbove] = useState(false);
   const [month, setMonth] = useState(() =>
     value ? new Date(`${value}T12:00`) : new Date(),
   );
@@ -62,7 +57,7 @@ function DatePicker({
         type="button"
         aria-haspopup="dialog"
         aria-expanded={open}
-        onClick={() => setOpen(!open)}
+        onClick={() => { if (open) return setOpen(false); const rect = root.current?.getBoundingClientRect(); setOpensAbove(Boolean(rect && rect.top > window.innerHeight - rect.bottom)); setOpen(true); }}
         className="mt-1 flex w-full items-center justify-between rounded-xl border bg-[var(--color-surface)] px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"
       >
         <span>{selectedLabel}</span>
@@ -77,7 +72,7 @@ function DatePicker({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.15 }}
-            className="absolute z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] rounded-2xl border bg-[var(--color-surface)] p-4 shadow-xl"
+            className={`absolute z-50 w-[min(22rem,calc(100vw-2rem))] rounded-2xl border bg-[var(--color-surface)] p-4 shadow-xl ${opensAbove ? "bottom-full mb-2" : "top-full mt-2"}`}
           >
             <div className="flex items-center justify-between">
               <button
@@ -176,6 +171,19 @@ function DatePicker({
   );
 }
 
+function TimePicker({ value, onChange, label, placeholder, min }: { value: string; onChange: (value: string) => void; label: string; placeholder: string; min?: string }) {
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState(() => timeParts(value));
+  const [opensAbove, setOpensAbove] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  useEffect(() => { const close = (event: MouseEvent) => { if (!root.current?.contains(event.target as Node)) setOpen(false); }; document.addEventListener("mousedown", close); return () => document.removeEventListener("mousedown", close); }, []);
+  const toggle = () => { if (open) return setOpen(false); const rect = root.current?.getBoundingClientRect(); setDraft(timeParts(value)); setOpensAbove(Boolean(rect && rect.top > window.innerHeight - rect.bottom)); setOpen(true); };
+  const choose = (part: "hour" | "minute" | "period", next: string) => setDraft((current) => ({ ...current, [part]: next }));
+  const selected = timeValue(draft.hour, draft.minute, draft.period);
+  const values = [["Hour", Array.from({ length: 12 }, (_, index) => String(index + 1)), "hour"], ["Minute", ["00", "15", "30", "45"], "minute"], ["AM/PM", ["AM", "PM"], "period"]] as const;
+  return <div ref={root} className="relative"><label className="text-sm font-medium">{label}</label><button type="button" aria-haspopup="dialog" aria-expanded={open} onClick={toggle} className="mt-1 flex w-full items-center justify-between rounded-xl border bg-[var(--color-surface)] px-3 py-2 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"><span>{value ? displayTime(value) : placeholder}</span><Clock3 size={16} aria-hidden="true" /></button>{open && <div role="dialog" aria-label={`Choose ${label.toLowerCase()}`} className={`absolute z-50 w-[min(19rem,calc(100vw-2rem))] rounded-2xl border bg-[var(--color-surface)] p-4 shadow-xl ${opensAbove ? "bottom-full mb-2" : "top-full mt-2"}`}><strong className="block text-sm">{label}</strong><div className="mt-3 grid grid-cols-3 gap-2">{values.map(([heading, items, part]) => <div key={heading}><p className="mb-1 text-center text-xs font-semibold text-[var(--color-muted)]">{heading}</p><div className="max-h-44 space-y-1 overflow-y-auto">{items.map((item) => <button key={item} type="button" onClick={() => choose(part, item)} className={`block w-full rounded-sm px-1.5 py-1 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)] ${draft[part] === item ? "bg-[var(--color-navy)] text-white" : "hover:bg-[var(--color-canvas)]"}`}>{item}</button>)}</div></div>)}</div>{min && selected <= min && <p className="mt-2 text-xs text-[var(--color-red)]">Choose a time after {displayTime(min)}.</p>}<div className="mt-4 flex items-center justify-between border-t pt-3"><button type="button" onClick={() => { onChange(""); setOpen(false); }} className="text-sm underline">Clear</button><div className="flex gap-2"><button type="button" onClick={() => setOpen(false)} className="rounded-lg border px-3 py-1.5 text-sm">Cancel</button><button type="button" disabled={Boolean(min && selected <= min)} onClick={() => { onChange(selected); setOpen(false); }} className="rounded-lg bg-[var(--color-navy)] px-3 py-1.5 text-sm text-white disabled:opacity-50">Done</button></div></div></div>}</div>;
+}
+
 export function ScheduleInterviewForm({
   stages,
   pending,
@@ -242,42 +250,8 @@ export function ScheduleInterviewForm({
       <div className="grid gap-4 sm:grid-cols-2">
         <DatePicker value={date} onChange={setDate} />
         <div className="grid grid-cols-2 gap-2">
-          <label className="text-sm font-medium">
-            Start time
-            <Select
-              required
-              value={start}
-              onChange={(event) => setStart(event.target.value)}
-              className="mt-1 w-full rounded-xl border bg-[var(--color-surface)] p-2 text-sm"
-            >
-              <option value="">Start</option>
-              {timeOptions.map((time) => (
-                <option key={time} value={time}>
-                  {displayTime(time)}
-                </option>
-              ))}
-            </Select>
-          </label>
-          <label className="text-sm font-medium">
-            End time
-            <Select
-              required
-              value={end}
-              onChange={(event) => setEnd(event.target.value)}
-              className="mt-1 w-full rounded-xl border bg-[var(--color-surface)] p-2 text-sm"
-            >
-              <option value="">End</option>
-              {timeOptions.map((time) => (
-                <option
-                  key={time}
-                  value={time}
-                  disabled={!!start && time <= start}
-                >
-                  {displayTime(time)}
-                </option>
-              ))}
-            </Select>
-          </label>
+          <TimePicker label="Start time" placeholder="Start" value={start} onChange={setStart} />
+          <TimePicker label="End time" placeholder="End" value={end} onChange={setEnd} min={start || undefined} />
         </div>
       </div>
       <p className="text-xs text-[var(--color-muted)]">
