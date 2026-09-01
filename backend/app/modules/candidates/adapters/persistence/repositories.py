@@ -29,6 +29,7 @@ class CandidateRepository:
             current_title=data.current_title,
             years_of_experience=data.years_of_experience,
             summary=data.summary,
+            education=data.education or [],
             created_at=now,
             updated_at=now,
         )

@@ -130,23 +130,21 @@ body {
   padding: .65rem 1.1rem;
   white-space: nowrap;
 }
+
 .hc-portal-main form { min-width: 0; }
 .hc-portal-main form input { min-width: 0; }
-.hc-portal-main form:has(input[placeholder*="Search"]) {
+.hc-portal-main form:has(input[placeholder="Search job titles"]) {
   position: relative;
 }
-.hc-portal-main form:has(input[placeholder*="Search"])::before {
+.hc-portal-main form:has(input[placeholder="Search job titles"])::before {
   content: "";
+  position: absolute;
+  z-index: 1;
+  left: 1rem;
+  top: 50%;
   width: 1.1rem;
   height: 1.1rem;
-  border: 0;
-  border-radius: 50%;
-  position: absolute;
-  left: 1rem;
-  top: 1.375rem;
-  z-index: 1;
   transform: translateY(-50%);
-  color: var(--color-muted);
   pointer-events: none;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%239CAAC0' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E") center/contain no-repeat;
 }
@@ -219,6 +217,130 @@ button.hc-primary-action {
   min-height: 2.75rem;
   padding-inline: 1.15rem;
   font-weight: 700;
+}
+
+/* Settings uses compact, aligned actions and quiet surface feedback. */
+.hc-portal-main section:has(#member-email),
+.hc-portal-main section:has(a[href="/settings/guide"]) {
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.hc-portal-main section:has(#member-email):hover,
+.hc-portal-main section:has(a[href="/settings/guide"]):hover {
+  border-color: color-mix(in srgb, var(--color-navy) 48%, var(--color-border));
+  box-shadow: var(--shadow-card);
+}
+.hc-portal-main form:has(#member-email) button.hc-primary-action {
+  min-height: 2.5rem;
+  align-self: center;
+  padding: .5rem 1rem;
+  transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+.hc-portal-main form:has(#member-email) button.hc-primary-action:hover:not(:disabled),
+.hc-portal-main a[href="/settings/guide"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--color-navy) 24%, transparent);
+}
+.hc-portal-main section:has(#member-email) article {
+  border-radius: .75rem;
+  padding-inline: .75rem;
+}
+.hc-portal-main section:has(#member-email) article:hover {
+  background: var(--color-elevated);
+}
+
+/* Job rows signal that the entire record is openable without overpowering the list. */
+.hc-job-list-item {
+  position: relative;
+  overflow: hidden;
+  transition: background-color 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+.hc-job-list-item::before {
+  content: "";
+  position: absolute;
+  inset: .35rem auto .35rem 0;
+  width: 3px;
+  border-radius: 0 999px 999px 0;
+  background: var(--color-navy);
+  opacity: 0;
+  transform: scaleY(.5);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+.hc-job-list-item:hover {
+  z-index: 1;
+  border-color: color-mix(in srgb, var(--color-navy) 45%, var(--color-border));
+  background: color-mix(in srgb, var(--color-navy) 7%, var(--color-elevated));
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--color-ink) 14%, transparent);
+}
+.hc-job-list-item:hover::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+.hc-job-list-item:hover h2 {
+  color: var(--color-navy);
+}
+
+.hc-data-table tbody tr {
+  transition: background-color 160ms ease, box-shadow 160ms ease;
+}
+.hc-data-table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-navy) 7%, var(--color-elevated));
+  box-shadow: inset 3px 0 0 var(--color-navy);
+}
+.hc-data-table tbody td { border-bottom: 1px solid var(--color-border); }
+.hc-data-table tbody tr:last-child td { border-bottom: 0; }
+
+.hc-workspace-switcher [role="tab"] {
+  transition: color 160ms ease, transform 160ms ease, background-color 160ms ease;
+}
+.hc-workspace-switcher [role="tab"]:not([aria-selected="true"]):hover {
+  background: color-mix(in srgb, var(--color-tab-active) 13%, transparent);
+  color: var(--color-ink);
+  transform: translateY(-1px);
+}
+.hc-workspace-switcher [role="tab"]:not([aria-selected="true"]):hover svg {
+  color: var(--color-tab-active);
+  transform: scale(1.08);
+}
+.hc-workspace-switcher [role="tab"] svg { transition: color 160ms ease, transform 160ms ease; }
+
+.hc-detail-header + .hc-detail-section {
+  margin-top: 0;
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hc-workspace-switcher [role="tab"],
+  .hc-workspace-switcher [role="tab"] svg { transition: none; }
+}
+
+/* Give the job wizard the same relaxed rhythm as the candidate wizard. */
+.hc-portal-main form:has(input[name="title"]) {
+  padding: 2rem;
+}
+.hc-portal-main form:has(input[name="title"]) > h2 {
+  margin-top: 1.75rem;
+}
+.hc-portal-main form:has(input[name="title"]) > h2 + label,
+.hc-portal-main form:has(input[name="title"]) > h2 + p + label {
+  display: block;
+  margin-top: 1.75rem;
+}
+.hc-portal-main form:has(input[name="title"]) label + label {
+  display: block;
+  margin-top: 1.5rem;
+}
+.hc-portal-main form:has(input[name="title"]) textarea {
+  min-height: 8rem;
+}
+@media (min-width: 640px) {
+  .hc-portal-main form:has(input[name="title"]) {
+    padding: 2rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hc-job-list-item,
+  .hc-job-list-item::before { transition: none; }
 }
 .hc-portal-main form:has(input[placeholder*="Search"]) > button {
   display: none;
@@ -392,6 +514,25 @@ textarea.hc-form-control { border-radius:1rem; resize:vertical; }
 .hc-primary-action:hover:not(:disabled) { background:var(--color-primary-hover); color:var(--color-ink); transform:translateY(-1px); }
 .hc-primary-action:active:not(:disabled) { transform:translateY(0); }
 .hc-primary-action:disabled { cursor:not-allowed; opacity:.6; }
+
+/* Job setup uses a true progress tracker: visual progress while creating, direct step access while editing. */
+.hc-job-progress { overflow: visible; }
+.hc-job-progress-track { position: relative; display: flex; min-width: 22rem; margin: 0; padding: 0 3.75rem 1.75rem; list-style: none; justify-content: space-between; }
+.hc-job-progress-track::before,.hc-job-progress-track::after { content: ""; position: absolute; top: 1.125rem; left: 3.75rem; height: .25rem; border-radius: 999px; }
+.hc-job-progress-track::before { right: 3.75rem; background: var(--color-border); }
+.hc-job-progress-track::after { width: var(--wizard-progress-width); background: var(--color-navy); transition: width 180ms ease; }
+.hc-job-progress-step { position: relative; z-index: 1; display: flex; width: 0; flex: 0 0 0; flex-direction: column; align-items: center; text-align: center; }
+.hc-portal-main form button.hc-step-circle { box-sizing: border-box; width: 2.5rem; height: 2.5rem; min-height: 2.5rem; padding: 0; line-height: 1; }
+.hc-job-progress-step button { border-color: var(--color-border); background: var(--color-elevated); color: var(--color-muted); box-shadow: 0 0 0 4px var(--color-surface); transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.hc-job-progress-step span { position: absolute; top: 2.5rem; left: 50%; color: var(--color-muted); transform: translateX(-50%); }
+.hc-job-progress-step[data-state="active"] button { border-color: var(--color-navy); background: var(--color-navy); color: #fff; box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-navy) 16%, var(--color-surface)); transform: scale(1.05); }
+.hc-job-progress-step[data-state="active"] span { color: var(--color-ink); }
+.hc-job-progress-step[data-state="complete"] button { border-color: var(--color-navy); background: color-mix(in srgb, var(--color-navy) 82%, #14233a); color: #fff; box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-navy) 12%, var(--color-surface)); }
+.hc-job-progress-step:has(button:not(:disabled)):hover button { border-color: var(--color-navy); color: var(--color-navy); transform: translateY(-1px); }
+.hc-job-progress-step:has(button:not(:disabled)):hover span { color: var(--color-ink); }
+@media (max-width: 640px) { .hc-job-progress { overflow-x: auto; } .hc-job-progress-track { min-width: 20rem; } }
+.hc-job-panel { animation: hc-job-step-enter 180ms ease-out both; }
+@keyframes hc-job-step-enter { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: translateX(0); } }
 
 .bg-white { background-color: var(--color-surface) !important; }
 .bg-red-50 { background-color: color-mix(in srgb, var(--color-red) 12%, var(--color-surface)) !important; }

@@ -2,7 +2,6 @@ import { useState, type ReactNode } from "react";
 
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
-import { Link } from "react-router-dom";
 
 type AppShellProps = {
   children: ReactNode;
@@ -18,7 +17,6 @@ export function AppShell({ children, title = "Overview" }: AppShellProps) {
       <div className={`min-h-screen transition-[padding] duration-200 ${isSidebarOpen ? "lg:pl-64" : "pl-20 lg:pl-20"}`}>
         <Topbar title={title} />
         <main className="hc-portal-main mx-auto w-full max-w-7xl px-5 py-8 sm:px-8 lg:px-10 lg:py-10">
-          {title === "Job details" && <Link to="/hiring?tab=jobs" className="mb-6 inline-block text-sm font-semibold">← Back to Jobs</Link>}
           {children}
         </main>
       </div>

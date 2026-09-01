@@ -153,7 +153,7 @@ npm run dev
 Current milestone: Phase 2.6 complete — Applications and Candidate Pipeline
 Next milestone: Phase 3.1 — Interview Stages
 
-See the [API reference](docs/API.md) and [development roadmap](docs/DEVELOPMENT_ROADMAP.md) for implementation progress.
+See the [recruiter guide](docs/RECRUITER_GUIDE.md), [API reference](docs/API.md), and [development roadmap](docs/DEVELOPMENT_ROADMAP.md) for implementation progress.
 
 ## Product principles
 

@@ -13,7 +13,7 @@ export function JobListItem({ job }: { job: Job }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -2 }}
-      className="border-b border-[var(--color-border)] last:border-0"
+      className="hc-job-list-item border-b border-[var(--color-border)] last:border-0"
     >
       <Link
         to={`/jobs/${job.id}`}

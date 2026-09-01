@@ -11,10 +11,13 @@ class CandidatePayload(BaseModel):
     current_title: str | None = Field(default=None, max_length=160)
     years_of_experience: int | None = Field(default=None, ge=0, le=60)
     summary: str | None = Field(default=None, max_length=2000)
+    education: list[dict[str, object]] | None = Field(default=None, max_length=20)
 
 
 class CreateCandidateRequest(CandidatePayload):
     full_name: str = Field(min_length=2, max_length=160)
+    email: EmailStr
+    phone: str = Field(min_length=7, max_length=30)
 
 
 class CandidateQuery(BaseModel):

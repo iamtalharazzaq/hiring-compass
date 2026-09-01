@@ -1,0 +1,16 @@
+.hc-job-progress { overflow: visible; }
+.hc-job-progress-track { position: relative; display: flex; min-width: 22rem; margin: 0; padding: 0 3.75rem 1.75rem; list-style: none; justify-content: space-between; }
+.hc-job-progress-track::before,.hc-job-progress-track::after { content: ""; position: absolute; top: 1.125rem; left: 3.75rem; height: .25rem; border-radius: 999px; }
+.hc-job-progress-track::before { right: 3.75rem; background: var(--color-border); }
+.hc-job-progress-track::after { width: var(--wizard-progress-width); background: var(--color-navy); transition: width 180ms ease; }
+.hc-job-progress-step { position: relative; z-index: 1; display: flex; width: 0; flex: 0 0 0; flex-direction: column; align-items: center; text-align: center; }
+.hc-portal-main form button.hc-step-circle { box-sizing: border-box; width: 2.5rem; height: 2.5rem; min-height: 2.5rem; padding: 0; line-height: 1; }
+.hc-job-progress-step button { border-color: var(--color-border); background: var(--color-elevated); color: var(--color-muted); box-shadow: 0 0 0 4px var(--color-surface); transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease; }
+.hc-job-progress-step span { position: absolute; top: 2.5rem; left: 50%; color: var(--color-muted); transform: translateX(-50%); }
+.hc-job-progress-step[data-state="active"] button { border-color: var(--color-navy); background: var(--color-navy); color: #fff; box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-navy) 16%, var(--color-surface)); transform: scale(1.05); }
+.hc-job-progress-step[data-state="active"] span { color: var(--color-ink); }
+.hc-job-progress-step[data-state="complete"] button { border-color: var(--color-navy); background: color-mix(in srgb, var(--color-navy) 82%, #14233a); color: #fff; box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-navy) 12%, var(--color-surface)); }
+.hc-job-progress-step:has(button:not(:disabled)):hover button { border-color: var(--color-navy); color: var(--color-navy); transform: translateY(-1px); }
+.hc-job-progress-step:has(button:not(:disabled)):hover span { color: var(--color-ink); }
+@media (max-width: 640px) { .hc-job-progress { overflow-x: auto; } .hc-job-progress-track { min-width: 20rem; } }
+@media (prefers-reduced-motion: reduce) { .hc-job-progress-track::after,.hc-job-progress-step button { transition: none; } }

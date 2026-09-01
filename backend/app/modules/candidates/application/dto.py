@@ -10,4 +10,5 @@ class CandidateInput:
     current_title: str | None = None
     years_of_experience: int | None = None
     summary: str | None = None
+    education: list[dict[str, object]] | None = None
     fields: frozenset[str] = frozenset()

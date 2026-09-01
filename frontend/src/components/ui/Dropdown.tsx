@@ -27,7 +27,7 @@ export function Dropdown({
   }, []);
   const selected = options.find((option) => option.value === value);
   return (
-    <div ref={ref} className="relative w-full">
+    <div ref={ref} className="relative w-full" onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); (event.currentTarget.querySelector("button") as HTMLButtonElement | null)?.focus(); } }}>
       <label className="block text-sm font-medium">
         {label}
         <button

@@ -1,0 +1,8 @@
+import { Check } from "lucide-react";
+import type { CSSProperties } from "react";
+import "./WizardStepper.css";
+
+export function WizardStepper({ steps, current, completedThrough, interactive, onStep }: { steps: { label: string }[]; current: number; completedThrough: number; interactive: boolean; onStep: (index: number) => void }) {
+  const progress = steps.length > 1 ? current / (steps.length - 1) : 0;
+  return <nav className="hc-job-progress hc-wizard-stepper border-b border-[var(--color-border)] pb-5" aria-label="Form progress"><ol className="hc-job-progress-track" style={{ "--wizard-progress-width": `calc(${progress * 100}% - ${progress * 7.5}rem)` } as CSSProperties}>{steps.map((step, index) => { const state = index === current ? "active" : index < completedThrough ? "complete" : "upcoming"; const enabled = interactive && index <= completedThrough; return <li key={step.label} data-state={state} className="hc-job-progress-step"><button type="button" disabled={!enabled} aria-current={index === current ? "step" : undefined} aria-label={`${step.label}${state === "active" ? ", current step" : state === "complete" ? ", completed" : ", unavailable"}`} onClick={() => onStep(index)} className="hc-step-circle inline-flex size-10 items-center justify-center rounded-full border-2 text-sm font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]">{state === "complete" ? <Check size={17} strokeWidth={3} aria-hidden="true"/> : index + 1}</button><span className="mt-2 whitespace-nowrap text-xs font-semibold">{step.label}</span></li>; })}</ol></nav>;
+}

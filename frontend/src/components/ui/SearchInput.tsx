@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 export function SearchInput({
   value,
@@ -22,6 +22,7 @@ export function SearchInput({
         aria-label={ariaLabel}
         className="hc-form-control w-full pl-10 pr-10"
       />
+      <Search aria-hidden="true" size={18} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-muted)]" />
       {value && onClear && (
         <button
           type="button"

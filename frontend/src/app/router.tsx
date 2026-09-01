@@ -20,6 +20,7 @@ import { AuthPage } from "../pages/AuthPage";
 import { InterviewsPage } from "../pages/InterviewsPage";
 import { InterviewDetailPage } from "../pages/InterviewDetailPage";
 import { ApprovalsPage } from "../pages/ApprovalsPage";
+import { RecruiterGuidePage } from "../pages/RecruiterGuidePage";
 
 function Protected({ children }: { children: ReactNode }) { const { user, loading } = useAuth(); const { organization, loading: orgLoading } = useOrganization(); if (loading || orgLoading) return <p>Loading workspace…</p>; return user ? organization ? children : <Navigate replace to="/setup-organization" /> : <Navigate replace to="/login" />; }
 function Setup() { const { user, loading } = useAuth(); const { organization, loading: orgLoading } = useOrganization(); if (loading || orgLoading) return <p>Loading workspace…</p>; return user ? organization ? <Navigate replace to="/app" /> : <OrganizationSetupPage /> : <Navigate replace to="/login" />; }
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
   { path: "/signup", element: <SignupPage /> },
   { path: "/setup-organization", element: <Setup /> },
   { path: "/settings", element: <Protected><OrganizationSettingsPage /></Protected> },
+  { path: "/settings/guide", element: <Protected><RecruiterGuidePage /></Protected> },
   { path: "/hiring", element: <Protected><HiringPage /></Protected> },
   { path: "/jobs", element: <Navigate replace to="/hiring?tab=jobs" /> },
   { path: "/jobs/new", element: <Navigate replace to="/hiring/jobs/new" /> },

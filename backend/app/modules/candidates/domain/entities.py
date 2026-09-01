@@ -15,5 +15,6 @@ class Candidate:
     current_title: str | None
     years_of_experience: int | None
     summary: str | None
+    education: list[dict[str, object]]
     created_at: datetime
     updated_at: datetime
