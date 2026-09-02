@@ -94,7 +94,7 @@ export function HeroSection() {
             AI-powered recruitment
           </motion.div>
 
-          <motion.h1 className="hc2-hero-h1" variants={itemVariants}>
+          <motion.h1 className="hc2-hero-h1 mb-2!" variants={itemVariants}>
             Hire with<br />clarity.
           </motion.h1>
 
@@ -103,7 +103,7 @@ export function HeroSection() {
             decisions into one intelligent recruitment workspace.
           </motion.p>
 
-          <motion.div className="hc2-hero-actions" variants={itemVariants}>
+          <motion.div className="hc2-hero-actions mt-4!" variants={itemVariants}>
             <Link to={portalUrl("/signup")} className="hc2-cta-btn">
               Start Hiring
             </Link>

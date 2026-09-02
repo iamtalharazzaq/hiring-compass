@@ -39,7 +39,7 @@ export function AISection() {
       <div className="hc2-ai-inner">
         <ScrollReveal className="hc2-ai-head">
           <p className="hc2-eyebrow"><i />AI capabilities</p>
-          <h2 className="hc2-section-h2">AI where it actually<br />helps recruiters.</h2>
+          <h2 className="hc2-section-h2 mb-4">AI where it actually<br />helps recruiters.</h2>
           <p className="hc2-section-sub">
             Not a magic black box. Practical intelligence woven into the existing workflow — visible, explainable, and controlled by you.
           </p>

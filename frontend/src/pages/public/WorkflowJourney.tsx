@@ -86,7 +86,7 @@ export function WorkflowJourney() {
       <div className="hc2-workflow-inner">
         <ScrollReveal className="hc2-workflow-head">
           <div className="hc2-hand-badge">How it works</div>
-          <h2 className="hc2-section-h2">From job opening<br />to onboarding.</h2>
+          <h2 className="hc2-section-h2 mb-4">From job opening<br />to onboarding.</h2>
           <p className="hc2-section-sub">
             Move every hire forward without losing the context that makes each decision clear.
           </p>

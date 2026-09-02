@@ -333,6 +333,9 @@
 
 .hc2-hero-copy {
   max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .hc2-hero-h1 {
@@ -342,14 +345,14 @@
   line-height: 0.98;
   letter-spacing: -0.04em;
   color: var(--hc2-dark);
-  margin-bottom: 1.75rem;
+  margin: 0 0 2.5rem;
 }
 
 .hc2-hero-lede {
   font-size: 1.125rem;
   color: var(--hc2-text-muted);
   line-height: 1.65;
-  margin-bottom: 2.25rem;
+  margin: 0 0 3rem;
 }
 
 .hc2-hero-actions {

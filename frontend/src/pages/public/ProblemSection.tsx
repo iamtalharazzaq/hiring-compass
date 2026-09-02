@@ -15,7 +15,7 @@ export function ProblemSection() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <h2 className="hc2-problem-h2">
+            <h2 className="hc2-problem-h2 mb-4">
               Hiring today is<br />fragmented.
             </h2>
           </ScrollReveal>
