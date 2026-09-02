@@ -1,0 +1,185 @@
+import React, { useState, useEffect, useRef } from "react";
+import { Compass, Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { portalUrl } from "../../lib/hosts";
+
+const navLinks = [
+  { label: "Product", href: "#product" },
+  { label: "How It Works", href: "#how-it-works" },
+  { label: "Features", href: "#features" },
+  { label: "Pricing", href: "#pricing" },
+];
+
+export function PublicHeader() {
+  const [stuck, setStuck] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isNavClickScroll = useRef(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    // Force browser to scroll to top on fresh reload/refresh
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      setStuck(scrollY > 20);
+
+      // If user triggered a nav click scroll, keep navbar visible during movement
+      if (isNavClickScroll.current) {
+        setVisible(true);
+      } else {
+        // Scroll Direction: Hide on scroll down, show on scroll up
+        if (scrollY > 80 && scrollY > lastScrollY.current + 5) {
+          setVisible(false); // scrolling down
+        } else if (scrollY < lastScrollY.current - 5 || scrollY <= 20) {
+          setVisible(true); // scrolling up or near top
+        }
+      }
+      lastScrollY.current = scrollY;
+
+      // When at top (Hero section), no navbar tab selected
+      const productElem = document.getElementById("product");
+      const productTop = productElem ? productElem.offsetTop - 180 : 400;
+
+      if (scrollY < productTop) {
+        setActiveTab(null);
+        return;
+      }
+
+      // Detect active section on scroll
+      const scrollPosition = scrollY + 140;
+      let matchedTab: string | null = null;
+
+      for (let i = navLinks.length - 1; i >= 0; i--) {
+        const link = navLinks[i];
+        const targetId = link.href.replace("#", "");
+        const element = document.getElementById(targetId);
+        if (element) {
+          const top = element.offsetTop;
+          if (scrollPosition >= top - 80) {
+            matchedTab = link.label;
+            break;
+          }
+        }
+      }
+
+      setActiveTab(matchedTab);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, label: string) => {
+    e.preventDefault();
+    setActiveTab(label);
+    setVisible(true);
+    isNavClickScroll.current = true;
+
+    const targetId = href.replace("#", "");
+    const element = document.getElementById(targetId);
+    if (element) {
+      // Offset closely matches stuck header height (~67px), perfectly hiding the bottom border of the preceding Trust section
+      const headerOffset = 70;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+    }
+
+    setMenuOpen(false);
+
+    // Reset nav click flag after scroll animation completes
+    setTimeout(() => {
+      isNavClickScroll.current = false;
+    }, 800);
+  };
+
+  const scrollToTop = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setActiveTab(null);
+    setVisible(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <header
+      className={`hc2-header${stuck ? " is-stuck" : ""}${!visible ? " is-hidden" : ""}`}
+      role="banner"
+    >
+      <div className="hc2-header-inner">
+        {/* Logo — Clicking scrolls to top and clears selection */}
+        <a href="#" onClick={scrollToTop} className="hc2-brand" aria-label="Hiring Compass home">
+          <span className="hc2-logomark" aria-hidden="true">
+            <Compass size={20} strokeWidth={2.5} />
+          </span>
+          <span className="hc2-brand-text">HIRING COMPASS</span>
+        </a>
+
+        {/* Desktop navbar */}
+        <nav className="hc2-nav" aria-label="Primary navigation">
+          {navLinks.map((link) => {
+            const isActive = activeTab === link.label;
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                className={`hc2-nav-link${isActive ? " is-active" : ""}`}
+                onClick={(e) => handleNavClick(e, link.href, link.label)}
+              >
+                {link.label}
+              </a>
+            );
+          })}
+        </nav>
+
+        {/* Right Action — Dark Pill 'Get Started' Button */}
+        <div className="hc2-header-cta-wrap">
+          <Link to={portalUrl("/signup")} className="hc2-nav-get-started">
+            Get Started
+          </Link>
+        </div>
+
+        {/* Mobile hamburger button */}
+        <button
+          className="hc2-menu-btn"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+      </div>
+
+      {/* Mobile drawer */}
+      {menuOpen && (
+        <div className="hc2-mobile-drawer" role="dialog" aria-label="Mobile navigation">
+          <nav>
+            {navLinks.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="hc2-drawer-link"
+                onClick={(e) => handleNavClick(e, link.href, link.label)}
+              >
+                {link.label}
+              </a>
+            ))}
+            <Link to={portalUrl("/signup")} className="hc2-drawer-get-started">
+              Get Started
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
