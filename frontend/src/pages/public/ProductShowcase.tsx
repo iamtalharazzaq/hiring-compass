@@ -9,27 +9,27 @@ function CandidateMock() {
         <span className="hc2-dot-active" /> With AI Matching
       </div>
       <div className="hc2-feat-cand-row">
-        <div className="hc2-avatar-circle">RR</div>
+        <div className="hc2-avatar-circle">CP</div>
         <div>
-          <strong className="hc2-cand-name">Ronald Richards</strong>
-          <p className="hc2-cand-meta">3rd Floor / M-1 Table · Sr. Backend Candidate</p>
+          <strong className="hc2-cand-name">Candidate profile</strong>
+          <p className="hc2-cand-meta">Structured review-ready context</p>
         </div>
       </div>
 
       <div className="hc2-feat-receipt-card">
         <div className="hc2-receipt-header">
           <span className="hc2-receipt-title">ASSESSMENT SUMMARY</span>
-          <span className="hc2-receipt-time">16:20 · 27/02/2026</span>
+          <span className="hc2-receipt-time">Review ready</span>
         </div>
         <div className="hc2-receipt-body">
-          <div className="hc2-receipt-row"><span>Technical Skills Match</span><strong>94%</strong></div>
-          <div className="hc2-receipt-row"><span>System Architecture</span><strong>90%</strong></div>
-          <div className="hc2-receipt-row"><span>Communication & Culture</span><strong>88%</strong></div>
-          <div className="hc2-receipt-row"><span>AI Screening Verdict</span><strong>Recommended</strong></div>
+          <div className="hc2-receipt-row"><span>Skills alignment</span><strong>Reviewed</strong></div>
+          <div className="hc2-receipt-row"><span>Relevant experience</span><strong>Reviewed</strong></div>
+          <div className="hc2-receipt-row"><span>Interview context</span><strong>Ready</strong></div>
+          <div className="hc2-receipt-row"><span>Recruiter decision</span><strong>Required</strong></div>
         </div>
         <div className="hc2-receipt-total">
-          <span>Overall Match Score</span>
-          <strong>91%</strong>
+          <span>Review status</span>
+          <strong>Ready</strong>
         </div>
       </div>
     </div>

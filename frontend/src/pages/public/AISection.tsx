@@ -1,90 +1,69 @@
+import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
 import { ScrollReveal, StaggerGroup, StaggerItem } from "./motion";
 
 const capabilities = [
-  {
-    label: "Resume Understanding",
-    desc: "Automatically extracts skills, experience, and key signals from uploaded resumes.",
-    sample: { summary: "5 years Python & FastAPI. Distributed systems. Led 3-person backend team at DataStream." },
-  },
-  {
-    label: "Candidate-to-Job Matching",
-    desc: "Scores each candidate against the job's requirements and surfaces the strongest fits.",
-    sample: { match: 91, skills: ["Python", "FastAPI", "PostgreSQL", "AWS"] },
-  },
-  {
-    label: "Screening Assistance",
-    desc: "Generates structured screening questions tailored to the role requirements.",
-    sample: null,
-  },
-  {
-    label: "Candidate Summaries",
-    desc: "Produces concise, readable summaries from a candidate's full profile and application.",
-    sample: null,
-  },
-  {
-    label: "Interview Preparation",
-    desc: "Suggests evaluation criteria and interview questions based on scorecard and role.",
-    sample: null,
-  },
-  {
-    label: "Workflow Assistance",
-    desc: "Recommends next steps based on pipeline stage and evaluation signals.",
-    sample: null,
-  },
-];
+  ["Job Description Creation", "Turns a hiring request into a clear, structured job description tailored to the role and team context.", "AI Generated"],
+  ["Requirement Planning", "Defines skills, experience, responsibilities, workplace details, and evaluation criteria for the role.", "AI Prepared"],
+  ["Candidate Understanding", "Reads candidate profiles and resumes to identify experience, skills, education, and relevant career context.", "AI Analyzed"],
+  ["Matching and Shortlisting", "Compares candidates with approved requirements, explains the match, and recommends who should move forward.", "Recruiter Review"],
+  ["Interview Coordination", "Prepares interview questions, coordinates availability, schedules interviews, and keeps every stage connected.", "AI Coordinated"],
+  ["Decision, Offer, and Onboarding", "Summarizes interview feedback, prepares the offer, and guides the selected candidate into onboarding after recruiter approval.", "Human Approval"],
+] as const;
+
+const workflowStages = [
+  ["Hiring request", false], ["Role draft ready", false], ["Requirements defined", true], ["Candidate match found", false],
+  ["Interview scheduled", false], ["Feedback summarized", true], ["Offer ready for approval", true], ["Onboarding started", false],
+] as const;
+
+const approvals = [
+  ["Job approval", "Recruiter approves the role before it becomes active."],
+  ["Shortlist review", "Recruiter reviews recommended candidates before interviews."],
+  ["Final hiring approval", "Recruiter approves the final decision and offer before onboarding begins."],
+] as const;
 
 export function AISection() {
   return (
-    <section className="hc2-ai">
+    <section className="hc2-ai" id="ai-capabilities">
       <div className="hc2-ai-inner">
-        <ScrollReveal className="hc2-ai-head">
-          <p className="hc2-eyebrow"><i />AI capabilities</p>
-          <h2 className="hc2-section-h2 mb-4">AI where it actually<br />helps recruiters.</h2>
-          <p className="hc2-section-sub">
-            Not a magic black box. Practical intelligence woven into the existing workflow — visible, explainable, and controlled by you.
-          </p>
-        </ScrollReveal>
+        <div className="hc2-ai-top">
+          <ScrollReveal className="hc2-ai-head">
+            <p className="hc2-ai-label">AI Capabilities</p>
+            <h2 className="hc2-section-h2">AI that moves every<br />hire forward.</h2>
+            <p className="hc2-section-sub">Hiring Compass turns a hiring request into a structured recruitment workflow. It creates the role, understands candidates, coordinates interviews, prepares decisions, and guides the selected candidate toward onboarding.</p>
+            <p className="hc2-ai-trust-statement">Automation handles the work. Recruiters remain in control of every important decision.</p>
+          </ScrollReveal>
 
-        {/* Featured AI card */}
-        <ScrollReveal delay={0.1}>
-          <div className="hc2-ai-featured">
-            <div className="hc2-ai-feat-label">AI Candidate Summary</div>
-            <p className="hc2-ai-feat-text">
-              "Strong Python backend background with experience in distributed systems and API architecture. Previously led a backend team at a series-B startup."
-            </p>
-            <div className="hc2-ai-feat-meta">
-              <div className="hc2-ai-skills">
-                {["Python", "FastAPI", "PostgreSQL", "AWS"].map((s) => (
-                  <span key={s} className="hc2-skill-tag">{s}</span>
-                ))}
-              </div>
-              <div className="hc2-ai-match-badge">
-                <span className="hc2-ai-match-val">91%</span>
-                <span className="hc2-ai-match-lbl">Match</span>
-              </div>
+          <ScrollReveal delay={0.1} className="hc2-ai-workflow">
+            <div className="hc2-ai-workflow-top"><span><Sparkles size={15} /> AI workflow</span><span>Recruiter approval at key decisions</span></div>
+            <div className="hc2-ai-workflow-stages">
+              {workflowStages.map(([label, approval], index) => (
+                <div className={`hc2-ai-workflow-stage${approval ? " is-approval" : ""}`} key={label}>
+                  <span className="hc2-ai-stage-number">0{index + 1}</span>
+                  <strong>{label}</strong>
+                  {approval && <span className="hc2-ai-approval-badge">Recruiter approval</span>}
+                </div>
+              ))}
             </div>
-          </div>
-        </ScrollReveal>
+            <p className="hc2-ai-workflow-note">AI keeps the work connected. Recruiters approve the decisions that move it forward.</p>
+          </ScrollReveal>
+        </div>
 
-        {/* Capability grid */}
         <StaggerGroup className="hc2-ai-grid">
-          {capabilities.map((c) => (
-            <StaggerItem key={c.label} className="hc2-ai-capability">
-              <div className="hc2-ai-cap-dot" />
-              <div>
-                <strong className="hc2-ai-cap-title">{c.label}</strong>
-                <p className="hc2-ai-cap-desc">{c.desc}</p>
-              </div>
+          {capabilities.map(([title, desc, badge], index) => (
+            <StaggerItem key={title}>
+              <article className={`hc2-ai-capability${index % 2 ? " is-warm" : ""}`}>
+                <span className="hc2-ai-cap-number">0{index + 1}</span>
+                <div><strong className="hc2-ai-cap-title">{title}</strong><p className="hc2-ai-cap-desc">{desc}</p><span className="hc2-ai-cap-badge">{badge}</span></div>
+              </article>
             </StaggerItem>
           ))}
         </StaggerGroup>
 
-        <ScrollReveal delay={0.1}>
-          <p className="hc2-ai-future">
-            <span className="hc2-future-badge">Coming soon</span>
-            Agentic AI workflows — autonomous recruiting assistance that works alongside your team.
-          </p>
-        </ScrollReveal>
+        <div className="hc2-ai-approvals">
+          {approvals.map(([title, desc]) => <div key={title}><CheckCircle2 size={18} /><div><strong>{title}</strong><span>{desc}</span></div></div>)}
+        </div>
+
+        <div className="hc2-ai-trust"><div><strong>From the first hiring request to the first day, every action stays connected to the context behind the decision.</strong><span>AI recommendations remain reviewable, explainable, and connected to the original role requirements.</span></div><a href="#how-it-works" className="hc2-ai-workflow-link">See how the workflow works <ArrowRight size={16} /></a></div>
       </div>
     </section>
   );

@@ -6,7 +6,7 @@ import { portalUrl } from "../../lib/hosts";
 const navLinks = [
   { label: "Product", href: "#product" },
   { label: "How It Works", href: "#how-it-works" },
-  { label: "Features", href: "#features" },
+  { label: "AI Capabilities", href: "#ai-capabilities" },
   { label: "Pricing", href: "#pricing" },
 ];
 
@@ -29,20 +29,15 @@ export function PublicHeader() {
       const scrollY = window.scrollY;
       setStuck(scrollY > 20);
 
-      // If user triggered a nav click scroll, keep navbar visible during movement
       if (isNavClickScroll.current) {
         setVisible(true);
-      } else {
-        // Scroll Direction: Hide on scroll down, show on scroll up
-        if (scrollY > 80 && scrollY > lastScrollY.current + 5) {
-          setVisible(false); // scrolling down
-        } else if (scrollY < lastScrollY.current - 5 || scrollY <= 20) {
-          setVisible(true); // scrolling up or near top
-        }
+      } else if (scrollY > 80 && scrollY > lastScrollY.current + 5) {
+        setVisible(false);
+      } else if (scrollY < lastScrollY.current - 5 || scrollY <= 20) {
+        setVisible(true);
       }
       lastScrollY.current = scrollY;
 
-      // When at top (Hero section), no navbar tab selected
       const productElem = document.getElementById("product");
       const productTop = productElem ? productElem.offsetTop - 180 : 400;
 
@@ -76,6 +71,14 @@ export function PublicHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string, label: string) => {
     e.preventDefault();
     setActiveTab(label);
@@ -97,11 +100,8 @@ export function PublicHeader() {
     }
 
     setMenuOpen(false);
+    setTimeout(() => { isNavClickScroll.current = false; }, 800);
 
-    // Reset nav click flag after scroll animation completes
-    setTimeout(() => {
-      isNavClickScroll.current = false;
-    }, 800);
   };
 
   const scrollToTop = (e: React.MouseEvent) => {
@@ -122,7 +122,7 @@ export function PublicHeader() {
           <span className="hc2-logomark" aria-hidden="true">
             <Compass size={20} strokeWidth={2.5} />
           </span>
-          <span className="hc2-brand-text">HIRING COMPASS</span>
+          <span className="hc2-brand-text">Hiring Compass</span>
         </a>
 
         {/* Desktop navbar */}
@@ -162,7 +162,7 @@ export function PublicHeader() {
 
       {/* Mobile drawer */}
       {menuOpen && (
-        <div className="hc2-mobile-drawer" role="dialog" aria-label="Mobile navigation">
+        <div className="hc2-mobile-drawer" role="dialog" aria-label="Mobile navigation" aria-modal="true">
           <nav>
             {navLinks.map((link) => (
               <a

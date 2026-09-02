@@ -89,7 +89,7 @@ export function ProblemSection() {
               <FileSpreadsheet size={14} /> Spreadsheet Tracker
             </div>
             <div className="hc2-frag-title">candidate-tracking.xlsx</div>
-            <div className="hc2-frag-meta">Sarah Mitchell • David Chen • Emily Parker</div>
+            <div className="hc2-frag-meta">Candidate records awaiting review</div>
             <div className="hc2-frag-badge" style={{ background: "#fef2f2", color: "#991b1b", borderColor: "#fecaca" }}>
               Last edit: 3 days ago
             </div>
@@ -107,7 +107,7 @@ export function ProblemSection() {
               <Mail size={14} /> Inbox Thread
             </div>
             <div className="hc2-frag-title">FW: Technical Interview Feedback</div>
-            <div className="hc2-frag-meta">“Sarah performed well technically, but need to confirm systems design...”</div>
+            <div className="hc2-frag-meta">“Interview feedback is waiting for a structured review...”</div>
           </motion.div>
 
           {/* Card 4: Calendar Interview */}

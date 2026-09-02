@@ -7,9 +7,9 @@ import { FloatIdle } from "./motion";
 /* ─── Mock UI: main dashboard panel ───────────────────────────────────── */
 function DashboardPanel() {
   const candidates = [
-    { initials: "SM", name: "Sarah Mitchell", role: "Sr. Backend Engineer", stage: "Shortlisted", match: 92 },
-    { initials: "JC", name: "James Chen", role: "Backend Engineer", stage: "Applied", match: 78 },
-    { initials: "AP", name: "Amara Patel", role: "Lead Engineer", stage: "Interviewing", match: 85 },
+    { initials: "CP", name: "Candidate profile", role: "Skills and experience", stage: "Shortlisted", match: 92 },
+    { initials: "CR", name: "Candidate record", role: "Review in progress", stage: "Applied", match: 78 },
+    { initials: "CA", name: "Candidate application", role: "Interview feedback", stage: "Interviewing", match: 85 },
   ];
   const stages = ["Applied", "Screening", "Shortlisted", "Interviewing", "Offer"];
   const stageCount = [12, 7, 6, 3, 1];
@@ -28,8 +28,8 @@ function DashboardPanel() {
       <div className="hc2-dashboard-job">
         <div className="hc2-job-badge">JOB</div>
         <div>
-          <p className="hc2-dashboard-job-title">Software Engineer</p>
-          <p className="hc2-dashboard-job-sub">Berlin, Germany · Full Time · Hybrid</p>
+          <p className="hc2-dashboard-job-title">Open role</p>
+          <p className="hc2-dashboard-job-sub">Approved hiring workflow</p>
         </div>
         <span className="hc2-status-pill approved">Approved</span>
       </div>
@@ -129,8 +129,8 @@ export function HeroSection() {
           <FloatIdle amplitude={5} duration={3.8} delay={0} className="hc2-comp-card hc2-comp-card--tl">
             <Card className="">
               <span className="hc2-fc-label">Candidate Profile</span>
-              <strong className="hc2-fc-name">Sarah Mitchell</strong>
-              <p className="hc2-fc-sub">Sr. Backend Engineer</p>
+              <strong className="hc2-fc-name">Candidate profile</strong>
+              <p className="hc2-fc-sub">Review-ready context</p>
               <div className="hc2-fc-match">
                 <span className="hc2-match-badge">92% Match</span>
               </div>
@@ -160,7 +160,7 @@ export function HeroSection() {
           <FloatIdle amplitude={5} duration={3.5} delay={0.7} className="hc2-comp-card hc2-comp-card--bl">
             <Card className="">
               <span className="hc2-fc-label">Job Status</span>
-              <strong className="hc2-fc-value">Sr. AI Engineer</strong>
+              <strong className="hc2-fc-value">Open role</strong>
               <span className="hc2-status-pill approved">Approved</span>
             </Card>
           </FloatIdle>
