@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/AuthProvider";
+import { portalUrl } from "../lib/hosts";
 const ThreeScene = lazy(() => import("./MarketingScene"));
 
 const links = [
@@ -69,7 +70,7 @@ function Nav() {
       <div className="hc-nav-actions">
         <Link
           className="hc-button hc-button-small"
-          to={user ? "/app" : "/auth?mode=signup"}
+          to={user ? portalUrl() : portalUrl("/auth?mode=signup")}
         >
           {workspace}
           <ArrowRight size={15} />
@@ -94,7 +95,7 @@ function Nav() {
             <Link
               className="hc-button"
               onClick={() => setOpen(false)}
-              to={user ? "/app" : "/auth?mode=signup"}
+              to={user ? portalUrl() : portalUrl("/auth?mode=signup")}
             >
               {workspace}
               <ArrowRight size={15} />
@@ -171,12 +172,12 @@ function Hero() {
           Hiring Compass connects people with relevant opportunities and helps hiring teams move from role definition to confident hiring decisions.
         </p>
         <div className="hc-cta-row">
-          <Link className="hc-button" to="/signup">
+          <Link className="hc-button" to={portalUrl("/signup")}>
             Find matching opportunities <ArrowRight size={16} />
           </Link>
           <Link
             className="hc-button hc-button-quiet"
-            to={user ? "/app" : "/signup"}
+            to={user ? portalUrl() : portalUrl("/signup")}
           >
             Build your hiring workspace
           </Link>
@@ -229,7 +230,7 @@ function Product() {
               </li>
             ))}
           </ul>
-          <Link to="/signup">
+          <Link to={portalUrl("/signup")}>
             Find matching opportunities <ArrowRight size={16} />
           </Link>
         </article>
@@ -250,7 +251,7 @@ function Product() {
               </li>
             ))}
           </ul>
-          <Link to="/signup">
+          <Link to={portalUrl("/signup")}>
             Build your hiring workspace <ArrowRight size={16} />
           </Link>
         </article>
@@ -305,7 +306,7 @@ const recruiterStages = [
 function RecruiterWorkflow() { return <section className="hc-workflow" id="recruiter-workflow"><div className="hc-workflow-heading"><p className="hc-eyebrow">Recruiter experience</p><h2>A visual hiring timeline, not a wall of process.</h2><p>Each stage keeps one clear owner, a short action, and only the assistance that helps the team move forward.</p></div><div className="hc-workflow-table">{recruiterStages.map(([stage, description, ai, status], index) => <article className="hc-workflow-row" key={stage}><b>0{index + 1}</b><div><h3>{stage}</h3><p>{description}</p></div><div><span>AI assistance</span><p>{ai}</p></div><em className={status === "Current" ? "available" : "planned"}>{status}</em></article>)}</div></section>; }
 function CandidateWorkflow() { const steps = ["Upload resume", "Extract profile", "Discover relevant jobs", "See match explanation", "Apply", "Track application"]; return <section className="hc-candidate-flow"><p className="hc-eyebrow">Candidate experience · Planned</p><h2>Your resume should not disappear into a database.</h2><p>It should help you understand which opportunities are worth pursuing.</p><ol>{steps.map((step, index) => <li key={step}><span>0{index + 1}</span><strong>{step}</strong></li>)}</ol><aside>Your profile stays understandable: see why a job is relevant, choose whether to apply, and track what happens next.</aside></section>; }
 function Architecture() { return <section className="hc-architecture"><div><p className="hc-eyebrow">Connected hiring context</p><h2>The records behind a sound decision belong together.</h2><p>Hiring Compass connects the role, its requirements, the resume, the application, the interview, the feedback, and the final communication.</p></div><div className="hc-architecture-flow">{["Role", "Requirements", "Resume", "Application", "Interview", "Feedback", "Decision"].map((item, i) => <span key={item}>{item}{i < 6 && <ArrowRight size={14} />}</span>)}</div></section>; }
-function FinalCta() { return <section className="hc-final"><p>Bring clarity to the next step—whether you are pursuing an opportunity or building a team.</p><div><article><span>For candidates</span><Link to="/signup">Find matching opportunities <ArrowRight size={16} /></Link></article><article><span>For recruiters</span><Link to="/signup">Build your hiring workspace <ArrowRight size={16} /></Link></article></div></section>; }
+function FinalCta() { return <section className="hc-final"><p>Bring clarity to the next step—whether you are pursuing an opportunity or building a team.</p><div><article><span>For candidates</span><Link to={portalUrl("/signup")}>Find matching opportunities <ArrowRight size={16} /></Link></article><article><span>For recruiters</span><Link to={portalUrl("/signup")}>Build your hiring workspace <ArrowRight size={16} /></Link></article></div></section>; }
 function Pricing() {
   return (
     <>
@@ -358,7 +359,7 @@ function Pricing() {
                 </li>
               ))}
             </ul>
-            <Link to="/signup">
+            <Link to={portalUrl("/signup")}>
               {name === "Early access" ? "Build your hiring workspace" : "Learn what’s planned"} <ArrowRight size={15} />
             </Link>
           </article>
@@ -416,8 +417,8 @@ function Contact() {
         </a>
       )}
       <div className="hc-contact-options">
-        <article><span>For candidates</span><strong>See how meaningful opportunity discovery is taking shape.</strong><Link to="/signup">Find matching opportunities <ArrowRight size={15} /></Link></article>
-        <article><span>For hiring teams</span><strong>Create a workspace for your jobs, candidates, and applications.</strong><Link to="/signup">Build your hiring workspace <ArrowRight size={15} /></Link></article>
+        <article><span>For candidates</span><strong>See how meaningful opportunity discovery is taking shape.</strong><Link to={portalUrl("/signup")}>Find matching opportunities <ArrowRight size={15} /></Link></article>
+        <article><span>For hiring teams</span><strong>Create a workspace for your jobs, candidates, and applications.</strong><Link to={portalUrl("/signup")}>Build your hiring workspace <ArrowRight size={15} /></Link></article>
         <article><span>For product updates</span><strong>Contact details are being prepared—check back for a direct channel.</strong><em>Coming soon</em></article>
       </div>
     </section>
@@ -431,7 +432,7 @@ function Footer() {
         Hiring Compass
       </Link>
       <p>Thoughtful tools for people making important hiring decisions.</p>
-      <Link className="hc-footer-workspace" to="/app">Open workspace <ArrowRight size={14} /></Link>
+      <Link className="hc-footer-workspace" to={portalUrl()}>Open workspace <ArrowRight size={14} /></Link>
       <small>© {new Date().getFullYear()} Hiring Compass</small>
     </footer>
   );

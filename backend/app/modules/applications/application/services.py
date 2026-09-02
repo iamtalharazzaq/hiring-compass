@@ -80,6 +80,12 @@ class ApplicationService:
                 409,
             )
         current = ApplicationStatus(item.status)
+        if status is ApplicationStatus.INTERVIEWING:
+            raise ApplicationError(
+                "INVALID_TRANSITION",
+                "Schedule an interview to move this application into interviewing.",
+                409,
+            )
         if not can_transition(current, status):
             raise ApplicationError(
                 "INVALID_TRANSITION", "This application status cannot change that way.", 409

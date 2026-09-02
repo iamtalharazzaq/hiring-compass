@@ -10,7 +10,7 @@ import { ActionMenu } from "../common/ActionMenu";
 import { Dropdown } from "../ui/Dropdown";
 
 const labels: Record<ApplicationStatus, string> = { new: "New", shortlisted: "Shortlisted", interviewing: "Interviewing", decision_pending: "Decision Pending", offer_approved: "Offer Approved", on_hold: "On Hold", rejected: "Rejected" };
-const nextStatuses: Partial<Record<ApplicationStatus, ApplicationStatus[]>> = { new: ["shortlisted", "on_hold", "rejected"], shortlisted: ["interviewing", "on_hold", "rejected"], interviewing: ["on_hold", "rejected"], on_hold: ["new", "shortlisted", "rejected"] };
+const nextStatuses: Partial<Record<ApplicationStatus, ApplicationStatus[]>> = { new: ["shortlisted", "on_hold", "rejected"], shortlisted: ["on_hold", "rejected"], interviewing: ["shortlisted", "on_hold", "rejected"], on_hold: ["new", "shortlisted", "rejected"] };
 const displayStatus: Record<ApplicationStatus, string> = { ...labels, new: "Applied", offer_approved: "Hired" };
 const statusTone: Record<ApplicationStatus, string> = { new: "bg-[var(--color-elevated)] text-[var(--color-muted)]", shortlisted: "bg-[var(--color-sage)] text-[var(--color-teal)]", interviewing: "bg-[color-mix(in_srgb,var(--color-amber)_22%,transparent)] text-[var(--color-amber)]", decision_pending: "bg-[color-mix(in_srgb,var(--color-amber)_22%,transparent)] text-[var(--color-amber)]", offer_approved: "bg-[var(--color-sage)] text-[var(--color-teal)]", on_hold: "bg-[var(--color-elevated)] text-[var(--color-muted)]", rejected: "bg-[color-mix(in_srgb,var(--color-red)_16%,transparent)] text-[var(--color-red)]" };
 const workflowIndex: Partial<Record<ApplicationStatus, number>> = { new: 0, shortlisted: 1, interviewing: 2, decision_pending: 2, offer_approved: 3 };

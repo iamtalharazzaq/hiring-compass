@@ -3,5 +3,10 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
+  envDir: "..",
   plugins: [react(), tailwindcss()],
+  server: {
+    host: "0.0.0.0",
+    allowedHosts: ["hiringcompass.localhost", "app.hiringcompass.localhost"],
+  },
 });

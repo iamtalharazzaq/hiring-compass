@@ -5,7 +5,7 @@ from uuid import UUID
 from email_validator import EmailNotValidError, validate_email
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-SEED_EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.test$", re.IGNORECASE)
+SEED_EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.(test|local)$", re.IGNORECASE)
 
 
 def validate_request_email(value: str) -> str:

@@ -46,19 +46,14 @@ def create_app() -> FastAPI:
     )
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
+        # Production mapping: hiringcompass.com -> public pages,
+        # app.hiringcompass.com -> recruiter portal, api.hiringcompass.com -> backend API.
+        allow_origins=list({
             *[origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()],
             settings.frontend_origin,
-            "http://localhost:5173",
-            "http://localhost:5174",
-            "http://127.0.0.1:5173",
-            "http://127.0.0.1:5174",
-        ],
-        allow_origin_regex=(
-            r"https?://(localhost|127\.0\.0\.1|172\.18\.0\.1):\d+"
-            if settings.app_env == "development"
-            else None
-        ),
+        }),
+        # Refresh authentication is the only cookie flow; recruiter routes still
+        # require a bearer token and the cookie is path-scoped to auth endpoints.
         allow_credentials=True,
         allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE"],
         allow_headers=["Authorization", "Content-Type", "X-Request-ID"],

@@ -18,7 +18,8 @@ export function InterviewsPage() {
         <p className="mt-6 text-red-600">{error.message}</p>
       ) : !data?.items.length ? (
         <p className="mt-6 rounded-2xl border p-6 text-sm text-[var(--color-muted)]">
-          No upcoming interviews are scheduled.
+          No upcoming interviews are scheduled. {" "}
+          Schedule an interview from the candidate pipeline to add it here.
         </p>
       ) : (
         <div className="mt-6 space-y-3">

@@ -28,10 +28,13 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = 7
     refresh_cookie_name: str = "hiring_compass_refresh"
     frontend_origin: str = Field(
-        default="http://localhost:5173",
+        default="http://hiringcompass.localhost:5173",
         validation_alias=AliasChoices("FRONTEND_URL", "FRONTEND_ORIGIN"),
     )
-    cors_origins: str = ""
+    cors_origins: str = (
+        "http://hiringcompass.localhost:5173,"
+        "http://app.hiringcompass.localhost:5173"
+    )
     cookie_secure: bool = False
     seed_organization_name: str = "Hiring Compass"
     seed_organization_slug: str = "hiring-compass"

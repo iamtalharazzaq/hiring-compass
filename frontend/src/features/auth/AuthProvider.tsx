@@ -7,6 +7,7 @@ import {
 } from "react";
 import { me, refresh, logout as logoutRequest } from "./api";
 import { setAccessToken } from "../../lib/apiClient";
+import { isPortalHost } from "../../lib/hosts";
 import type { AuthPayload, User } from "./types";
 
 type AuthContextValue = {
@@ -20,16 +21,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const authenticate = (payload: AuthPayload) => {
-    setAccessToken(payload.access_token);
+    if (isPortalHost()) setAccessToken(payload.access_token);
     setUser(payload.user);
   };
   useEffect(() => {
+    if (!isPortalHost()) setAccessToken(null);
     refresh()
       .then((payload) => {
+        if (!isPortalHost()) return payload.user;
         setAccessToken(payload.access_token);
-        return me();
+        return me().then((result) => result.user);
       })
-      .then((result) => setUser(result.user))
+      .then(setUser)
       .catch(() => setAccessToken(null))
       .finally(() => setLoading(false));
   }, []);

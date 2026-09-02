@@ -122,6 +122,7 @@ This is one monorepo with `frontend/` and `backend/`, built as a modular monolit
 git clone <repository-url>
 cd hiring-compass
 cp .env.example .env
+cp frontend/.env.example frontend/.env
 make up
 ```
 
@@ -140,10 +141,11 @@ npm run dev
 
 | Service | URL |
 | --- | --- |
-| Frontend | `http://localhost:5173` |
-| API docs | `http://localhost:8000/docs` |
-| API health | `http://localhost:8000/health` |
-| Database readiness | `http://localhost:8000/health/ready` |
+| Public frontend | `http://hiringcompass.localhost:5173` |
+| Recruiter portal | `http://app.hiringcompass.localhost:5173` |
+| API docs | `http://api.hiringcompass.localhost:8000/docs` |
+| API health | `http://api.hiringcompass.localhost:8000/health` |
+| Database readiness | `http://api.hiringcompass.localhost:8000/health/ready` |
 | RabbitMQ management | `http://localhost:15672` |
 | MinIO console | `http://localhost:9001` |
 | Mailpit inbox | `http://localhost:8025` |

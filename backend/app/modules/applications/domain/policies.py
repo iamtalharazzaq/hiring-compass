@@ -7,8 +7,8 @@ TRANSITIONS = {
         ApplicationStatus.ON_HOLD,
         ApplicationStatus.REJECTED,
     },
-    ApplicationStatus.SHORTLISTED: {ApplicationStatus.INTERVIEWING, ApplicationStatus.ON_HOLD, ApplicationStatus.REJECTED},
-    ApplicationStatus.INTERVIEWING: {ApplicationStatus.DECISION_PENDING, ApplicationStatus.ON_HOLD, ApplicationStatus.REJECTED},
+    ApplicationStatus.SHORTLISTED: {ApplicationStatus.ON_HOLD, ApplicationStatus.REJECTED},
+    ApplicationStatus.INTERVIEWING: {ApplicationStatus.DECISION_PENDING, ApplicationStatus.SHORTLISTED, ApplicationStatus.ON_HOLD, ApplicationStatus.REJECTED},
     ApplicationStatus.DECISION_PENDING: {ApplicationStatus.OFFER_APPROVED, ApplicationStatus.REJECTED, ApplicationStatus.ON_HOLD},
     ApplicationStatus.ON_HOLD: {
         ApplicationStatus.NEW,

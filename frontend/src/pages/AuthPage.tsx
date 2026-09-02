@@ -2,11 +2,12 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { AuthLayout } from "../components/auth/AuthLayout";
 import { signIn, signUp } from "../features/auth/api";
 import { loginSchema, signupSchema } from "../features/auth/schemas";
 import { useAuth } from "../features/auth/AuthProvider";
+import { portalUrl } from "../lib/hosts";
 
 type Mode = "login" | "signup";
 type AuthForm = { display_name?: string; email: string; password: string };
@@ -19,7 +20,6 @@ const copy = {
 export function AuthPage() {
   const { user, loading, authenticate } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const reduced = useReducedMotion();
   const mode: Mode = searchParams.get("mode") === "signup" ? "signup" : "login";
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +29,10 @@ export function AuthPage() {
 
   useEffect(() => { emailRef.current?.focus(); }, [mode]);
   if (loading) return <main className="grid min-h-screen place-items-center">Loading authentication…</main>;
-  if (user) return <Navigate replace to="/app" />;
+  if (user) {
+    window.location.replace(portalUrl());
+    return null;
+  }
 
   const changeMode = (next: Mode) => {
     if (next === mode) return;
@@ -47,7 +50,7 @@ export function AuthPage() {
         ? await signIn(values.email, values.password)
         : await signUp(values.email, values.display_name!, values.password);
       authenticate(payload);
-      navigate("/app");
+      window.location.assign(portalUrl());
     } catch (error) {
       setError("root", { message: error instanceof Error ? error.message : "Unable to continue. Please try again." });
     }
