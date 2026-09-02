@@ -7,12 +7,12 @@ import { FloatIdle } from "./motion";
 /* ─── Mock UI: main dashboard panel ───────────────────────────────────── */
 function DashboardPanel() {
   const candidates = [
-    { initials: "CP", name: "Candidate profile", role: "Skills and experience", stage: "Shortlisted", match: 92 },
-    { initials: "CR", name: "Candidate record", role: "Review in progress", stage: "Applied", match: 78 },
-    { initials: "CA", name: "Candidate application", role: "Interview feedback", stage: "Interviewing", match: 85 },
+    { initials: "CR", name: "Role Requirements", role: "Approved role context", stage: "Ready", match: "" },
+    { initials: "CM", name: "Candidate Match", role: "Relevant profile context", stage: "Reviewed", match: "" },
+    { initials: "IS", name: "Interview Scheduled", role: "Organized interview plan", stage: "Confirmed", match: "" },
   ];
-  const stages = ["Applied", "Screening", "Shortlisted", "Interviewing", "Offer"];
-  const stageCount = [12, 7, 6, 3, 1];
+  const stages = ["Role", "Match", "Interview", "Decision", "Onboarding"];
+  const stageCount = ["", "", "", "", ""];
 
   return (
     <div className="hc2-dashboard">
@@ -21,15 +21,15 @@ function DashboardPanel() {
         <div className="hc2-dashboard-dots">
           <span /><span /><span />
         </div>
-        <span className="hc2-dashboard-title">Recruitment Pipeline</span>
+        <span className="hc2-dashboard-title">Hiring Workflow</span>
       </div>
 
       {/* Job header */}
       <div className="hc2-dashboard-job">
         <div className="hc2-job-badge">JOB</div>
         <div>
-          <p className="hc2-dashboard-job-title">Open role</p>
-          <p className="hc2-dashboard-job-sub">Approved hiring workflow</p>
+          <p className="hc2-dashboard-job-title">Decision Ready</p>
+          <p className="hc2-dashboard-job-sub">Connected hiring workflow</p>
         </div>
         <span className="hc2-status-pill approved">Approved</span>
       </div>
@@ -54,7 +54,7 @@ function DashboardPanel() {
               <span>{c.role}</span>
             </div>
             <span className={`hc2-stage-pill stage-${c.stage.toLowerCase()}`}>{c.stage}</span>
-            <span className="hc2-match-pct">{c.match}%</span>
+            <span className="hc2-match-pct">{c.match}</span>
           </div>
         ))}
       </div>
@@ -87,11 +87,11 @@ export function HeroSection() {
         <motion.div
           className="hc2-hero-copy"
           variants={containerVariants}
-          initial="hidden"
+          initial={false}
           animate="visible"
         >
           <motion.div className="hc2-hand-badge" variants={itemVariants}>
-            AI-powered recruitment
+            AI-Powered Recruitment
           </motion.div>
 
           <motion.h1 className="hc2-hero-h1 mb-2!" variants={itemVariants}>
@@ -99,16 +99,15 @@ export function HeroSection() {
           </motion.h1>
 
           <motion.p className="hc2-hero-lede" variants={itemVariants}>
-            Hiring Compass brings jobs, candidates, screening, interviews and hiring
-            decisions into one intelligent recruitment workspace.
+            Hiring Compass connects roles, candidates, interviews, decisions, offers, and onboarding in one guided workspace.
           </motion.p>
 
           <motion.div className="hc2-hero-actions mt-4!" variants={itemVariants}>
             <Link to={portalUrl("/signup")} className="hc2-cta-btn">
-              Start Hiring
+              Get Started
             </Link>
             <a href="#how-it-works" className="hc2-text-link">
-              Explore the platform <ArrowRight size={15} />
+              Explore the Workflow <ArrowRight size={15} />
             </a>
           </motion.div>
         </motion.div>
@@ -116,7 +115,7 @@ export function HeroSection() {
         {/* RIGHT — product composition */}
         <motion.div
           className="hc2-hero-composition"
-          initial={reduced ? undefined : { opacity: 0, scale: 0.96 }}
+          initial={false}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.85, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
         >
@@ -128,39 +127,35 @@ export function HeroSection() {
           {/* Floating cards — staggered entrance + idle float */}
           <FloatIdle amplitude={5} duration={3.8} delay={0} className="hc2-comp-card hc2-comp-card--tl">
             <Card className="">
-              <span className="hc2-fc-label">Candidate Profile</span>
-              <strong className="hc2-fc-name">Candidate profile</strong>
-              <p className="hc2-fc-sub">Review-ready context</p>
-              <div className="hc2-fc-match">
-                <span className="hc2-match-badge">92% Match</span>
-              </div>
+              <span className="hc2-fc-label">Role Requirements</span>
+              <strong className="hc2-fc-name">Candidate Match</strong>
+              <p className="hc2-fc-sub">Review-Ready Context</p>
             </Card>
           </FloatIdle>
 
           <FloatIdle amplitude={6} duration={4.4} delay={0.5} className="hc2-comp-card hc2-comp-card--tr">
             <Card className="">
-              <span className="hc2-fc-label">AI Screening</span>
-              <strong className="hc2-fc-value">Strong Match</strong>
+              <span className="hc2-fc-label">Candidate Match</span>
+              <strong className="hc2-fc-value">Review Ready</strong>
               <div className="hc2-fc-bar">
                 <div className="hc2-fc-bar-fill" style={{ width: "87%" }} />
               </div>
-              <span className="hc2-fc-pct">87%</span>
+              <span className="hc2-fc-pct">Ready</span>
             </Card>
           </FloatIdle>
 
           <FloatIdle amplitude={4} duration={5.1} delay={1} className="hc2-comp-card hc2-comp-card--br">
             <Card className="">
-              <span className="hc2-fc-label">Interview</span>
-              <strong className="hc2-fc-value">Sep 18 · 10:30 AM</strong>
-              <p className="hc2-fc-sub">Technical Interview</p>
-              <span className="hc2-status-dot confirmed">· Confirmed</span>
+              <span className="hc2-fc-label">Interview Scheduled</span>
+              <strong className="hc2-fc-value">Interview Plan</strong>
+              <p className="hc2-fc-sub">Availability Confirmed</p>
             </Card>
           </FloatIdle>
 
           <FloatIdle amplitude={5} duration={3.5} delay={0.7} className="hc2-comp-card hc2-comp-card--bl">
             <Card className="">
-              <span className="hc2-fc-label">Job Status</span>
-              <strong className="hc2-fc-value">Open role</strong>
+              <span className="hc2-fc-label">Hiring Decision</span>
+              <strong className="hc2-fc-value">Decision Ready</strong>
               <span className="hc2-status-pill approved">Approved</span>
             </Card>
           </FloatIdle>

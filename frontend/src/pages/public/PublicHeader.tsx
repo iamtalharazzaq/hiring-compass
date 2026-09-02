@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import { portalUrl } from "../../lib/hosts";
 
 const navLinks = [
-  { label: "Product", href: "#product" },
+  { label: "Problem", href: "#hiring-problem" },
   { label: "How It Works", href: "#how-it-works" },
   { label: "AI Capabilities", href: "#ai-capabilities" },
   { label: "Pricing", href: "#pricing" },
+  { label: "About", href: "#about" },
 ];
 
 export function PublicHeader() {
@@ -38,10 +39,10 @@ export function PublicHeader() {
       }
       lastScrollY.current = scrollY;
 
-      const productElem = document.getElementById("product");
-      const productTop = productElem ? productElem.offsetTop - 180 : 400;
+      const problemElem = document.getElementById("hiring-problem");
+      const problemTop = problemElem ? problemElem.offsetTop - 180 : 400;
 
-      if (scrollY < productTop) {
+      if (scrollY < problemTop) {
         setActiveTab(null);
         return;
       }
@@ -88,15 +89,7 @@ export function PublicHeader() {
     const targetId = href.replace("#", "");
     const element = document.getElementById(targetId);
     if (element) {
-      // Offset closely matches stuck header height (~67px), perfectly hiding the bottom border of the preceding Trust section
-      const headerOffset = 70;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     setMenuOpen(false);
@@ -144,7 +137,7 @@ export function PublicHeader() {
 
         {/* Right Action — Dark Pill 'Get Started' Button */}
         <div className="hc2-header-cta-wrap">
-          <Link to={portalUrl("/signup")} className="hc2-nav-get-started">
+          <Link to={portalUrl("/auth?mode=signup")} className="hc2-nav-get-started">
             Get Started
           </Link>
         </div>
@@ -174,7 +167,7 @@ export function PublicHeader() {
                 {link.label}
               </a>
             ))}
-            <Link to={portalUrl("/signup")} className="hc2-drawer-get-started">
+            <Link to={portalUrl("/auth?mode=signup")} className="hc2-drawer-get-started">
               Get Started
             </Link>
           </nav>

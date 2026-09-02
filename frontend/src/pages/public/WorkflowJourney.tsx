@@ -7,58 +7,58 @@ const stages = [
   {
     num: "01",
     icon: BriefcaseBusiness,
-    title: "Create a Job",
-    desc: "Define the role, requirements, team, location, and work setup.",
-    chip: "Draft → Approval",
+    title: "Create the Role",
+    desc: "Start with the hiring need, team context, and desired outcome.",
+    chip: "Role Draft",
   },
   {
     num: "02",
     icon: CheckCircle,
-    title: "Review & Approve",
-    desc: "Hiring managers review and formally approve each opening.",
-    chip: "Job Approved ✓",
+    title: "Build the Job",
+    desc: "AI creates a structured job description and role requirements.",
+    chip: "Job Built",
   },
   {
     num: "03",
     icon: UserPlus,
-    title: "Add Candidates",
-    desc: "Bring candidate profiles together with applications and resumes.",
-    chip: "12 Candidates Added",
+    title: "Approve the Role",
+    desc: "Review and approve the role before it becomes active.",
+    chip: "Role Approved",
   },
   {
     num: "04",
     icon: Filter,
-    title: "Screen & Shortlist",
-    desc: "AI-assisted screening surfaces the strongest matches first.",
-    chip: "6 Shortlisted",
+    title: "Match Candidates",
+    desc: "AI understands candidate profiles and compares them with the role.",
+    chip: "Matches Ready",
   },
   {
     num: "05",
     icon: CalendarDays,
-    title: "Schedule Interviews",
-    desc: "Coordinate interviews with structured stages and clear ownership.",
-    chip: "3 Interviews Scheduled",
+    title: "Review the Shortlist",
+    desc: "Review recommended candidates and decide who moves forward.",
+    chip: "Shortlist Reviewed",
   },
   {
     num: "06",
     icon: BarChart2,
-    title: "Evaluate",
-    desc: "Capture structured feedback and scorecards alongside the record.",
-    chip: "Scorecard Submitted",
+    title: "Schedule Interviews",
+    desc: "AI coordinates availability and keeps the interview plan organized.",
+    chip: "Interview Scheduled",
   },
   {
     num: "07",
     icon: Gift,
-    title: "Make an Offer",
-    desc: "Move a confident decision forward with the full context at hand.",
-    chip: "Offer Sent",
+    title: "Approve the Offer",
+    desc: "Review feedback, confirm the decision, and approve the offer.",
+    chip: "Offer Approved",
   },
   {
     num: "08",
     icon: Handshake,
-    title: "Onboard",
-    desc: "Hand off everything needed without losing the context behind it.",
-    chip: "Onboarded ✓",
+    title: "Start Onboarding",
+    desc: "Move the selected candidate into the onboarding workflow.",
+    chip: "Onboarding Started",
   },
 ];
 
@@ -86,9 +86,9 @@ export function WorkflowJourney() {
       <div className="hc2-workflow-inner">
         <ScrollReveal className="hc2-workflow-head">
           <div className="hc2-hand-badge">How it works</div>
-          <h2 className="hc2-section-h2 mb-4">From job opening<br />to onboarding.</h2>
+          <h2 className="hc2-section-h2 mb-4">From hiring request<br />to onboarding.</h2>
           <p className="hc2-section-sub">
-            Move every hire forward without losing the context that makes each decision clear.
+            Hiring Compass connects every stage of recruitment in one guided workflow. AI moves the work forward, while recruiters approve the decisions that matter.
           </p>
         </ScrollReveal>
 
@@ -108,7 +108,7 @@ export function WorkflowJourney() {
                 >
                   <motion.div
                     className="hc2-wf-step-inner"
-                    initial={reduced ? undefined : { opacity: 0, y: 18 }}
+                    initial={false}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-80px" }}
                     transition={{ duration: 0.45, delay: i * 0.04, ease: [0.22, 1, 0.36, 1] }}

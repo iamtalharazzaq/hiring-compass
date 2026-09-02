@@ -6,8 +6,8 @@ import { WorkflowJourney } from "./public/WorkflowJourney";
 import { ProductShowcase } from "./public/ProductShowcase";
 import { AISection } from "./public/AISection";
 import { PricingSection } from "./public/PricingSection";
-import { FinalCTA } from "./public/FinalCTA";
 import { PublicFooter } from "./public/PublicFooter";
+import { CompanySections } from "./public/CompanySections";
 
 export function MarketingPage() {
   return (
@@ -23,7 +23,7 @@ export function MarketingPage() {
         <ProductShowcase />
         <AISection />
         <PricingSection />
-        <FinalCTA />
+        <CompanySections />
       </main>
       <PublicFooter />
     </div>

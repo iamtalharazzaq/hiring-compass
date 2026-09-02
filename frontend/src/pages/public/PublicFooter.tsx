@@ -10,7 +10,7 @@ export function PublicFooter() {
   };
 
   return (
-    <footer className="hc2-tabela-footer" id="contact">
+    <footer className="hc2-tabela-footer">
       <div className="hc2-tf-inner">
         {/* Left Brand */}
         <div className="hc2-tf-brand">
@@ -21,6 +21,11 @@ export function PublicFooter() {
             <span className="hc2-tf-brandname">HIRING COMPASS</span>
           </a>
         </div>
+
+        <nav className="hc2-tf-nav" aria-label="Footer navigation">
+          <a href="/privacy" className="hc2-tf-link">Privacy</a>
+          <a href="/terms" className="hc2-tf-link">Terms</a>
+        </nav>
 
         {/* Right Copyright */}
         <div className="hc2-tf-copy">

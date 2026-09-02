@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 interface FadeUpProps {
@@ -7,18 +7,8 @@ interface FadeUpProps {
   className?: string;
 }
 
-export function FadeUp({ children, delay = 0, className = "" }: FadeUpProps) {
-  const reduced = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      initial={reduced ? undefined : { opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
-    >
-      {children}
-    </motion.div>
-  );
+export function FadeUp({ children, className = "" }: FadeUpProps) {
+  return <ScrollReveal className={className}>{children}</ScrollReveal>;
 }
 
 interface ScrollRevealProps {
@@ -28,20 +18,15 @@ interface ScrollRevealProps {
   margin?: string;
 }
 
-export function ScrollReveal({
-  children,
-  delay = 0,
-  className = "",
-  margin = "-20px",
-}: ScrollRevealProps) {
-  const reduced = useReducedMotion();
+export function ScrollReveal({ children, className = "", delay = 0 }: ScrollRevealProps) {
+  const reducedMotion = useReducedMotion();
   return (
     <motion.div
       className={className}
-      initial={reduced ? undefined : { opacity: 0, y: 28 }}
+      initial={reducedMotion ? false : { opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: margin as any }}
-      transition={{ duration: 0.75, delay, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.55, delay }}
     >
       {children}
     </motion.div>
@@ -54,86 +39,31 @@ interface StaggerGroupProps {
   staggerDelay?: number;
 }
 
-export function StaggerGroup({
-  children,
-  className = "",
-  staggerDelay = 0.08,
-}: StaggerGroupProps) {
-  const reduced = useReducedMotion();
+export function StaggerGroup({ children, className = "" }: StaggerGroupProps) {
+  const reducedMotion = useReducedMotion();
   return (
     <motion.div
       className={className}
-      initial={reduced ? undefined : "hidden"}
+      initial={reducedMotion ? false : "hidden"}
       whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
-      variants={{
-        hidden: {},
-        visible: {
-          transition: {
-            staggerChildren: staggerDelay,
-          },
-        },
-      }}
+      viewport={{ once: true, amount: 0.15 }}
+      variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1 } } }}
     >
       {children}
     </motion.div>
   );
 }
 
-export function StaggerItem({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  const reduced = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      variants={{
-        hidden: reduced ? {} : { opacity: 0, y: 20 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.55, ease: "easeOut" },
-        },
-      }}
-    >
-      {children}
-    </motion.div>
-  );
+export function StaggerItem({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <motion.div className={className} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.45 } } }}>{children}</motion.div>;
 }
 
-export function FloatIdle({
-  children,
-  className = "",
-  amplitude = 6,
-  duration = 4,
-  delay = 0,
-}: {
+export function FloatIdle({ children, className = "" }: {
   children: ReactNode;
   className?: string;
   amplitude?: number;
   duration?: number;
   delay?: number;
 }) {
-  const reduced = useReducedMotion();
-  if (reduced) return <div className={className}>{children}</div>;
-
-  return (
-    <motion.div
-      className={className}
-      animate={{ y: [-amplitude, amplitude, -amplitude] }}
-      transition={{
-        duration,
-        repeat: Infinity,
-        repeatType: "mirror",
-        ease: "easeInOut",
-        delay,
-      }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <motion.div className={className}>{children}</motion.div>;
 }

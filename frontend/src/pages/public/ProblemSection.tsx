@@ -1,12 +1,10 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ScrollReveal } from "./motion";
 import { Briefcase, FileSpreadsheet, Mail, Calendar, MessageSquare, CheckCircle2 } from "lucide-react";
 
 export function ProblemSection() {
-  const reduced = useReducedMotion();
-
   return (
-    <section className="hc2-problem" id="product">
+    <section className="hc2-problem" id="hiring-problem">
       <div className="hc2-problem-inner">
         {/* Top Header Block */}
         <div className="hc2-problem-header-block">
@@ -16,16 +14,16 @@ export function ProblemSection() {
 
           <ScrollReveal delay={0.1}>
             <h2 className="hc2-problem-h2 mb-4">
-              Hiring today is<br />fragmented.
+              Hiring becomes difficult when<br />context is scattered.
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2} className="hc2-problem-subtext">
             <p>
-              Recruiters move between job boards, spreadsheets, inboxes, calendars and disconnected hiring tools just to move one candidate through the process.
+              Recruiters move between job descriptions, spreadsheets, resumes, calendars, interview notes, and messages. Important context gets lost between each step.
             </p>
             <p style={{ fontWeight: 600, color: "var(--hc2-dark)" }}>
-              Every handoff creates another place for context to disappear.
+              The problem is not another missing recruiting tool. It is the lack of one connected hiring system.
             </p>
           </ScrollReveal>
         </div>
@@ -64,7 +62,7 @@ export function ProblemSection() {
           {/* Card 1: Job Posting */}
           <motion.div
             className="hc2-fragment-card hc2-frag-job"
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
@@ -72,15 +70,15 @@ export function ProblemSection() {
             <div className="hc2-frag-header">
               <Briefcase size={14} /> Job Posting
             </div>
-            <div className="hc2-frag-title">Senior Backend Engineer</div>
-            <div className="hc2-frag-meta">LinkedIn • Active</div>
-            <div className="hc2-frag-badge">24 applications</div>
+            <div className="hc2-frag-title">Role Requirements</div>
+            <div className="hc2-frag-meta">Role context awaiting review</div>
+            <div className="hc2-frag-badge">Active role</div>
           </motion.div>
 
           {/* Card 2: Candidate Tracking Spreadsheet */}
           <motion.div
             className="hc2-fragment-card hc2-frag-sheet"
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
@@ -88,17 +86,17 @@ export function ProblemSection() {
             <div className="hc2-frag-header">
               <FileSpreadsheet size={14} /> Spreadsheet Tracker
             </div>
-            <div className="hc2-frag-title">candidate-tracking.xlsx</div>
-            <div className="hc2-frag-meta">Candidate records awaiting review</div>
+            <div className="hc2-frag-title">Candidate Context</div>
+            <div className="hc2-frag-meta">Profiles awaiting review</div>
             <div className="hc2-frag-badge" style={{ background: "#fef2f2", color: "#991b1b", borderColor: "#fecaca" }}>
-              Last edit: 3 days ago
+              Review pending
             </div>
           </motion.div>
 
           {/* Card 3: Email Feedback */}
           <motion.div
             className="hc2-fragment-card hc2-frag-email"
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
@@ -106,14 +104,14 @@ export function ProblemSection() {
             <div className="hc2-frag-header">
               <Mail size={14} /> Inbox Thread
             </div>
-            <div className="hc2-frag-title">FW: Technical Interview Feedback</div>
-            <div className="hc2-frag-meta">“Interview feedback is waiting for a structured review...”</div>
+            <div className="hc2-frag-title">Interview Feedback</div>
+            <div className="hc2-frag-meta">Feedback awaiting structured review</div>
           </motion.div>
 
           {/* Card 4: Calendar Interview */}
           <motion.div
             className="hc2-fragment-card hc2-frag-calendar"
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.4 }}
@@ -121,14 +119,14 @@ export function ProblemSection() {
             <div className="hc2-frag-header">
               <Calendar size={14} /> Calendar Invites
             </div>
-            <div className="hc2-frag-title">Technical Deep Dive</div>
-            <div className="hc2-frag-meta">Tuesday • 10:30 AM (Google Meet)</div>
+            <div className="hc2-frag-title">Interview Plan</div>
+            <div className="hc2-frag-meta">Availability awaiting confirmation</div>
           </motion.div>
 
           {/* Card 5: Chat / Notes */}
           <motion.div
             className="hc2-fragment-card hc2-frag-chat"
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.5 }}
@@ -136,14 +134,14 @@ export function ProblemSection() {
             <div className="hc2-frag-header">
               <MessageSquare size={14} /> Slack Message
             </div>
-            <div className="hc2-frag-title">#hiring-backend</div>
-            <div className="hc2-frag-meta">“Did we already send the candidate feedback?”</div>
+            <div className="hc2-frag-title">Hiring Notes</div>
+            <div className="hc2-frag-meta">Context shared across the team</div>
           </motion.div>
 
           {/* Card 6: Decision Status */}
           <motion.div
             className="hc2-fragment-card hc2-frag-decision"
-            initial={reduced ? undefined : { opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.6 }}
@@ -151,20 +149,13 @@ export function ProblemSection() {
             <div className="hc2-frag-header">
               <CheckCircle2 size={14} /> Hiring Decision
             </div>
-            <div className="hc2-frag-title">Candidate status</div>
+            <div className="hc2-frag-title">Decision Status</div>
             <div className="hc2-frag-badge" style={{ background: "#fffbebe6", color: "#92400e", borderColor: "#fef3c7" }}>
-              Waiting for review
+              Approval needed
             </div>
           </motion.div>
         </div>
 
-        {/* Bottom Insight Transition Statement */}
-        <ScrollReveal delay={0.2} className="hc2-problem-bottom-insight">
-          <p className="hc2-insight-text">
-            The problem isn't another missing recruiting tool.{" "}
-            <span>It's that the existing tools don't work as one hiring system.</span>
-          </p>
-        </ScrollReveal>
       </div>
     </section>
   );

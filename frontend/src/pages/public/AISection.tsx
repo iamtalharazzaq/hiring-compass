@@ -1,13 +1,13 @@
-import { ArrowRight, CheckCircle2, Sparkles } from "lucide-react";
+import { CheckCircle2, Sparkles } from "lucide-react";
 import { ScrollReveal, StaggerGroup, StaggerItem } from "./motion";
 
 const capabilities = [
-  ["Job Description Creation", "Turns a hiring request into a clear, structured job description tailored to the role and team context.", "AI Generated"],
-  ["Requirement Planning", "Defines skills, experience, responsibilities, workplace details, and evaluation criteria for the role.", "AI Prepared"],
-  ["Candidate Understanding", "Reads candidate profiles and resumes to identify experience, skills, education, and relevant career context.", "AI Analyzed"],
-  ["Matching and Shortlisting", "Compares candidates with approved requirements, explains the match, and recommends who should move forward.", "Recruiter Review"],
-  ["Interview Coordination", "Prepares interview questions, coordinates availability, schedules interviews, and keeps every stage connected.", "AI Coordinated"],
-  ["Decision, Offer, and Onboarding", "Summarizes interview feedback, prepares the offer, and guides the selected candidate into onboarding after recruiter approval.", "Human Approval"],
+  ["Create Better Job Descriptions", "Turn a hiring request into a clear role with structured responsibilities and requirements.", "AI Assisted"],
+  ["Define What Matters", "Translate the role into skills, experience, and evaluation criteria.", "Role Context"],
+  ["Understand Candidate Context", "Read resumes and profiles to identify relevant skills, experience, education, and career signals.", "Candidate Context"],
+  ["Recommend the Right Shortlist", "Compare candidates with approved requirements and explain why they may be a fit.", "Shortlist Review"],
+  ["Coordinate the Interview Process", "Prepare interview questions, coordinate availability, and keep interview progress organized.", "Interview Plan"],
+  ["Prepare the Next Decision", "Summarize feedback, prepare the offer, and guide the selected candidate toward onboarding.", "Decision Support"],
 ] as const;
 
 const workflowStages = [
@@ -16,9 +16,9 @@ const workflowStages = [
 ] as const;
 
 const approvals = [
-  ["Job approval", "Recruiter approves the role before it becomes active."],
-  ["Shortlist review", "Recruiter reviews recommended candidates before interviews."],
-  ["Final hiring approval", "Recruiter approves the final decision and offer before onboarding begins."],
+  ["Role Approval", "Recruiters approve the role before it becomes active."],
+  ["Shortlist Review", "Recruiters review recommended candidates before interviews."],
+  ["Final Hiring Approval", "Recruiters approve the final decision and offer before onboarding begins."],
 ] as const;
 
 export function AISection() {
@@ -27,10 +27,10 @@ export function AISection() {
       <div className="hc2-ai-inner">
         <div className="hc2-ai-top">
           <ScrollReveal className="hc2-ai-head">
-            <p className="hc2-ai-label">AI Capabilities</p>
-            <h2 className="hc2-section-h2">AI that moves every<br />hire forward.</h2>
-            <p className="hc2-section-sub">Hiring Compass turns a hiring request into a structured recruitment workflow. It creates the role, understands candidates, coordinates interviews, prepares decisions, and guides the selected candidate toward onboarding.</p>
-            <p className="hc2-ai-trust-statement">Automation handles the work. Recruiters remain in control of every important decision.</p>
+            <div className="hc2-hand-badge hc2-ai-label">AI Capabilities</div>
+            <h2 className="hc2-section-h2">AI coordinates the work.<br />You approve the decision.</h2>
+            <p className="hc2-section-sub">Hiring Compass uses AI across the recruitment workflow—from creating the job description to preparing onboarding—while keeping important decisions in human hands.</p>
+            <p className="hc2-ai-trust-statement">AI handles the repetitive work. Recruiters remain responsible for the decision.</p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.1} className="hc2-ai-workflow">
@@ -63,7 +63,6 @@ export function AISection() {
           {approvals.map(([title, desc]) => <div key={title}><CheckCircle2 size={18} /><div><strong>{title}</strong><span>{desc}</span></div></div>)}
         </div>
 
-        <div className="hc2-ai-trust"><div><strong>From the first hiring request to the first day, every action stays connected to the context behind the decision.</strong><span>AI recommendations remain reviewable, explainable, and connected to the original role requirements.</span></div><a href="#how-it-works" className="hc2-ai-workflow-link">See how the workflow works <ArrowRight size={16} /></a></div>
       </div>
     </section>
   );
