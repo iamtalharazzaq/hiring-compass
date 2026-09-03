@@ -99,13 +99,47 @@ body {
 .hc-portal-main .hc-dropdown-option[aria-selected="true"],
 .hc-portal-main .hc-dropdown-option[aria-selected="true"] svg { color: #fff !important; }
 .hc-success-text { color: #4e8a42; }
+.hc-availability-badge {
+  background: #dcfce7 !important;
+  color: #2c955c;
+}
+.hc-portal-main table a[href^="/candidates/"] > span:first-child {
+  background: var(--color-elevated);
+  color: var(--color-navy);
+}
+button[aria-label="Sign out"]:hover svg {
+  color: var(--color-navy) !important;
+}
 .hc-toast { position: fixed; z-index: 60; top: calc(4.5rem + .625rem); right: 1.25rem; display: flex; width: min(19.5rem, calc(100vw - 2.5rem)); align-items: flex-start; gap: .85rem; padding: .9rem 1rem .9rem 1.25rem; border-left: 6px solid #6faaa2; background: #d9f99d; box-shadow: 0 10px 24px rgb(41 41 41 / 14%); color: #292929; font-size: .82rem; line-height: 1.4; }.hc-toast::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgb(111 170 162 / 45%); transform-origin: left; animation: hc-toast-progress var(--hc-toast-duration, 5000ms) linear forwards; }.hc-toast--error { border-color: #c84d4d; background: #fbe1e1; }.hc-toast--error::after { background: rgb(200 77 77 / 42%); }.hc-toast-copy { display: grid; gap: .15rem; min-width: 0; }.hc-toast-copy strong { font-weight: 800; }.hc-toast-copy span { overflow-wrap: anywhere; }.hc-toast-close { flex: 0 0 auto; width: 1.25rem; height: 1.25rem; margin: -.15rem -.25rem 0 auto; padding: 0; border: 0; background: transparent; color: currentColor; font-size: 1.25rem; line-height: 1; opacity: .55; }.hc-toast-close:hover { opacity: 1; }.hc-toast-close:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; } @keyframes hc-toast-progress { to { transform: scaleX(0); } } @media (prefers-reduced-motion: reduce) { .hc-toast::after { animation: none; } }
 .hc-toast { top: 5rem; right: .75rem; }
+.hc-workspace-switcher button[aria-selected="true"],
+.hc-workspace-switcher button[aria-selected="true"] svg { color: #fff !important; }
+.hc-portal-main a[href="/hiring/jobs/new"],
+.hc-portal-main a[href="/candidates/new"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  border-radius: 9999px !important;
+}
+.hc-portal-main a[href="/hiring/jobs/new"]::before,
+.hc-portal-main a[href="/candidates/new"]::before {
+  content: "+";
+  display: inline-grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--color-navy);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+}
 
 :root:not([data-theme="dark"]) .hc-portal-main [class*="text-[var(--color-teal)]"] svg,
 :root:not([data-theme="dark"]) .hc-portal-main [class*="bg-[var(--color-sage)]"] svg { color: var(--color-ink) !important; }
 :root:not([data-theme="dark"]) .hc-portal-main [class*="bg-[var(--color-sage)]"][class*="text-[var(--color-teal)]"] { color: var(--color-ink) !important; }
-.hc-portal-main a[href="/jobs/new"]::before,
 .hc-portal-main a[href="/candidates/new"]::before,
 .hc-portal-main button.hc-primary-action.rounded-full::before {
   width: 1.35rem;
@@ -424,7 +458,6 @@ button.hc-primary-action {
   margin-top: .5rem;
 }
 
-.hc-portal-main a[href="/jobs/new"]::before,
 .hc-portal-main a[href="/candidates/new"]::before {
   content: "+";
   display: inline-grid;
@@ -438,6 +471,14 @@ button.hc-primary-action {
   font-size: .95rem;
   font-weight: 800;
   line-height: 1;
+}
+
+.hc-portal-main a[href="/candidates/new"]::before {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0;
+  background: #fff;
+  font-size: 1rem;
 }
 
 .hc-portal-main button.hc-primary-action.rounded-full::before {
