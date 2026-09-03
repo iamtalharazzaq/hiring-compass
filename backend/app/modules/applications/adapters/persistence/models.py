@@ -11,7 +11,7 @@ from app.shared.database.base import Base
 class ApplicationModel(Base):
     __tablename__ = "applications"
     __table_args__ = (
-        CheckConstraint("status IN ('new','shortlisted','interviewing','decision_pending','offer_approved','on_hold','rejected')"),
+        CheckConstraint("status IN ('new','shortlisted','interviewing','decision_pending','hired','onboarding','onboarded','on_hold','rejected')"),
         Index("ix_applications_organization_id", "organization_id"),
         Index("ix_applications_job_status", "job_id", "status"),
         Index("ix_applications_candidate_created", "candidate_id", "created_at"),

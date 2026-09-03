@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Dropdown } from "../ui/Dropdown";
 import type { Criterion, Feedback } from "../../features/interviews/api";
 
 type Draft = {
@@ -125,45 +126,8 @@ export function FeedbackForm({
           );
         })}
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="text-sm font-medium">
-          Overall rating
-          <select
-            value={draft.overall_rating ?? ""}
-            onChange={(event) =>
-              setDraft({
-                ...draft,
-                overall_rating: event.target.value
-                  ? Number(event.target.value)
-                  : null,
-              })
-            }
-            className="mt-1 block w-full rounded-lg border bg-[var(--color-surface)] p-2"
-          >
-            <option value="">Not observed</option>
-            {[1, 2, 3, 4, 5].map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="text-sm font-medium">
-          Recommendation
-          <select
-            value={draft.recommendation ?? ""}
-            onChange={(event) =>
-              setDraft({ ...draft, recommendation: event.target.value || null })
-            }
-            className="mt-1 block w-full rounded-lg border bg-[var(--color-surface)] p-2"
-          >
-            <option value="">No recommendation</option>
-            {["strong_yes", "yes", "mixed", "no", "strong_no"].map((value) => (
-              <option key={value} value={value}>
-                {value.replace("_", " ")}
-              </option>
-            ))}
-          </select>
-        </label>
+        <Dropdown label="Overall rating" value={draft.overall_rating?.toString() ?? ""} placeholder="Not observed" options={[1, 2, 3, 4, 5].map((value) => ({ value: String(value), label: String(value) }))} onChange={(value) => setDraft({ ...draft, overall_rating: Number(value) })} />
+        <Dropdown label="Recommendation" value={draft.recommendation ?? ""} placeholder="No recommendation" options={["strong_yes", "yes", "mixed", "no", "strong_no"].map((value) => ({ value, label: value.replaceAll("_", " ") }))} onChange={(value) => setDraft({ ...draft, recommendation: value })} />
       </div>
       <label className="block text-sm font-medium">
         Summary

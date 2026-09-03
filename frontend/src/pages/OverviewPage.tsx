@@ -17,7 +17,7 @@ const formatDate = (value: string) => new Intl.DateTimeFormat(undefined, { month
 const metricLinks = { "Open roles": "/hiring?tab=jobs", Candidates: "/hiring?tab=candidates", Applications: "/hiring?tab=candidates", Shortlisted: "/hiring?tab=candidates" };
 const stages = [
   ["new", "Charcoal", "bg-[var(--color-navy)]"], ["shortlisted", "Teal", "bg-[var(--color-teal)]"], ["interviewing", "Lime", "bg-[var(--color-sage)]"], ["decision_pending", "Amber", "bg-[var(--color-amber)]"],
-  ["offer_approved", "Green", "bg-emerald-500"], ["hired", "Green", "bg-emerald-600"], ["on_hold", "Muted yellow", "bg-yellow-500"], ["rejected", "Rose", "bg-[var(--color-red)]"],
+  ["hired", "Green", "bg-emerald-600"], ["onboarding", "Amber", "bg-amber-500"], ["onboarded", "Green", "bg-emerald-600"], ["on_hold", "Muted yellow", "bg-yellow-500"], ["rejected", "Rose", "bg-[var(--color-red)]"],
 ] as const;
 
 export function OverviewPage() {

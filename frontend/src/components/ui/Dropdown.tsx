@@ -17,6 +17,7 @@ export function Dropdown({
   onChange: (value: string) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [opensAbove, setOpensAbove] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const close = (event: MouseEvent) => {
@@ -34,8 +35,13 @@ export function Dropdown({
           type="button"
           aria-haspopup="listbox"
           aria-expanded={open}
-          onClick={() => setOpen((current) => !current)}
-          className="mt-1 flex min-h-11 w-full items-center justify-between rounded-full border-2 border-[var(--color-ink)] bg-[var(--color-surface)] px-4 py-2 text-left text-sm text-[var(--color-ink)] transition hover:border-[var(--color-navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"
+          onClick={() => {
+            if (open) return setOpen(false);
+            const rect = ref.current?.getBoundingClientRect();
+            setOpensAbove(Boolean(rect && window.innerHeight - rect.bottom < 264 && rect.top > window.innerHeight - rect.bottom));
+            setOpen(true);
+          }}
+          className={`mt-1 flex min-h-11 w-full items-center justify-between rounded-full border bg-[var(--color-surface)] px-4 py-2 text-left text-sm text-[var(--color-ink)] transition hover:border-[var(--color-navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)] ${selected || open ? "border-[var(--color-ink)]" : "border-[var(--color-border)]"}`}
         >
           <span className={selected ? "" : "text-[var(--color-muted)]"}>
             {selected?.label ?? placeholder}
@@ -50,7 +56,7 @@ export function Dropdown({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 right-0 z-40 mt-1 max-h-64 overflow-auto rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-soft)]"
+          className={`absolute left-0 right-0 z-40 max-h-64 overflow-auto rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-soft)] ${opensAbove ? "bottom-full mb-1" : "top-full mt-1"}`}
         >
           {options.map((option) => (
             <button

@@ -87,7 +87,7 @@ async def approve(request: Request, organization_id: UUID, decision_id: UUID, pa
     if item.proposed_by == user.id: return error_response(request, "FORBIDDEN", "The proposer cannot approve their own decision.", 403)
     if item.status != "pending_approval": return error_response(request, "INVALID_STATE", "Only pending decisions can be approved.", 409)
     app = await application(session, organization_id, item.application_id); now = datetime.now(UTC); item.status, item.reviewed_by, item.reviewed_at, item.review_notes, item.updated_at = "approved", user.id, now, payload.review_notes, now
-    if app: app.status = {"proceed_to_offer": "offer_approved", "reject": "rejected", "hold": "on_hold"}[item.proposed_outcome]; app.status_changed_at, app.updated_at = now, now
+    if app: app.status = {"proceed_to_offer": "hired", "reject": "rejected", "hold": "on_hold"}[item.proposed_outcome]; app.status_changed_at, app.updated_at = now, now
     await record(session, organization_id, "hiring_decision_approved", "hiring_decision", item.id, user.id, application_id=item.application_id, metadata={"outcome": item.proposed_outcome, "status": item.status}); await session.commit(); return success_response(request, {"decision": data(item)})
 @router.post("/hiring-decisions/{decision_id}/return")
 async def return_decision(request: Request, organization_id: UUID, decision_id: UUID, payload: ReviewRequest, user: AuthenticatedUser = Depends(require_current_user), _: OrganizationMember = Depends(reviewer), session: AsyncSession = Depends(get_db_session)) -> JSONResponse:

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "../components/layout/AppShell";
 import { FeedbackForm } from "../components/jobs/FeedbackForm";
+import { Dropdown } from "../components/ui/Dropdown";
 import { useOrganization } from "../features/organizations/OrganizationProvider";
 import {
   addCriterion,
@@ -165,32 +166,7 @@ export function InterviewDetailPage() {
       <section className="mt-6 rounded-2xl border bg-[var(--color-surface)] p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-semibold">Assigned interviewers</h2>
-          {staff && (
-            <select
-              aria-label="Add interviewer"
-              defaultValue=""
-              onChange={(event) => {
-                if (event.target.value) assign.mutate(event.target.value);
-                event.target.value = "";
-              }}
-              className="rounded-lg border bg-[var(--color-surface)] px-3 py-2 text-sm"
-            >
-              <option value="">Add an active organization member</option>
-              {members.data?.members
-                .filter(
-                  (member) =>
-                    member.membership.is_active &&
-                    !assigned.data?.items.some(
-                      (item) => item.user_id === member.user.id,
-                    ),
-                )
-                .map((member) => (
-                  <option key={member.user.id} value={member.user.id}>
-                    {member.user.display_name}
-                  </option>
-                ))}
-            </select>
-          )}
+          {staff && <div className="w-full sm:w-80"><Dropdown value="" placeholder="Add an active organization member" onChange={(value) => assign.mutate(value)} options={(members.data?.members ?? []).filter((member) => member.membership.is_active && !assigned.data?.items.some((item) => item.user_id === member.user.id)).map((member) => ({ value: member.user.id, label: member.user.display_name }))} /></div>}
         </div>
         <div className="mt-3 space-y-2">
           {assigned.data?.items.length ? (

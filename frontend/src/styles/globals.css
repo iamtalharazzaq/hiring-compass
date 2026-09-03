@@ -96,12 +96,17 @@ body {
   border-radius: 9999px !important;
 }
 .hc-portal-main .hc-dropdown-option { border-radius: 0 !important; }
+.hc-portal-main .hc-action-menu-item { border-radius: 0 !important; }
 .hc-portal-main .hc-dropdown-option[aria-selected="true"],
 .hc-portal-main .hc-dropdown-option[aria-selected="true"] svg { color: #fff !important; }
 .hc-success-text { color: #4e8a42; }
 .hc-availability-badge {
   background: #dcfce7 !important;
   color: #2c955c;
+}
+.hc-job-status-badge--draft {
+  background: #292929 !important;
+  color: #fff !important;
 }
 .hc-portal-main table a[href^="/candidates/"] > span:first-child {
   background: var(--color-elevated);
@@ -124,7 +129,7 @@ button[aria-label="Sign out"]:hover svg {
 }
 .hc-portal-main a[href="/hiring/jobs/new"]::before,
 .hc-portal-main a[href="/candidates/new"]::before {
-  content: "+";
+  content: none;
   display: inline-grid;
   place-items: center;
   width: 1.25rem;
@@ -135,6 +140,11 @@ button[aria-label="Sign out"]:hover svg {
   font-size: 1rem;
   font-weight: 800;
   line-height: 1;
+}
+.hc-portal-main a[href="/hiring/jobs/new"]:hover::before,
+.hc-portal-main a[href="/candidates/new"]:hover::before {
+  background: var(--color-elevated);
+  color: var(--color-ink);
 }
 
 :root:not([data-theme="dark"]) .hc-portal-main [class*="text-[var(--color-teal)]"] svg,
@@ -459,7 +469,7 @@ button.hc-primary-action {
 }
 
 .hc-portal-main a[href="/candidates/new"]::before {
-  content: "+";
+  content: none;
   display: inline-grid;
   place-items: center;
   width: 1.15rem;

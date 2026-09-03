@@ -8,4 +8,6 @@ class ApplicationStatus(StrEnum):
     ON_HOLD = "on_hold"
     REJECTED = "rejected"
     DECISION_PENDING = "decision_pending"
-    OFFER_APPROVED = "offer_approved"
+    HIRED = "hired"
+    ONBOARDING = "onboarding"
+    ONBOARDED = "onboarded"

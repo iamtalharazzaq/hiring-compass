@@ -21,6 +21,7 @@ import { InterviewsPage } from "../pages/InterviewsPage";
 import { InterviewDetailPage } from "../pages/InterviewDetailPage";
 import { ApprovalsPage } from "../pages/ApprovalsPage";
 import { RecruiterGuidePage } from "../pages/RecruiterGuidePage";
+import { OfferResponsePage } from "../pages/OfferResponsePage";
 import { isPortalHost, portalUrl, publicUrl } from "../lib/hosts";
 
 function CrossOriginRedirect({ to }: { to: string }) { useEffect(() => { window.location.replace(to); }, [to]); return null; }
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
   { path: "/pricing", element: <PublicPage><Navigate replace to="/#pricing" /></PublicPage> },
   { path: "/about", element: <PublicPage><Navigate replace to="/#about" /></PublicPage> },
   { path: "/contact", element: <PublicPage><Navigate replace to="/#contact" /></PublicPage> },
+  { path: "/offer/:token", element: <PublicPage><OfferResponsePage /></PublicPage> },
   { path: "/app", element: <PortalPage><Protected><OverviewPage /></Protected></PortalPage> },
   { path: "/auth", element: <PortalPage><AuthPage /></PortalPage> },
   { path: "/login", element: <PortalPage><LoginPage /></PortalPage> },

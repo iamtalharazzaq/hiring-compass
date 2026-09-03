@@ -37,7 +37,9 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const hiringActive = pathname === "/hiring" || pathname.startsWith("/hiring") || pathname.startsWith("/jobs") || pathname.startsWith("/candidates");
-  const closeOnNavigate = () => onClose();
+  const closeOnNavigate = () => {
+    if (window.innerWidth < 1024) onClose();
+  };
   return (
     <>
       {isOpen && (

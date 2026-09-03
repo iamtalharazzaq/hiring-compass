@@ -14,6 +14,7 @@ from app.modules.communications.api.router import router as communications_route
 from app.modules.interviews.api.router import router as interviews_router
 from app.modules.jobs.api.router import router as jobs_router
 from app.modules.organizations.api.router import router as organizations_router
+from app.modules.offers.api.router import org_router as offers_router, router as public_offers_router
 from app.shared.database.engine import dispose_engine
 from app.shared.database.readiness import is_database_ready
 from app.shared.errors.handlers import register_exception_handlers
@@ -69,6 +70,8 @@ def create_app() -> FastAPI:
     app.include_router(decisions_router)
     app.include_router(communications_router)
     app.include_router(interviews_router)
+    app.include_router(offers_router)
+    app.include_router(public_offers_router)
 
     @app.get("/health")
     async def health() -> dict[str, str]:

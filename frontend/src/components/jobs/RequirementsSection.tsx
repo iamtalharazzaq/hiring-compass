@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Select } from "../ui/Select";
+import { Dropdown } from "../ui/Dropdown";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ArrowDown, ArrowUp, GripVertical, Pencil, Trash2 } from "lucide-react";
@@ -208,51 +208,19 @@ function RequirementForm({
   onCancel: () => void;
 }) {
   const {
-    register,
+    register, setValue, watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<Form>({ resolver: zodResolver(schema), defaultValues: initial });
+  } = useForm<Form>({ resolver: zodResolver(schema), defaultValues: { requirement_type: "required", category: "skill", ...initial } });
   return (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/35 backdrop-blur-[1px]" aria-hidden="true" />
-      <div
-        role="dialog"
-        aria-modal="true"
+      <section
         aria-label={initial ? "Edit requirement" : "Add requirement"}
-        className="fixed inset-0 z-50 m-auto grid h-fit max-h-[90vh] w-[min(36rem,calc(100vw-2rem))] gap-4 overflow-y-auto rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-2xl"
+        className="mt-5 grid gap-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-elevated)] p-5"
       >
       <div><h2 className="text-lg font-semibold">{initial ? "Edit requirement" : "Add requirement"}</h2><p className="mt-1 text-sm text-[var(--color-muted)]">Define a clear requirement for this role.</p></div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <label className="text-sm font-medium">
-          Requirement type
-          <Select
-            {...register("requirement_type")}
-            className="mt-1 w-full rounded-lg border bg-white p-2"
-          >
-            <option value="required">Required</option>
-            <option value="preferred">Preferred</option>
-          </Select>
-        </label>
-        <label className="text-sm font-medium">
-          Category
-          <Select
-            {...register("category")}
-            className="mt-1 w-full rounded-lg border bg-white p-2"
-          >
-            {[
-              "skill",
-              "experience",
-              "education",
-              "responsibility",
-              "certification",
-              "other",
-            ].map((value) => (
-              <option key={value} value={value}>
-                {categoryLabel(value)}
-              </option>
-            ))}
-          </Select>
-        </label>
+        <Dropdown label="Requirement type" value={watch("requirement_type")} options={[{ value: "required", label: "Required" }, { value: "preferred", label: "Preferred" }]} onChange={(value) => setValue("requirement_type", value as Form["requirement_type"], { shouldValidate: true })} />
+        <Dropdown label="Category" value={watch("category")} options={["skill", "experience", "education", "responsibility", "certification", "other"].map((value) => ({ value, label: categoryLabel(value) }))} onChange={(value) => setValue("category", value as Form["category"], { shouldValidate: true })} />
       </div>
       <label className="mt-3 block text-sm font-medium">
         Requirement text
@@ -282,7 +250,6 @@ function RequirementForm({
           {busy ? "Saving…" : "Save requirement"}
         </button>
       </div>
-      </div>
-    </>
+      </section>
   );
 }
