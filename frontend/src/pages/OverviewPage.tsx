@@ -16,7 +16,7 @@ const statusLabel = (value: string) => value.replace(/_/g, " ").replace(/\b\w/g,
 const formatDate = (value: string) => new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(new Date(value));
 const metricLinks = { "Open roles": "/hiring?tab=jobs", Candidates: "/hiring?tab=candidates", Applications: "/hiring?tab=candidates", Shortlisted: "/hiring?tab=candidates" };
 const stages = [
-  ["new", "Electric Blue", "bg-[var(--color-navy)]"], ["shortlisted", "Mint", "bg-[var(--color-teal)]"], ["interviewing", "Soft Blue", "bg-sky-400"], ["decision_pending", "Amber", "bg-[var(--color-amber)]"],
+  ["new", "Charcoal", "bg-[var(--color-navy)]"], ["shortlisted", "Teal", "bg-[var(--color-teal)]"], ["interviewing", "Lime", "bg-[var(--color-sage)]"], ["decision_pending", "Amber", "bg-[var(--color-amber)]"],
   ["offer_approved", "Green", "bg-emerald-500"], ["hired", "Green", "bg-emerald-600"], ["on_hold", "Muted yellow", "bg-yellow-500"], ["rejected", "Rose", "bg-[var(--color-red)]"],
 ] as const;
 

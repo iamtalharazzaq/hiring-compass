@@ -1,3 +1,8 @@
+import { useEffect, type CSSProperties } from "react";
+import { createPortal } from "react-dom";
+
+const TOAST_DURATION = 5000;
+
 export function Toast({
   message,
   tone = "success",
@@ -7,22 +12,34 @@ export function Toast({
   tone?: "success" | "error";
   onClose?: () => void;
 }) {
-  return (
+  useEffect(() => {
+    if (!onClose) return;
+    const timeout = window.setTimeout(onClose, TOAST_DURATION);
+    return () => window.clearTimeout(timeout);
+  }, [message, onClose]);
+
+  const toast = (
     <div
       role="status"
-      className={`fixed bottom-5 right-5 z-[60] rounded-xl px-4 py-3 text-sm font-medium text-white shadow-lg ${tone === "error" ? "bg-[var(--color-red)]" : "bg-[var(--color-teal)]"}`}
+      className={`hc-toast hc-toast--${tone}`}
+      style={{ "--hc-toast-duration": `${TOAST_DURATION}ms` } as CSSProperties}
     >
-      {message}
+      <div className="hc-toast-copy">
+        <strong>{tone === "success" ? "Success!" : "Something went wrong."}</strong>
+        <span>{message}</span>
+      </div>
       {onClose && (
         <button
           type="button"
           onClick={onClose}
           aria-label="Dismiss notification"
-          className="ml-3 opacity-80 hover:opacity-100"
+          className="hc-toast-close"
         >
           ×
         </button>
       )}
     </div>
   );
+
+  return createPortal(toast, document.body);
 }

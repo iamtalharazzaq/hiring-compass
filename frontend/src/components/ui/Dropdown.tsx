@@ -27,7 +27,7 @@ export function Dropdown({
   }, []);
   const selected = options.find((option) => option.value === value);
   return (
-    <div ref={ref} className="relative w-full" onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); (event.currentTarget.querySelector("button") as HTMLButtonElement | null)?.focus(); } }}>
+    <div ref={ref} className="hc-dropdown relative w-full" onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); (event.currentTarget.querySelector("button") as HTMLButtonElement | null)?.focus(); } }}>
       <label className="block text-sm font-medium">
         {label}
         <button
@@ -35,7 +35,7 @@ export function Dropdown({
           aria-haspopup="listbox"
           aria-expanded={open}
           onClick={() => setOpen((current) => !current)}
-          className="mt-1 flex min-h-11 w-full items-center justify-between rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-left text-sm text-[var(--color-text)] transition hover:border-[var(--color-navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"
+          className="mt-1 flex min-h-11 w-full items-center justify-between rounded-full border-2 border-[var(--color-ink)] bg-[var(--color-surface)] px-4 py-2 text-left text-sm text-[var(--color-ink)] transition hover:border-[var(--color-navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"
         >
           <span className={selected ? "" : "text-[var(--color-muted)]"}>
             {selected?.label ?? placeholder}
@@ -50,7 +50,7 @@ export function Dropdown({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 right-0 z-40 mt-2 max-h-64 overflow-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-1 shadow-[var(--shadow-soft)]"
+          className="absolute left-0 right-0 z-40 mt-1 max-h-64 overflow-auto rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-soft)]"
         >
           {options.map((option) => (
             <button
@@ -62,7 +62,7 @@ export function Dropdown({
                 onChange(option.value);
                 setOpen(false);
               }}
-              className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition ${option.value === value ? "bg-[var(--color-sage)] text-[var(--color-teal)]" : "text-[var(--color-text)] hover:bg-[var(--color-canvas)]"}`}
+              className={`hc-dropdown-option flex w-full items-center justify-between rounded-none px-4 py-2.5 text-left text-sm transition ${option.value === value ? "bg-[#292929] font-bold text-white" : "text-[var(--color-ink)] hover:bg-[var(--color-elevated)]"}`}
             >
               {option.label}
               {option.value === value && <Check size={15} aria-hidden="true" />}

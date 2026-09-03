@@ -1,6 +1,5 @@
-import { Compass, Moon, Sun } from "lucide-react";
+import { Compass } from "lucide-react";
 import type { ReactNode } from "react";
-import { useTheme } from "../../app/providers";
 import { publicUrl } from "../../lib/hosts";
 
 export function AuthLayout({
@@ -8,22 +7,19 @@ export function AuthLayout({
 }: {
   children: ReactNode;
 }) {
-  const { theme, setTheme } = useTheme();
   return (
-    <main className="relative grid min-h-screen place-items-center overflow-hidden bg-[var(--color-canvas)] px-5 py-8">
-      <div aria-hidden="true" className="absolute -left-28 top-12 size-80 rounded-full bg-[var(--color-navy)]/20 blur-3xl" />
-      <div aria-hidden="true" className="absolute -right-24 bottom-0 size-96 rounded-full bg-[var(--color-teal)]/15 blur-3xl" />
-      <section className="relative w-full max-w-md rounded-3xl border border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-surface)_92%,transparent)] p-6 shadow-[var(--shadow-soft)] backdrop-blur sm:p-9">
-        <div className="flex items-center justify-between gap-4">
-        <a href={publicUrl()} className="flex items-center gap-2 font-semibold">
-          <span className="grid size-9 place-items-center rounded-xl bg-[var(--color-navy)] text-white">
-            <Compass size={18} />
-          </span>
-          Hiring Compass
-        </a>
-        <button type="button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="grid size-9 place-items-center rounded-lg border border-[var(--color-border)] text-[var(--color-muted)] hover:text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]" aria-label={theme === "dark" ? "Use light theme" : "Use dark theme"} title={theme === "dark" ? "Use light theme" : "Use dark theme"}>{theme === "dark" ? <Sun size={16} aria-hidden="true" /> : <Moon size={16} aria-hidden="true" />}</button></div>
+    <main className="hc-auth-shell">
+      <div aria-hidden="true" className="hc-auth-orbit hc-auth-orbit--one" />
+      <div aria-hidden="true" className="hc-auth-orbit hc-auth-orbit--two" />
+      <section className="hc-auth-story" aria-label="Hiring Compass introduction">
+        <a href={publicUrl()} className="hc-auth-brand"><span className="hc-auth-mark"><Compass size={18} /></span>Hiring Compass</a>
+        <div className="hc-auth-story-copy"><span className="hc-auth-kicker">CONNECTED HIRING</span><h1>Hiring, with clarity.</h1><p>Bring roles, candidates, interviews, and decisions into one thoughtful workflow.</p></div>
+        <div className="hc-auth-story-note">AI handles the repetitive work. Your team makes the decisions that matter.</div>
+      </section>
+      <section className="hc-auth-card">
+        <div className="hc-auth-card-head"><a href={publicUrl()} className="hc-auth-brand hc-auth-brand--compact"><span className="hc-auth-mark"><Compass size={18} /></span>Hiring Compass</a><span>Secure workspace</span></div>
         {children}
-        <a href={publicUrl()} className="mt-7 inline-flex text-sm font-medium text-[var(--color-muted)] hover:text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]">← Back to Hiring Compass</a>
+        <a href={publicUrl()} className="hc-auth-back">← Back to Hiring Compass</a>
       </section>
     </main>
   );

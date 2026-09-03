@@ -9,7 +9,7 @@
 .hc-job-progress-step span { position: absolute; top: 2.5rem; left: 50%; color: var(--color-muted); transform: translateX(-50%); }
 .hc-job-progress-step[data-state="active"] button { border-color: var(--color-navy); background: var(--color-navy); color: #fff; box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-navy) 16%, var(--color-surface)); transform: scale(1.05); }
 .hc-job-progress-step[data-state="active"] span { color: var(--color-ink); }
-.hc-job-progress-step[data-state="complete"] button { border-color: var(--color-navy); background: color-mix(in srgb, var(--color-navy) 82%, #14233a); color: #fff; box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-navy) 12%, var(--color-surface)); }
+.hc-job-progress-step[data-state="complete"] button { border-color: var(--color-navy); background: color-mix(in srgb, var(--color-navy) 82%, #292929); color: #fff; box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-navy) 12%, var(--color-surface)); }
 .hc-job-progress-step:has(button:not(:disabled)):hover button { border-color: var(--color-navy); color: var(--color-navy); transform: translateY(-1px); }
 .hc-job-progress-step:has(button:not(:disabled)):hover span { color: var(--color-ink); }
 @media (max-width: 640px) { .hc-job-progress { overflow-x: auto; } .hc-job-progress-track { min-width: 20rem; } }

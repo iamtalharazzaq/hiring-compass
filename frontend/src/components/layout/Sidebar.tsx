@@ -37,7 +37,7 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const hiringActive = pathname === "/hiring" || pathname.startsWith("/hiring") || pathname.startsWith("/jobs") || pathname.startsWith("/candidates");
-  const closeOnNavigate = () => { if (isOpen) onToggle(); if (window.innerWidth < 1024) onClose(); };
+  const closeOnNavigate = () => onClose();
   return (
     <>
       {isOpen && (
@@ -112,7 +112,7 @@ export function Sidebar({ isOpen, onClose, onToggle }: SidebarProps) {
         <div className="mt-auto border-t border-[var(--color-border)] px-2 pt-4">
           {isOpen && <div className="mb-3 px-1"><p className="truncate text-sm font-semibold">{user?.display_name ?? "Account"}</p><p className="truncate text-xs text-[var(--color-muted)]">{user?.email ?? "Signed-in user"}</p></div>}
           <div className={cn("flex items-center gap-2", isOpen ? "justify-end" : "flex-col")}>
-            <button type="button" onClick={() => navigate("/settings")} title="Settings" aria-label="Settings" className="grid size-9 place-items-center rounded-lg text-[var(--color-muted)] hover:bg-[var(--color-elevated)] hover:text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"><Settings2 size={16} aria-hidden="true" /></button>
+            <button type="button" onClick={() => { closeOnNavigate(); navigate("/settings"); }} title="Settings" aria-label="Settings" className="grid size-9 place-items-center rounded-lg text-[var(--color-muted)] hover:bg-[var(--color-elevated)] hover:text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"><Settings2 size={16} aria-hidden="true" /></button>
             <button type="button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} title={theme === "dark" ? "Use light theme" : "Use dark theme"} aria-label={theme === "dark" ? "Use light theme" : "Use dark theme"} className="grid size-9 place-items-center rounded-lg text-[var(--color-muted)] hover:bg-[var(--color-elevated)] hover:text-[var(--color-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]">{theme === "dark" ? <Sun size={16} aria-hidden="true" /> : <Moon size={16} aria-hidden="true" />}</button>
             <button type="button" onClick={() => { void logout().then(() => navigate("/login", { replace: true })); }} title="Sign out" aria-label="Sign out" className="grid size-10 shrink-0 place-items-center rounded-full bg-[var(--color-sage)] text-[var(--color-teal)] ring-2 ring-[var(--color-surface)] transition-colors hover:bg-[var(--color-red)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-navy)]"><LogOut size={17} aria-hidden="true" /></button>
           </div>
